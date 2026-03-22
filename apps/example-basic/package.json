@@ -5,7 +5,7 @@
     "node": ">=25 <26"
   },
   "scripts": {
-    "build": "rimraf public && girk",
+    "build": "rimraf public && node ../../packages/girk/dist/index.js",
     "serve": "npx serve public",
     "test:run": "npm run build"
   },
