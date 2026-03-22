@@ -37,26 +37,20 @@ Dry-run the release logic locally with:
 
 - `npm run release:dry-run`
 
-## Cloudflare Pages
+## Cloudflare Worker
 
-Pages project mapping:
+The docs and example sites are deployed through a single Worker with static assets.
 
-- `girk-docs` -> `girk.dev`, `www.girk.dev`
-- `girk-example-basic` -> `example-basic.girk.dev`
-- `girk-example-multilang` -> `example-multilang.girk.dev`
+Route mapping:
 
-These are set up as Git-connected Cloudflare Pages projects on the `master` branch, so Cloudflare builds them remotely on push.
+- `girk.dev/*` -> docs
+- `www.girk.dev/*` -> docs
+- `example-basic.girk.dev/*` -> example basic
+- `example-multilang.girk.dev/*` -> example multilang
 
-Cloudflare build settings:
+Relevant commands:
 
-- Project: `girk-docs`
-  Build command: `npm ci && npm run cf:build:docs`
-  Build output directory: `apps/docs/public`
-- Project: `girk-example-basic`
-  Build command: `npm ci && npm run cf:build:example-basic`
-  Build output directory: `apps/example-basic/public`
-- Project: `girk-example-multilang`
-  Build command: `npm ci && npm run cf:build:example-multilang`
-  Build output directory: `apps/example-multilang/public`
+- `npm run cf:build:sites`
+- `npm run deploy:sites`
 
-The repo root should be used as the working directory. Node 25 is pinned in `.nvmrc` and `.node-version`, which Cloudflare Builds can read.
+Deployment is handled by [deploy-sites.yml](/Users/silvandiepen/Repositories/_libs/gieter/.github/workflows/deploy-sites.yml) on pushes to `master`. It expects the `CLOUDFLARE_API_TOKEN` GitHub secret to be present.

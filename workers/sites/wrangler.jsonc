@@ -1,0 +1,29 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "girk-sites",
+  "main": "src/index.ts",
+  "account_id": "8cef251b5fdcf6c6f63db98b7aa49f9a",
+  "compatibility_date": "2026-03-22",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "routes": [
+    {
+      "pattern": "girk.dev/*",
+      "zone_name": "girk.dev"
+    },
+    {
+      "pattern": "www.girk.dev/*",
+      "zone_name": "girk.dev"
+    },
+    {
+      "pattern": "*.girk.dev/*",
+      "zone_name": "girk.dev"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}

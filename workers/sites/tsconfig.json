@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "target": "ES2022",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022", "WebWorker"],
+    "types": ["node"],
+    "strict": true,
+    "noEmit": true
+  },
+  "include": ["src/**/*.ts", "wrangler.jsonc"],
+  "exclude": ["node_modules", "public"]
+}

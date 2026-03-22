@@ -1,0 +1,23 @@
+{
+  "name": "@girk/sites-worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node ../../scripts/build-sites-worker.mjs",
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "oxlint src --tsconfig tsconfig.json",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "oxfmt": "^0.41.0",
+    "oxlint": "^1.56.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0",
+    "wrangler": "^4.76.0"
+  }
+}
