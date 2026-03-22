@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/silvandiepen/girk/compare/v1.0.0...v1.1.0) (2026-03-22)
+
+
+### Features
+
+* **Repo:** Ignore generated app public directories ([d45fcc7](https://github.com/silvandiepen/girk/commit/d45fcc7667cd8af2eed812a50b68f159931680d5))
+
 # 1.0.0 (2026-03-22)
 
 
