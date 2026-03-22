@@ -21,7 +21,7 @@ Common commands from the repo root:
 `girky` is published from GitHub Actions with `semantic-release`.
 
 - Workflow: `.github/workflows/publish.yml`
-- Branch: `master`
+- Branch: `main`
 - Published package: `packages/girk` (`girky` on npm)
 - Versioning: derived automatically from conventional commits
 - Publishing mode: npm trusted publishing through GitHub Actions OIDC
@@ -53,4 +53,4 @@ Relevant commands:
 - `npm run cf:build:sites`
 - `npm run deploy:sites`
 
-Deployment is handled by [deploy-sites.yml](/Users/silvandiepen/Repositories/_libs/gieter/.github/workflows/deploy-sites.yml) on pushes to `master`. It expects the `CLOUDFLARE_API_TOKEN` GitHub secret to be present.
+Deployment is handled by [deploy-sites.yml](/Users/silvandiepen/Repositories/_libs/gieter/.github/workflows/deploy-sites.yml) on pushes to `main`. It expects the `CLOUDFLARE_API_TOKEN` GitHub secret to be present.
