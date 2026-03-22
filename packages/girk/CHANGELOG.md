@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/silvandiepen/girk/compare/v1.2.0...v1.3.0) (2026-03-22)
+
+
+### Features
+
+* **Release:** Prevent duplicate semantic-release tags ([60f702d](https://github.com/silvandiepen/girk/commit/60f702d9b507239a1bad7d514227282e2a5ad354))
+
 # [1.2.0](https://github.com/silvandiepen/girk/compare/v1.1.0...v1.2.0) (2026-03-22)
 
 
