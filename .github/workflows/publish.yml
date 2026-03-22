@@ -6,6 +6,10 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: write
   id-token: write
@@ -25,6 +29,9 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+
+      - name: Refresh tags
+        run: git fetch --force --tags origin
 
       - name: Install dependencies
         run: npm ci
