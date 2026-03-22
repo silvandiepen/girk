@@ -53,4 +53,15 @@ Relevant commands:
 - `npm run cf:build:sites`
 - `npm run deploy:sites`
 
-Deployment is handled by [deploy-sites.yml](/Users/silvandiepen/Repositories/_libs/gieter/.github/workflows/deploy-sites.yml) on pushes to `main`. It expects the `CLOUDFLARE_API_TOKEN` GitHub secret to be present.
+Deployment should be handled by Cloudflare Workers Builds, not GitHub Actions.
+
+Recommended Cloudflare setup:
+
+- Worker: `girk-sites`
+- Git provider: GitHub
+- Repository: `silvandiepen/girk`
+- Production branch: `main`
+- Build root directory: `/`
+- Build command: `npm run cf:build:sites`
+
+This keeps npm publishing in GitHub Actions, while Cloudflare deploys the Worker directly from commits to `main` without storing Cloudflare API keys in GitHub.
