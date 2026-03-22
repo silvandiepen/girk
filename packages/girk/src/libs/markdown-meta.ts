@@ -1,4 +1,4 @@
-import { nthIndex } from "@girk/utils";
+import { nthIndex } from "@/libs/utils";
 import { Meta } from "@/types";
 
 export const fixType = (value: string): any => {

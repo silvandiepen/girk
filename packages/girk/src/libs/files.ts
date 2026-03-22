@@ -4,7 +4,7 @@ import { readdir } from "fs/promises";
 import { extname, resolve, basename, join } from "path";
 import { statSync } from "fs";
 import { format } from "date-fns";
-import { asyncForEach, getFileData, renamePath } from "@girk/utils";
+import { asyncForEach, getFileData, renamePath } from "@/libs/utils";
 
 import { File, buildHtmlArgs, FileType, Dirent, Archive } from "@/types";
 import { fixLangInPath, getLangFromFilename } from "@/libs/language";

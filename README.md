@@ -16,6 +16,23 @@ Common commands from the repo root:
 - `npm run test:run`
 - `npm run serve:docs`
 
+## npm Release
+
+`girk` is published from GitHub Actions with `semantic-release`.
+
+- Workflow: `.github/workflows/release.yml`
+- Branch: `master`
+- Published package: `packages/girk`
+- Versioning: derived automatically from conventional commits
+
+Repository secrets required for release:
+
+- `NPM_TOKEN`: npm publish token for the `girk` package
+
+Dry-run the release logic locally with:
+
+- `npm run release:dry-run`
+
 ## Cloudflare Pages
 
 Pages project mapping:

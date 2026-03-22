@@ -6,7 +6,7 @@ import sharp from "sharp";
 
 import { getFileTree } from "../libs/files";
 import { File, Payload } from "../types";
-import { asyncForEach, createDir } from "@girk/utils";
+import { asyncForEach, createDir } from "@/libs/utils";
 import { getSVGData } from "./svg";
 
 export const getThumbnail = (file: File): string | null => {

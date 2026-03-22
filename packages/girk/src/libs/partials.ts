@@ -1,4 +1,4 @@
-import { asyncForEach } from "@girk/utils";
+import { asyncForEach } from "@/libs/utils";
 import { File, Payload } from "../types";
 
 export const processPartials = async (payload: Payload): Promise<Payload> => {

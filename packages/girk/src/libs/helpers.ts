@@ -1,7 +1,7 @@
 import { File } from "../types";
-import { getStringFromTag, removeTag } from "@girk/utils";
 import { camelCase } from "@sil/case";
 import { join } from "path";
+import { getStringFromTag, removeTag } from "@/libs/utils";
 
 export const removeTitle = (input: string): string => removeTag(input, "h1");
 

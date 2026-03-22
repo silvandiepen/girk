@@ -2,7 +2,7 @@ import { ColorData } from "@sil/colorset";
 import { blockMid, blockSettings } from "cli-block";
 import { writeFile } from "fs/promises";
 import { dirname, join } from "path";
-import { createDir } from "@girk/utils";
+import { createDir } from "@/libs/utils";
 import { Payload, Style } from "../../types";
 import { buildCss } from "./compile";
 

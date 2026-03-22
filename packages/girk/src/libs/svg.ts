@@ -1,4 +1,4 @@
-import { getFileData } from "@girk/utils";
+import { getFileData } from "@/libs/utils";
 import { join } from "path";
 
 export const getSVGData = async (svg: string): Promise<string> => {

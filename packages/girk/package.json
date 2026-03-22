@@ -12,7 +12,6 @@
     "node": ">=25 <26"
   },
   "scripts": {
-    "prebuild": "npm run build -w @girk/utils",
     "build": "npm run build:style && npm run build:ts",
     "build:ts": "tsc && tsc-alias",
     "build:full": "rimraf dist && rimraf .cache && npm run build && npm run test",
@@ -20,9 +19,8 @@
     "dev:style": "sass src/style/app.scss dist/style/app.css --load-path=node_modules --load-path=../../node_modules --watch --error-css --style=expanded",
     "style:clean": "rm -rf .cache && rm -rf dist/style/app.css",
     "dev": "concurrently --kill-others \"tsc -w\" \"tsc-alias -w\" \"npm run dev:style\"",
-    "pretest": "npm run build -w @girk/utils",
     "test": "vitest run",
-    "test:watch": "npm run build -w @girk/utils && vitest",
+    "test:watch": "vitest",
     "lint": "oxlint src --tsconfig tsconfig.json",
     "lint:fix": "oxlint src --tsconfig tsconfig.json --fix",
     "fmt": "oxfmt",
@@ -44,6 +42,16 @@
     "url": "https://github.com/silvandiepen/girk/issues"
   },
   "homepage": "https://github.com/silvandiepen/girk#readme",
+  "files": [
+    "dist",
+    "src/template",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "devDependencies": {
     "@types/markdown-it": "^12.2.3",
     "@types/node": "^25.5.0",
@@ -64,7 +72,6 @@
     "watch": "^1.0.2"
   },
   "dependencies": {
-    "@girk/utils": "file:../utils",
     "@sil/args": "^0.0.6",
     "@sil/case": "^0.0.5",
     "@sil/colorset": "^0.0.8",

@@ -1,4 +1,4 @@
-import { asyncForEach } from "@girk/utils";
+import { asyncForEach } from "@/libs/utils";
 
 import { Payload, File, FileType, Tag, Language, ArchiveType } from "../types";
 import { createPage } from "./page";

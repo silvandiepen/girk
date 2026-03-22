@@ -14,7 +14,7 @@ import {
 import { getLanguageMenu, getDefaultLanguage } from "../libs/language";
 import { makePath, buildHtml, getParentFile } from "./files";
 
-import { createDir } from "@girk/utils";
+import { createDir } from "@/libs/utils";
 import kleur from "kleur";
 import { getThumbnail } from "./media";
 

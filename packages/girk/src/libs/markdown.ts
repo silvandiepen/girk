@@ -10,7 +10,7 @@ import svgImages from "@/libs/markdown-it-svg";
 import { extractMeta, removeMeta } from "@/libs/markdown-meta";
 import { MarkdownData } from "@/types";
 import { getGist } from "@/libs/download";
-import { asyncForEach } from "@girk/utils";
+import { asyncForEach } from "@/libs/utils";
 
 const md = new MarkdownIt({
   html: true,

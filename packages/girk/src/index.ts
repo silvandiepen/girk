@@ -2,7 +2,6 @@
 "use strict";
 
 import { getArgs } from "@sil/args";
-import { asyncForEach, hello } from "@girk/utils";
 import { blockFooter, blockHeader, blockMid, blockSettings } from "cli-block";
 import { readFileSync } from "fs";
 import { join } from "path";
@@ -28,6 +27,7 @@ import { processPartials } from "@/libs/partials";
 import { getConfig, getProjectData } from "@/libs/project";
 import { createRobots } from "@/libs/robots";
 import { createTagPages, generateTags } from "@/libs/tags";
+import { asyncForEach, hello } from "@/libs/utils";
 import { generateSocials } from "./libs/socials";
 import { File, Payload, Project, Settings } from "./types";
 

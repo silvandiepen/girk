@@ -1,0 +1,30 @@
+export default {
+  branches: ["master"],
+  plugins: [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/changelog",
+      {
+        changelogFile: "packages/girk/CHANGELOG.md",
+      },
+    ],
+    [
+      "@semantic-release/npm",
+      {
+        pkgRoot: "packages/girk",
+      },
+    ],
+    [
+      "@semantic-release/git",
+      {
+        assets: [
+          "packages/girk/package.json",
+          "packages/girk/CHANGELOG.md",
+        ],
+        message:
+          "chore(Release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}",
+      },
+    ],
+  ],
+};

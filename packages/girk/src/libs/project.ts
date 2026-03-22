@@ -1,4 +1,4 @@
-import { asyncForEach, fileExists, getFileData } from "@girk/utils";
+import { asyncForEach, fileExists, getFileData } from "@/libs/utils";
 import { camelCase } from "@sil/case";
 import { Project, Meta, File, Arguments } from "../types";
 import { flattenObject } from "./helpers";

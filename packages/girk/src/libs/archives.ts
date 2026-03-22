@@ -1,4 +1,4 @@
-import { parentPath } from "@girk/utils";
+import { parentPath } from "@/libs/utils";
 
 import { makePath } from "@/libs/files";
 import { ArchiveType, Payload, File } from "@/types";
