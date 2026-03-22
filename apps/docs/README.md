@@ -6,7 +6,7 @@ hide: true
 
 # Girk
 
-Girk helps you make simple websites, docs, or even book-like sites from Markdown. You don't have to set anything up, just run `npx girk` and your site will be generated.
+Girk helps you make simple websites, docs, or even book-like sites from Markdown. You don't have to set anything up, just run `npx girky` and your site will be generated.
 
 Yes, also this website is generated, just using the single command. All the menu, pages, etc, is just being created from markdown files and a few settings defined In these markdown files.
 

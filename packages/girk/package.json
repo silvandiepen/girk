@@ -1,5 +1,5 @@
 {
-  "name": "girk",
+  "name": "girky",
   "version": "0.7.3",
   "description": "Create a Girk site from Markdown",
   "main": "dist/index.js",

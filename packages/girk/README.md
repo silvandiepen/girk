@@ -5,7 +5,7 @@ Girk helps you generate simple static websites, docs, and book-like sites from M
 ## Usage
 
 ```bash
-npx girk
+npx girky
 ```
 
 That command scans the current folder for Markdown files and generates a site into `public/`.
