@@ -10,7 +10,7 @@
     "test:run": "npm run build"
   },
   "dependencies": {
-    "girk": "file:../../packages/girk",
+    "girky": "file:../../packages/girk",
     "rimraf": "^4.3.0"
   }
 }
