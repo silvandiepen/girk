@@ -24,10 +24,14 @@ Common commands from the repo root:
 - Branch: `master`
 - Published package: `packages/girk`
 - Versioning: derived automatically from conventional commits
+- Publishing mode: npm trusted publishing through GitHub Actions OIDC
 
-Repository secrets required for release:
+Before the workflow can publish, the `girk` package must exist once on npm and npm must trust this repository/workflow pair.
+Configure npm trusted publishing with:
 
-- `NPM_TOKEN`: npm publish token for the `girk` package
+- Organization or user: `silvandiepen`
+- Repository: `girk`
+- Workflow filename: `release.yml`
 
 Dry-run the release logic locally with:
 
