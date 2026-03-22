@@ -4,6 +4,15 @@
 ### Features
 
 * **Deploy:** Consolidate docs and examples behind one Worker ([8dd0603](https://github.com/silvandiepen/girk/commit/8dd06036206f204ac5a262eca7e4a2a14745a4e3))
+* **Deploy:** Use Cloudflare-native Worker builds ([a4ededf](https://github.com/silvandiepen/girk/commit/a4ededfecbf8d9dcbdba1958799b5bd6487000a9))
+* **Repo:** Target deployment automation at main ([95e7515](https://github.com/silvandiepen/girk/commit/95e7515102d5494f79d7ffc5054ac56fdb4cd4d7))
+
+# [1.2.0](https://github.com/silvandiepen/girk/compare/v1.1.0...v1.2.0) (2026-03-22)
+
+
+### Features
+
+* **Deploy:** Consolidate docs and examples behind one Worker ([8dd0603](https://github.com/silvandiepen/girk/commit/8dd06036206f204ac5a262eca7e4a2a14745a4e3))
 * **Repo:** Target deployment automation at main ([95e7515](https://github.com/silvandiepen/girk/commit/95e7515102d5494f79d7ffc5054ac56fdb4cd4d7))
 
 # [1.1.0](https://github.com/silvandiepen/girk/compare/v1.0.0...v1.1.0) (2026-03-22)
