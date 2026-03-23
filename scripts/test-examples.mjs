@@ -39,6 +39,12 @@ test("example-basic builds a feature-rich sample site", async () => {
   assert.match(home, /\/style\/app\.css/);
   assert.match(home, /\/assets\/custom\.css/);
   assert.match(home, /\/assets\/custom\.js/);
+  assert.match(home, /\/assets\/custom-elements\.js/);
+  assert.match(home, /\/assets\/custom-vue\.js/);
+  assert.match(home, /type="module"/);
+  assert.match(home, /<example-note data-text="Web component loaded through projectScriptModule"><\/example-note>/);
+  assert.match(home, /data-vue-example/);
+  assert.match(home, /Loading Vue example/);
   assert.match(home, /https:\/\/example\.com\/support/);
   assert.match(guide, /Install/);
   assert.match(guide, /Configuration/);

@@ -9,3 +9,12 @@ body {
 .archive-card__title {
   text-transform: uppercase;
 }
+
+example-note {
+  display: block;
+  margin: 1.5rem 0 0;
+}
+
+.vue-note-shell {
+  margin: 1.5rem 0 0;
+}
