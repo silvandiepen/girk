@@ -98,10 +98,15 @@ test("example-blog builds a dated blog archive", async () => {
 
   const home = await read("apps/example-blog/public/index.html");
   const journal = await read("apps/example-blog/public/journal/index.html");
+  const launch = await read("apps/example-blog/public/journal/launch/index.html");
 
   assert.match(home, /Girk Blog/);
   assert.match(journal, /Launch Post/);
+  assert.match(journal, /Editorial Calendar/);
   assert.match(journal, /First Notes/);
+  assert.match(journal, /Reader Feedback/);
+  assert.match(journal, /Writing Rhythm/);
+  assert.match(launch, /The first public release of this example is intentionally modest/);
 });
 
 test("example-recipes builds checklist-driven recipe pages", async () => {
