@@ -53,6 +53,7 @@ Girk is a Markdown-first static site generator. It turns a folder tree into a st
 - `projectStyle`
 - `projectStyleOverrule`
 - `projectScript`
+- `projectScriptModule`
 - `projectIgnore`
 - `projectGroupTags`
 - `projectCopyFiles`

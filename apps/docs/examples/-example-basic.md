@@ -14,7 +14,7 @@ The broadest reference project in the repository. Use it when you want to see mu
 - `sections` for one assembled long page
 - redirects and hidden files
 - copied files and custom assets
-- grouped tags, custom CSS, and custom JavaScript
+- grouped tags, custom CSS, custom JavaScript, a module-loaded custom element, and a Vue-mounted block
 
 ### Links
 

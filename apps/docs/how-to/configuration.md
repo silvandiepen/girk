@@ -19,7 +19,9 @@ Use a config file when you want to define shared project settings once instead o
   "project": {
     "title": "Acme Docs",
     "description": "Internal product documentation",
-    "logo": "/assets/logo.svg"
+    "logo": "/assets/logo.svg",
+    "style": "/assets/site.css",
+    "scriptModule": "/assets/components.js"
   },
   "colors": {
     "primary": "gray",
@@ -36,9 +38,24 @@ Use a config file when you want to define shared project settings once instead o
 - `projectStyle`
 - `projectStyleOverrule`
 - `projectScript`
+- `projectScriptModule`
 - `projectIgnore`
 - `projectGroupTags`
 - `projectCopyFiles`
+
+## Custom CSS And JS
+
+Use flat project keys in frontmatter when you want a page to define project-wide hooks:
+
+```md
+---
+projectStyle: /assets/custom.css
+projectScript: /assets/custom.js
+projectScriptModule: /assets/components.js
+---
+```
+
+Use `projectScriptModule` for module scripts such as web components or standalone Vue code.
 
 ## Precedence
 
