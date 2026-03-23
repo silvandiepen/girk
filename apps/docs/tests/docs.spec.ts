@@ -63,14 +63,14 @@ const routes: RouteExpectation[] = [
     text: "The fastest way to understand Girk",
   },
   {
-    path: "/release-notes/v1-9-0/",
-    heading: /^1.9.0$/,
-    text: "versioned pages inside the docs site itself",
+    path: "/release-notes/v1-11-0/",
+    heading: /^1.11.0$/,
+    text: "Queued from the current local main branch",
   },
   {
-    path: "/release-notes/v1-8-0/",
-    heading: /^1.8.0$/,
-    text: "projectScriptModule now outputs real module scripts",
+    path: "/release-notes/v1-10-0/",
+    heading: /^1.10.0$/,
+    text: "surfaced more clearly from the docs homepage",
   },
   {
     path: "/how-to/structure/",
