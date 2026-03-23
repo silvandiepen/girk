@@ -1,12 +1,16 @@
 .content {
-  padding: var(--space-l);
+  padding: 0;
+
+  > :first-child {
+    margin-top: 0;
+  }
 
   hr {
-    margin: var(--space-xl) calc(var(--space-xl) * -1);
-    color: var(--primary);
-    background-color: var(--primary);
+    margin: var(--space-xxl) 0;
+    color: var(--color-foreground-10);
+    background-color: var(--color-foreground-10);
     border: none;
-    height: 1px;
+    height: var(--border-width-s);
   }
 
   dl {
@@ -35,7 +39,7 @@
   a {
     text-decoration: none;
     color: inherit;
-    border-bottom: 2px solid var(--primary);
+    border-bottom: var(--border-width-s) solid currentColor;
   }
 
   * {
@@ -44,12 +48,27 @@
   }
 
   p:first-of-type:has(+ p) {
-    font-size: 1.5em;
-    line-height: 1.25;
+    font-size: var(--font-size-lead);
+    line-height: 1.4;
+    max-width: var(--content-lead-width, 42ch);
   }
+
   p {
-    opacity: 0.8;
+    max-width: var(--content-copy-width, 72ch);
+    opacity: 0.78;
   }
+
+  h1 + p,
+  h1 + figure + p {
+    margin-top: var(--content-inline-gap, var(--space-l));
+  }
+
+  h2,
+  h3,
+  h4 {
+    margin-top: var(--space-xl);
+  }
+
   h6 {
     & + h1,
     & + h2,
@@ -62,19 +81,24 @@
 
   // Break Out of content
   img {
-    max-width: 100vw;
-    max-width: calc(100% + var(--space-xl));
-    margin-left: calc(var(--space-l) * -1);
+    max-width: 100%;
+    margin-left: 0;
+    border-radius: 0;
   }
-  h1 {
-    margin: 0 calc(var(--space-l) * -1);
-    @media screen and (max-width:720px){
-      margin: 0 calc(var(--space) * -1);
 
-    }
+  h1 {
+    margin: 0;
   }
+
   pre {
-    margin-left: calc(var(--space) * -1);
-    margin-right: calc(var(--space) * -1);
+    margin-left: 0;
+    margin-right: 0;
+    overflow: auto;
+  }
+
+  blockquote {
+    margin-left: 0;
+    padding-left: var(--space);
+    border-left: var(--border-width-m) solid var(--color-foreground);
   }
 }

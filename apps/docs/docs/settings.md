@@ -4,15 +4,54 @@ tags: documentation
 ---
 # Settings
 
-Girk does not support any settings from the cli. Just to keep it as straightforward as possible.
+Girk keeps CLI configuration minimal. The primary way to configure a project is through frontmatter on Markdown files and an optional project config file in the project root.
 
-But if you do want to change some things in your settings, of course you can.
+## Configuration Sources
 
-You can alter a few settings in your files them self by adding meta data to your .md files.
+Girk reads configuration from:
 
-###### Title
+- frontmatter in Markdown files
+- `girk.config.json`
+- `gieter.config.json`
 
-You can change the title of the file, which will be used in the title and menu by setting the title;
+If the same project-level setting exists in both places, Markdown frontmatter overrides the config file.
+
+## Config File Example
+
+```json
+{
+  "project": {
+    "title": "Acme Docs",
+    "description": "Internal documentation for Acme"
+  },
+  "colors": {
+    "primary": "#111111",
+    "secondary": "#6e6e6e"
+  },
+  "socials": [
+    "https://github.com/acme/docs"
+  ],
+  "noRobots": true
+}
+```
+
+Nested config is flattened internally, so `project.title` becomes `projectTitle` and `colors.primary` becomes a color override.
+
+## Precedence
+
+Use the JSON file for project defaults and shared settings. Use frontmatter when a specific page needs to override the default behavior.
+
+In practice:
+
+- config file defines the default project title, description, colors, socials, and ignore rules
+- page frontmatter defines page titles, dates, tags, archive behavior, and one-off project overrides
+- when both define the same project key, the Markdown value wins
+
+## Common Page Settings
+
+### `title`
+
+Changes the page title used in the document title and navigation.
 
 ```markdown
 ---
@@ -20,19 +59,19 @@ title: My Custom Title
 ---
 ```
 
-###### Date
+### `date`
 
-When adding a date, the date will be added to your file or can be used in the lists. When you want to create a blog with dated posts, the posts will be ordered by date and the date will be displayed. Make sure you use the DD-MM-YYYY format.
+Useful for blog-style archives. Posts with a date are ordered and displayed by date in blog archives.
 
 ```markdown
 ---
-date: 2-12-2020
+date: 2026-03-23
 ---
 ```
 
-###### Hide
+### `hide`
 
-For instance a home file, you might not want to have in the menu's. In that case you can add the `hide: true` to your arguments and the file will be generated, but hidden from the menu.
+Generates the page but keeps it out of the menu.
 
 ```markdown
 ---
@@ -40,12 +79,46 @@ hide: true
 ---
 ```
 
-###### Menu Children
+### `menuChildren`
 
-By default the children of any parent page won't be shown in the menu. But when you add menuChildren to an acrhive, the articles will be displayed as children in the menu
+When added to an archive landing page, the archive children become visible beneath that item in the menu.
 
 ```markdown
 ---
 menuChildren: true
 ---
 ```
+
+### `archive`
+
+Turns a landing page into an archive listing for the pages in that folder.
+
+```markdown
+---
+archive: articles
+---
+```
+
+### `redirect`
+
+Uses a different target URL in menu links and archive links without skipping page generation entirely.
+
+```markdown
+---
+redirect: https://example.com
+---
+```
+
+## Useful Project Settings
+
+- `projectTitle`
+- `projectDescription`
+- `projectLogo`
+- `projectStyle`
+- `projectStyleOverrule`
+- `projectScript`
+- `projectIgnore`
+- `projectGroupTags`
+- `projectCopyFiles`
+
+The [Project Settings](/docs/project-settings/index.html) page explains these project-wide keys in more detail.

@@ -11,8 +11,8 @@
       display: block;
       width: 1.5em;
       height: 1.5em;
-      border-radius: 50%;
-      border: 2px solid var(--foreground-30);
+      border-radius: var(--border-radius-round);
+      border: var(--border-width-m) solid var(--color-foreground-30);
       margin: var(--space-s);
       text-align: center; line-height: 1.5em;
     }
@@ -22,9 +22,9 @@
     height: 0;
     position: absolute;
     &:checked ~ .task-list__label::before{
-        background-color: var(--primary);
-        border-color: var(--primary);
-        color: var(--primary-text);
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
+        color: var(--color-primary-contrast);
         content: "\2713"
     }
   }

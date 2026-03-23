@@ -1,36 +1,34 @@
 @use "sass:color";
 
 pre code {
-  font-size: 0.875em;
+  font-size: var(--font-size-s);
 }
 
 pre[class^="language"] {
   position: relative;
-  border: 1px solid var(--secondary-30);
-  //   color: var(--foreground);
-  //   background-color: var(--secondary-10);
-  background-image: linear-gradient(
-    to right bottom,
-    var(--secondary-10),
-    transparent
-  );
-  color: var(--secondary-10-text);
-  padding: var(--space);
-  border-radius: var(--border-radius);
+  border: var(--border-width-s) solid var(--color-foreground-10);
+  background: color-mix(in srgb, var(--color-background) 96%, var(--color-foreground) 4%);
+  color: var(--color-foreground);
+  padding: var(--code-padding, var(--space));
+  border-radius: var(--border-radius-s);
   overflow: scroll;
+
   &::before {
     content: "";
     display: block;
-    background-color: var(--secondary);
-    color: var(--secondary-text);
+    background-color: transparent;
+    color: inherit;
     position: absolute;
-    right: var(--space);
-    top: 0;
-    padding: var(--space-xs);
+    right: var(--space-s);
+    top: var(--code-label-offset, var(--space-xs));
+    padding: 0;
     line-height: 1;
-    font-size: 0.75em;
-    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    font-size: var(--font-size-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.45;
   }
+
   &.language {
     $languages: (
       "json",
@@ -53,17 +51,13 @@ pre[class^="language"] {
 }
 
 :not(pre) > code {
-  font-size: 0.875em;
-  background-image: linear-gradient(
-    to right bottom,
-    var(--primary-10),
-    var(--primary-30)
-  );
-  border: 1px solid var(--primary-60);
-  color: var(--foreground-10-text);
-  padding: var(--space-xs);
-  border-radius: var(--border-radius);
-  white-space: nowrap;
+  font-size: var(--font-size-s);
+  background: color-mix(in srgb, var(--color-background) 94%, var(--color-foreground) 6%);
+  border: var(--border-width-s) solid var(--color-foreground-10);
+  color: inherit;
+  padding: var(--space-xxs) var(--space-xs);
+  border-radius: var(--border-radius-s);
+  white-space: normal;
 }
 
 /**
@@ -154,88 +148,88 @@ body[color-mode="dark"] {
     opacity: 0.7;
   }
   &.property {
-    color: setLightness(rgb(16, 111, 132), var(--lightness));
+    color: setLightness(rgb(130, 130, 130), var(--lightness));
   }
   &.tag {
-    color: setLightness(#905, var(--lightness));
+    color: setLightness(rgb(85, 85, 85), var(--lightness));
   }
   &.boolean {
-    color: setLightness(#905, var(--lightness));
+    color: setLightness(rgb(85, 85, 85), var(--lightness));
   }
   &.number {
-    color: setLightness(#905, var(--lightness));
+    color: setLightness(rgb(85, 85, 85), var(--lightness));
   }
   &.constant {
-    color: setLightness(#905, var(--lightness));
+    color: setLightness(rgb(85, 85, 85), var(--lightness));
   }
   &.symbol {
-    color: setLightness(#905, var(--lightness));
+    color: setLightness(rgb(85, 85, 85), var(--lightness));
   }
   &.deleted {
-    color: setLightness(#905, var(--lightness));
+    color: setLightness(rgb(85, 85, 85), var(--lightness));
   }
   &.selector {
-    color: setLightness(#690, var(--lightness));
+    color: setLightness(rgb(115, 115, 115), var(--lightness));
   }
   &.attr-name {
-    color: setLightness(#690, var(--lightness));
+    color: setLightness(rgb(115, 115, 115), var(--lightness));
   }
   &.string {
-    color: setLightness(#690, var(--lightness));
+    color: setLightness(rgb(115, 115, 115), var(--lightness));
   }
   &.char {
-    color: setLightness(#690, var(--lightness));
+    color: setLightness(rgb(115, 115, 115), var(--lightness));
   }
   &.builtin {
-    color: setLightness(#690, var(--lightness));
+    color: setLightness(rgb(115, 115, 115), var(--lightness));
   }
   &.inserted {
-    color: setLightness(#690, var(--lightness));
+    color: setLightness(rgb(115, 115, 115), var(--lightness));
   }
   &.operator {
-    color: setLightness(#9a6e3a, var(--lightness));
+    color: setLightness(rgb(95, 95, 95), var(--lightness));
   }
   &.entity {
-    color: setLightness(#9a6e3a, var(--lightness));
+    color: setLightness(rgb(95, 95, 95), var(--lightness));
     cursor: help;
   }
   &.url {
-    color: setLightness(#9a6e3a, var(--lightness));
+    color: setLightness(rgb(95, 95, 95), var(--lightness));
   }
   .language-css {
     &.string {
-      color: setLightness(#9a6e3a, var(--lightness));
+      color: setLightness(rgb(95, 95, 95), var(--lightness));
     }
   }
   .style {
     &.string {
-      color: setLightness(#9a6e3a, var(--lightness));
+      color: setLightness(rgb(95, 95, 95), var(--lightness));
     }
   }
   &.atrule {
-    color: setLightness(#07a, var(--lightness));
+    color: setLightness(rgb(70, 70, 70), var(--lightness));
   }
   &.attr-value {
-    color: setLightness(#07a, var(--lightness));
+    color: setLightness(rgb(70, 70, 70), var(--lightness));
   }
   &.keyword {
-    color: setLightness(#07a, var(--lightness));
+    color: setLightness(rgb(70, 70, 70), var(--lightness));
   }
   &.function {
-    color: setLightness(#dd4a68, var(--lightness));
+    color: setLightness(rgb(55, 55, 55), var(--lightness));
   }
   &.class-name {
-    color: setLightness(#dd4a68, var(--lightness));
+    color: setLightness(rgb(55, 55, 55), var(--lightness));
   }
   &.regex {
-    color: setLightness(#e90, var(--lightness));
+    color: setLightness(rgb(145, 145, 145), var(--lightness));
   }
   &.important {
-    color: setLightness(#e90, var(--lightness));
+    color: setLightness(rgb(145, 145, 145), var(--lightness));
     font-weight: bold;
   }
   &.variable {
-    color: setLightness(#e90, var(--lightness));
+    color: setLightness(rgb(145, 145, 145), var(--lightness));
   }
   &.bold {
     font-weight: bold;

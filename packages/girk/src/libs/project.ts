@@ -23,11 +23,17 @@ const fixProjectTypes = (input: Project): Project => {
 
   Object.keys(input).forEach((key: string) => {
     let value: any;
-    if (input[key] == "false") value = false;
-    else if (input[key] == "true") value = true;
-    else if (!/\r|\n/.exec(input[key]) && input[key].split(",").length > 1)
-      value = input[key].split(",");
-    else value = input[key];
+    const rawValue = input[key];
+
+    if (rawValue === "false" || rawValue === false) value = false;
+    else if (rawValue === "true" || rawValue === true) value = true;
+    else if (
+      typeof rawValue === "string" &&
+      !/\r|\n/.exec(rawValue) &&
+      rawValue.split(",").length > 1
+    )
+      value = rawValue.split(",");
+    else value = rawValue;
 
     fixedProject[key] = value;
   });
@@ -42,17 +48,11 @@ const getProjectConfig = (meta: Meta): Project => {
     if (item.includes("project") && typeof item == "string") {
       const key = camelCase(item.replace("project", ""), { exclude: [":"] });
       if (key == "ignore") {
-        project[key] = [];
-        meta[item]
+        project[key] = meta[item]
           .toString()
           .split(",")
-          .forEach((value) => {
-            value = value.trim();
-            if (value.indexOf(",")) {
-              value = value.split(",");
-            }
-            project.ignore.push(value);
-          });
+          .map((value) => value.trim())
+          .filter(Boolean);
       } else project[key] = meta[item];
     }
   });
@@ -75,7 +75,7 @@ export const getProjectData = async (files: File[]): Promise<Project> => {
   await asyncForEach(files, async (file: File) => {
     const projectMeta = getProjectConfig(file.meta);
     Object.keys(projectMeta).forEach((key) => {
-      if (!project[key]) project[key] = projectMeta[key];
+      project[key] = projectMeta[key];
     });
   });
 

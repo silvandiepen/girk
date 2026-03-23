@@ -4,11 +4,11 @@ tags: documentation
 ---
 # Archives
 
-You can create archives in specific types, archive pages won't be added to the menu and will be displayed in their parent as a list.
+Archives let a folder landing page collect and present its child pages as a generated listing or combined layout.
 
-You can create an archive by creating a folder with a readme.md. An example;
+Create an archive by setting `archive` on a folder landing page such as `blog/README.md`.
 
-`blog/readme.md`
+`blog/README.md`
 
 ```markdown
 ---
@@ -20,13 +20,13 @@ archive: blog
 Here you will find all my blogs
 ```
 
-This will create a blog page. All other `.md` files will be shown as a list on the home blog page.
+All other Markdown files in the same folder become archive children.
 
 ### Archive Types
 
 #### Articles
 
-Articles are dated, they can be all kinds of things. The overview will be tiles with images and the order will be defined by the filenames.
+Articles create a structured overview of child pages. This is a good default for docs indexes and curated lists of related pages.
 
 ```md
 ---
@@ -36,7 +36,7 @@ archive: articles
 
 #### Blog
 
-A list of blogs, will be shown with dates. It will be shown as a list and ordered by their given date.
+Blog archives are date-driven. They are useful for journals, changelogs, and post lists.
 
 ```md
 ---
@@ -46,9 +46,19 @@ archive: blog
 
 #### Sections
 
-When selecting type `sections` all child files will be loaded within the parent as sections. This is to create bigger pages consisting of multiple sections without having to add all the data to one single file.
+When selecting `sections`, all child files are rendered into the parent page as continuous sections. Use this when one long page is easier to manage as separate source files.
 ```markdown
 ---
 archive: sections
 ---
 ```
+
+#### Collection
+
+Collections render child items as a grouped set without the stronger blog-specific date treatment. Use it when you want a grouped output but not a dated article list.
+
+## Archive Notes
+
+- archive children still remain normal pages unless you intentionally hide them
+- `menuChildren: true` makes the child pages visible beneath the archive item in the menu
+- `order` and `date` help control how the children are presented

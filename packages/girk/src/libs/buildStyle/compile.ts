@@ -12,14 +12,26 @@ export const loadStyling = async (path: string): Promise<string> => {
   return data;
 };
 
+const isColorToken = (key: string): boolean => !key.match(/-(h|s|l|a)$/);
+
+const createColorAliases = (data: Record<string, unknown>): string => {
+  const keys = Object.keys(data).filter(isColorToken);
+  const aliases = keys.map((key) => `--color-${key}: var(--${key});`);
+  const contrastAliases = keys
+    .filter((key) => !key.endsWith("-text"))
+    .map((key) => `--color-${key}-contrast: var(--color-${key}-text);`);
+
+  return [...aliases, ...contrastAliases].join("");
+};
+
 export const buildCss = async (colors: ColorData | null) => {
   const stylingPath = join(__dirname, "../../../dist/style/app.css");
 
   const baseColors = {
     dark: "#0a0a0a",
     light: "#ffffff",
-    primary: "rgb(226, 146, 27)",
-    secondary: "rgb(0, 166, 255)",
+    primary: "rgb(26, 26, 26)",
+    secondary: "rgb(118, 118, 118)",
     ...(colors || {}),
   };
 
@@ -38,8 +50,9 @@ export const buildCss = async (colors: ColorData | null) => {
     keepSaturation: true,
   });
 
-  const darkMode = cssVariables({ data: darkData });
-  const lightMode = cssVariables({ data: lightData });
+  const darkMode = cssVariables({ data: darkData }) + createColorAliases(darkData);
+  const lightMode =
+    cssVariables({ data: lightData }) + createColorAliases(lightData);
 
   const styleData = await loadStyling(stylingPath);
 

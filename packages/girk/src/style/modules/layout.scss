@@ -1,19 +1,22 @@
-
 main .section .container {
-    max-width: 100%;
-    width: 64ch;
-    margin: auto;
-  }
+  width: min(100%, var(--layout-width));
+  margin: 0 auto;
+  padding: 0 var(--space);
+}
 
-  main .section.archive {
-    background-color: var(--secondary-10);
-  }
-  
-  main .section.archive .container {
+main .section {
+  padding: var(--space-xxl) 0;
+}
 
-    width: 1440px;
-  }
+.content {
+  max-width: var(--content-width);
+}
 
-  .page-container{
-    // min-height: 100svh;
-  }
+main .section.archive .container,
+main .section.tags .container {
+  width: min(100%, var(--layout-width));
+}
+
+.page-container {
+  min-height: 100svh;
+}

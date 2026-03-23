@@ -5,39 +5,54 @@ tags: documentation
 
 # Styling
 
+Girk generates a default stylesheet, but you can layer your own CSS on top of it or replace it entirely.
 
+## Two Styling Hooks
 
+- `projectStyle` adds a stylesheet after the generated default stylesheet
+- `projectStyleOverrule` replaces the default stylesheet completely
 
+## Design Tokens
 
-#### Colors
+The generated stylesheet exposes a token system built around:
 
-In the custom file, you can redefine all the used colors; (`primary, secondary, background, foreground`).
+- `--spacing` and the derived `--space-*` scale
+- `--font-size` and the derived `--font-size-*` scale
+- `--border-radius` and the derived `--border-radius-*` scale
+- `--color-*` variables for project colors, backgrounds, foregrounds, and contrast colors
 
-You can redefine the dark and light color, which will automatically be used through dark and light mode. 
-
-All colors should be defined as the `*-rgb` custom property with just the three rgb values. In this way color can be used throughout all shades of color.
+In most projects, you only need to override those values and a few layout rules.
 
 ```css
 :root {
-  --ol-dark-rgb: 19, 3, 29;
-  --ol-light-rgb: 235, 250, 255;
+  --spacing: 1rem;
+  --font-size: 1rem;
+  --color-primary: #111111;
 }
 ```
 
-#### Sass
+## Custom CSS Example
 
-If you want, you can use a `scss` file for your custom styling, Girk will automatically generate this file and use the outcome as your custom styling. 
+```markdown
+---
+projectStyle: /assets/custom.css
+---
+```
 
-In a scss you can do everything you can do with default `dart-sass` and you get all the options from (themer)[https://themer.sil.mt].
+```css
+body {
+  letter-spacing: -0.01em;
+}
 
-```scss
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=Red+Hat+Display:wght@400;700&display=swap");
-
-:root {
-  --ol-primary-font-family: "Inter";
-  --ol-dark-rgb: #{rgbValues(#111111)};
-  --ol-light-rgb: #{rgbValues(#f7f7f7)};
-  --ol-primary-rgb: #{rgbValues(#ff0000)};
-  --ol-secondary-rgb: #{rgbValues(#00ff00)};
+.header {
+  border-bottom-width: 2px;
 }
 ```
+
+## Sass
+
+If you prefer Sass, point `projectStyle` to a compiled CSS file that is copied into your project assets. Girk itself does not need to understand your Sass source, it only needs the final CSS file it can link in the output.
+
+If you want full visual control, use `projectStyleOverrule` and provide a complete stylesheet instead of layering on top of the generated one.
+
+That split keeps simple projects simple while still allowing full overrides when needed.

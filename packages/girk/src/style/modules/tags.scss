@@ -1,6 +1,6 @@
 .section.tags {
-  background-color: var(--primary-10);
-  padding: var(--space-xl);
+  background-color: color-mix(in srgb, var(--color-background) 94%, var(--color-foreground) 6%);
+  padding: var(--space-xl) 0;
 }
 
 .tag {
@@ -18,17 +18,18 @@
   }
   &__link {
     text-decoration: none;
-    border: 2px solid var(--primary-30);
-
-    border-radius: var(--border-radius);
-    padding: var(--space-xs);
+    border-bottom: var(--border-width-s) solid transparent;
+    padding: var(--tag-padding-y, var(--space-xxs)) 0;
     color: inherit;
-    font-size: 0.875em;
+    font-size: var(--font-size-s);
+
     &::before {
       content: "#";
+      opacity: 0.55;
     }
-    &:hover{
-        background-color: var(--primary-30);
+
+    &:hover {
+      border-bottom-color: currentColor;
     }
   }
 }

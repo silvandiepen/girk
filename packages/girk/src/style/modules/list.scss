@@ -2,41 +2,48 @@
   ol,
   ul:not([class]),
   li:not([class]) {
-    // margin: 0;
     list-style-type: none;
     padding: 0;
   }
 
   ol:not([class]) {
     counter-reset: list;
+
     li {
       position: relative;
       counter-increment: list;
-      padding-left: var(--space);
+      padding-left: var(--list-indent, var(--space-l));
 
       &::before {
         position: absolute;
         left: 0;
-        width: var(--space);
-        content: counter(list)".";
-        opacity: .5;
-      } 
-      &+ li{ margin-top: var(--space)}
+        width: var(--list-marker-width, var(--space));
+        content: counter(list) ".";
+        opacity: 0.45;
+      }
+
+      & + li {
+        margin-top: var(--list-item-gap, var(--space-s));
+      }
     }
   }
+
   ul:not([class]) {
     li {
       position: relative;
-      padding-left: var(--space);
+      padding-left: var(--list-indent, var(--space-l));
 
       &::before {
         position: absolute;
         left: 0;
-        width: var(--space);
-        content:"-";
-        opacity: .5;
-      } 
-      &+ li{ margin-top: var(--space)}
+        width: var(--list-marker-width, var(--space));
+        content: "—";
+        opacity: 0.45;
+      }
+
+      & + li {
+        margin-top: var(--list-item-gap, var(--space-s));
+      }
     }
   }
 }

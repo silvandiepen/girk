@@ -10,11 +10,8 @@ import { asyncForEach, createDir } from "@/libs/utils";
 import { getSVGData } from "./svg";
 
 export const getThumbnail = (file: File): string | null => {
-  const thumb = file.meta.thumb;
+  const thumb = file.meta.thumbnail || file.meta.thumb;
   const image = file.meta.image;
-  // const icon = file.meta.icon;
-
-  // const thumbnail = thumb || image || icon || null;
   const thumbnail = thumb || image || null;
   return thumbnail;
 };

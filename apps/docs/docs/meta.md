@@ -5,22 +5,60 @@ tags: documentation
 
 # Meta
 
-| setting              | default            | description                                                                                                                       |
-| -------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
-| title                | Inherit from h1    | Set the title of a page                                                                                                           |
-| image                | `none`             | Sets the main image for a post or page. Will be used for thumbnail if not thumbnail is defined.                                   |
-| thumbnail            | Inherit from image | Sets the thumbnail image for posts in archive                                                                                     |
-| icon                 |                    | Sets and icon to the item, being used in the menu and archive overview.                                                           |
-| description          | `none`             | Sets the description for a specific page, overrules projectDescription when set                                                   |
-| hide                 | `false`            | hides a page from the menu                                                                                                        |
-| projectTitle         |                    | set the title for the whole website                                                                                               |
-| projectDescription   |                    | set the description for the whole website                                                                                         |
-| projectLogo          |                    | set a logo for in the header                                                                                                      |
-| projectStyle         |                    | Set a custom style (loaded on top of the default)                                                                                 |
-| projectScript        |                    | Set a custom script (loaded in the footer)                                                                                        |
-| projectStyleOverrule |                    | Set a style (instead of the default)                                                                                              |
-| redirect             |                    | Set a link to redirect to                                                                                                         |
-| projectGroupTags     | `false`            | Tags will automatically be merged over the whole project, you can set this to true to create separate tag groups by article group |
-| tags                 |                    | Add tags to a post                                                                                                                |
-| menuChildren         | `false`            | Add the children to the menu item                                                                                                 |
-| order                | `999`              | The menu is being order by the order defined in the setting. The order is also being used in sections or collections.             |
+The table below lists the most useful frontmatter keys for day-to-day work. Most Girk behavior is driven by these keys plus the folder structure.
+
+| setting              | default            | description |
+| -------------------- | ------------------ | ----------- |
+| title                | inherit from `h1`  | Sets the page title used in the menu and document title. |
+| description          | `none`             | Sets the page description and overrides `projectDescription` for that page. |
+| date                 | file creation date | Used for blog-style listings and `<meta name="updated">`. |
+| icon                 | `none`             | Icon shown in menus and archive cards. |
+| image                | `none`             | Main image for the page. Falls back as a thumbnail when no dedicated thumbnail is set. |
+| thumbnail            | inherit from image | Thumbnail image for archive cards. `thumb` is also supported. |
+| tags                 | `none`             | Adds one or more tags to the page. Comma-separated values become arrays automatically. |
+| hide                 | `false`            | Generates the page but removes it from navigation. |
+| order                | `999`              | Controls menu and archive ordering. Lower values appear first. |
+| redirect             | `none`             | Replaces the generated page link in menus and archive cards with an external or internal URL. |
+| menuChildren         | `false`            | On archive landing pages, adds the archive children below the menu item. |
+| archive              | `none`             | Turns a folder landing page into an archive using `articles`, `blog`, `sections`, or `collection`. |
+| archiveTitle         | inherit from page  | Optional heading shown above archive children. |
+| projectTitle         | `none`             | Sets the project title for the entire generated site. |
+| projectDescription   | `none`             | Sets the default site description. |
+| projectLogo          | auto-discovered    | Points to a specific logo file in `media/` or `assets/`. |
+| projectStyle         | `none`             | Adds an extra stylesheet on top of the default generated stylesheet. |
+| projectStyleOverrule | `none`             | Replaces the default stylesheet entirely. |
+| projectScript        | `none`             | Adds one or more custom scripts near the end of the document. |
+| projectIgnore        | `none`             | Comma-separated list of folders or paths to exclude after discovery. |
+| projectGroupTags     | `false`            | Groups tag pages by parent section instead of merging them globally. |
+| projectCopyFiles     | `none`             | Copies extra files or folders into the output asset folder. |
+
+## Parsing Rules
+
+- Frontmatter must appear near the top of the file and be wrapped in `---`.
+- Values containing commas are converted into arrays unless they look like URLs.
+- Keys containing `date` are converted to JavaScript dates automatically.
+- `README.md` and `index.md` are treated as a folder landing page rather than a normal child page.
+
+## Rule Of Thumb
+
+Use page keys for page behavior:
+
+- `title`
+- `description`
+- `date`
+- `tags`
+- `image`
+- `thumbnail`
+- `hide`
+- `redirect`
+- `archive`
+
+Use project keys for site-wide behavior:
+
+- `projectTitle`
+- `projectDescription`
+- `projectLogo`
+- `projectStyle`
+- `projectStyleOverrule`
+- `projectScript`
+- `projectIgnore`

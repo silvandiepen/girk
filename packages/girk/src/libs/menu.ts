@@ -75,9 +75,9 @@ export const generateMenu = async (payload: Payload): Promise<Payload> => {
   menu.forEach((item) => {
     const file = payload.files.find((f) => f.id == item.id);
 
-    if (!!file.meta.archive && file.meta.menuChildren) {
+      if (!!file.meta.archive && file.meta.menuChildren) {
       const children = payload.files
-        .filter((f) => f.parent == file.parent && !f.home)
+        .filter((f) => f.parent == file.name && !f.home)
         .map((c) => ({
           id: c.id,
           name: c.title,
