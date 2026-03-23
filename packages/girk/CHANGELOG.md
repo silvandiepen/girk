@@ -1,3 +1,13 @@
+# [1.8.0](https://github.com/silvandiepen/girk/compare/v1.7.0...v1.8.0) (2026-03-23)
+
+
+### Features
+
+* **Docs:** Document custom CSS, JS, and Vue mounts ([e01f95b](https://github.com/silvandiepen/girk/commit/e01f95b4091a670553fdc636a5ae4ee573c75a81))
+* **Examples:** Add web component and Vue browser examples ([173017a](https://github.com/silvandiepen/girk/commit/173017a0ee0ee7a9e17e97c5920bc70f22794970))
+* **Girk:** Support module scripts in project settings ([cff81ad](https://github.com/silvandiepen/girk/commit/cff81ad745a8e5e0be717975904232ef929083b2))
+* **Platform:** Support Node 20.19+ through 25 ([c82768c](https://github.com/silvandiepen/girk/commit/c82768c7c62d44d8c309e129d237ef9c2c47fd03))
+
 # [1.7.0](https://github.com/silvandiepen/girk/compare/v1.6.0...v1.7.0) (2026-03-23)
 
 
