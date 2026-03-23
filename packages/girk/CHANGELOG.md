@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/silvandiepen/girk/compare/v1.4.0...v1.5.0) (2026-03-23)
+
+
+### Features
+
+* **Deploy:** Restore Worker site deployments ([aafb30e](https://github.com/silvandiepen/girk/commit/aafb30e5012ddccf8f1669e33e701308656ee1f2))
+
 # [1.4.0](https://github.com/silvandiepen/girk/compare/v1.3.0...v1.4.0) (2026-03-23)
 
 
