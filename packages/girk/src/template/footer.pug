@@ -34,8 +34,5 @@ footer.footer
                                     span.socials__text=social.title
 
 if project.script
-    if typeof project.script === "string"
-        script(lang="text/javascript", src=`${project.script}`)        
-    else 
-        each script in project.script
-            script(lang="text/javascript", src=`${script}`)
+    each script in project.script
+        script(lang="text/javascript", src=script.src, type=script.type)

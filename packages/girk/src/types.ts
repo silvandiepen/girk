@@ -14,6 +14,13 @@ export interface Settings {
   config: Arguments;
 }
 
+export type ProjectScriptType = "text/javascript" | "module";
+
+export interface ProjectScriptEntry {
+  src: string;
+  type: ProjectScriptType;
+}
+
 export interface Project {
   logo?: string;
   title?: string;
@@ -22,7 +29,8 @@ export interface Project {
   style?: string;
   styleOverrule?: string;
   language?: Language;
-  script?: string | string[];
+  script?: string | string[] | ProjectScriptEntry[];
+  scriptModule?: string | string[];
   groupTags?: boolean;
   copyFiles?: string | string[];
 }

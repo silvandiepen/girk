@@ -44,4 +44,37 @@ describe("Project settings", () => {
 
     await rm(root, { recursive: true, force: true });
   });
+
+  it("normalizes classic and module project scripts", async () => {
+    const root = await mkdtemp(join(tmpdir(), "girk-project-scripts-"));
+    process.chdir(root);
+
+    await writeFile(
+      join(root, "girk.config.json"),
+      JSON.stringify({
+        project: {
+          script: "/assets/from-config.js",
+          scriptModule: "/assets/from-config-module.js",
+        },
+      })
+    );
+
+    const project = await getProjectData([
+      {
+        meta: {
+          projectScript: "/assets/from-markdown.js",
+          projectScriptModule:
+            "/assets/component-one.js, /assets/component-two.js",
+        },
+      } as any,
+    ]);
+
+    expect(project.script).toEqual([
+      { src: "/assets/from-markdown.js", type: "text/javascript" },
+      { src: "/assets/component-one.js", type: "module" },
+      { src: "/assets/component-two.js", type: "module" },
+    ]);
+
+    await rm(root, { recursive: true, force: true });
+  });
 });
