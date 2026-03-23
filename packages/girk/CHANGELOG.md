@@ -1,3 +1,14 @@
+# [1.12.0](https://github.com/silvandiepen/girk/compare/v1.11.0...v1.12.0) (2026-03-23)
+
+
+### Features
+
+* **Docs:** Expand the npm package README ([b91fbb2](https://github.com/silvandiepen/girk/commit/b91fbb2a54d8c7eebd4cf20f602b0d33230d42d4))
+* **Docs:** Reframe the root README around Girk ([1e04f54](https://github.com/silvandiepen/girk/commit/1e04f54830f0628efd01015a3ef10ac0cc2052b3))
+* **Docs:** Roll queued notes forward to 1.12.0 ([7872fb1](https://github.com/silvandiepen/girk/commit/7872fb1189a97221e2581bd7895a413c3745d632))
+* **Examples:** Simplify the multilang example ([2d66bc3](https://github.com/silvandiepen/girk/commit/2d66bc325e47d79a2c4102644d06fbadc34a10a9))
+* **Theme:** Refine footer layout and control styling ([5b315ac](https://github.com/silvandiepen/girk/commit/5b315ac47445afe5101aa892beb34f067a5cf85c))
+
 # [1.11.0](https://github.com/silvandiepen/girk/compare/v1.10.0...v1.11.0) (2026-03-23)
 
 
