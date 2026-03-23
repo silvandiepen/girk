@@ -19,6 +19,9 @@ Common commands from the repo root:
 - `npm run test:run`
 - `npm run serve:docs`
 
+Node support for this repo is `20.19+`, `22.12+`, and `24` through `25`.
+The default local version in `.nvmrc` stays on `25`, but the package and workspace tooling are expected to run across that broader range.
+
 ## npm Release
 
 `girky` is published from GitHub Actions with `semantic-release`.

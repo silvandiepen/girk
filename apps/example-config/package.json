@@ -2,7 +2,7 @@
   "name": "@girk/example-config",
   "private": true,
   "engines": {
-    "node": ">=25 <26"
+    "node": "^20.19.0 || >=22.12.0 <26"
   },
   "scripts": {
     "build": "rimraf public && node ../../packages/girk/dist/index.js",

@@ -2,6 +2,8 @@
 
 Girk helps you generate simple static websites, docs, and book-like sites from Markdown with almost no setup.
 
+Supported Node versions: `20.19+`, `22.12+`, and `24` through `25`.
+
 ## Usage
 
 ```bash

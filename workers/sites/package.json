@@ -2,6 +2,9 @@
   "name": "@girk/sites-worker",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0 <26"
+  },
   "scripts": {
     "build": "node ../../scripts/build-sites-worker.mjs",
     "deploy": "wrangler deploy",

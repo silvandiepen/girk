@@ -8,6 +8,8 @@ tags: documentation
 
 The fastest way to understand Girk is to run it in a tiny folder of Markdown files.
 
+Use Node `20.19+`, `22.12+`, or any `24`/`25` release.
+
 ## 1. Create A Folder
 
 ```text
