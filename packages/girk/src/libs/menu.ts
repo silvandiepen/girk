@@ -1,6 +1,7 @@
 import { blockLine, blockSettings, blockMid } from "cli-block";
 
 import { getParentFile, makePath } from "@/libs/files";
+import { isSectionsArchiveParent } from "@/libs/archives";
 import { Payload, MenuItem, ArchiveType } from "@/types";
 import { getSVGData } from "@/libs/svg";
 
@@ -75,7 +76,11 @@ export const generateMenu = async (payload: Payload): Promise<Payload> => {
   menu.forEach((item) => {
     const file = payload.files.find((f) => f.id == item.id);
 
-      if (!!file.meta.archive && file.meta.menuChildren) {
+      if (
+        !!file.meta.archive &&
+        file.meta.menuChildren &&
+        !isSectionsArchiveParent(file)
+      ) {
       const children = payload.files
         .filter((f) => f.parent == file.name && !f.home)
         .map((c) => ({

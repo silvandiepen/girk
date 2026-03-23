@@ -1,5 +1,11 @@
 footer.footer 
     .footer__container
+        if menu.length > 0
+            .footer__navigation
+                - const navigationVariant = "footer"
+                - const navigationIdPrefix = "footer-navigation"
+                include navigation.pug
+
         .footer__controls
             if langMenu.length > 1
                 .footer__control

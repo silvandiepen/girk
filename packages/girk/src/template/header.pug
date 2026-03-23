@@ -3,4 +3,6 @@ header.header
         include logo.pug
 
         if menu.length > 0
+            - const navigationVariant = "header"
+            - const navigationIdPrefix = "header-navigation"
             include navigation.pug

@@ -7,6 +7,27 @@ import { getExcerpt } from "@/libs/helpers";
  *  Archives
  */
 
+export const isSectionsArchiveParent = (file: File | undefined): boolean =>
+  !!file?.home && file?.meta?.archive === ArchiveType.SECTIONS;
+
+export const getArchiveParent = (
+  file: File,
+  files: File[]
+): File | undefined =>
+  files.find(
+    (candidate) =>
+      candidate.home &&
+      candidate.name === file.parent &&
+      candidate.language === file.language
+  );
+
+export const isSectionsArchiveChild = (file: File, files: File[]): boolean => {
+  if (file.home) return false;
+
+  const parent = getArchiveParent(file, files);
+  return isSectionsArchiveParent(parent);
+};
+
 export const generateArchives = async (payload: Payload): Promise<Payload> => {
   payload.files = payload.files
 

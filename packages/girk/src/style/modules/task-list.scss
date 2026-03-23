@@ -12,7 +12,8 @@
       width: 1.5em;
       height: 1.5em;
       border-radius: var(--border-radius-round);
-      border: var(--border-width-m) solid var(--color-foreground-30);
+      border: var(--border-width-m) solid
+        color-mix(in srgb, var(--color-foreground) 25%, transparent);
       margin: var(--space-s);
       text-align: center; line-height: 1.5em;
     }

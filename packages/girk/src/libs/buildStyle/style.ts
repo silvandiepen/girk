@@ -1,16 +1,15 @@
-import { ColorData } from "@sil/colorset";
 import { blockMid, blockSettings } from "cli-block";
 import { writeFile } from "fs/promises";
 import { dirname, join } from "path";
 import { createDir } from "@/libs/utils";
 import { Payload, Style } from "../../types";
-import { buildCss } from "./compile";
+import { buildCss, ColorConfig } from "./compile";
 
 export const getConfigColors = (
   settings: Payload["settings"]
-): ColorData | null => {
+): ColorConfig | null => {
   if (!settings.config) return null;
-  const colors: ColorData = {};
+  const colors: ColorConfig = {};
   Object.keys(settings.config).forEach((key: string) => {
     if (!key.startsWith("colors")) return null;
     colors[key.replace("colors", "").toLowerCase()] = settings.config[key];

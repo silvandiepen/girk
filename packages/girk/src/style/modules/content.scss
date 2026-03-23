@@ -7,8 +7,12 @@
 
   hr {
     margin: var(--space-xxl) 0;
-    color: var(--color-foreground-10);
-    background-color: var(--color-foreground-10);
+    color: color-mix(in srgb, var(--color-foreground) 12%, transparent);
+    background-color: color-mix(
+      in srgb,
+      var(--color-foreground) 12%,
+      transparent
+    );
     border: none;
     height: var(--border-width-s);
   }
@@ -55,7 +59,7 @@
 
   p {
     max-width: var(--content-copy-width, 72ch);
-    opacity: 0.78;
+    opacity: 0.9;
   }
 
   h1 + p,

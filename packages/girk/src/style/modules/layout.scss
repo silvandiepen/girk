@@ -10,6 +10,7 @@ main .section {
 
 .content {
   max-width: var(--content-width);
+  margin: 0 auto;
 }
 
 main .section.archive .container,

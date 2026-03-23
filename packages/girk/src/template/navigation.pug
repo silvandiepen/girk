@@ -1,11 +1,67 @@
-mixin renderNavigation(items, level)
-    ul(class=`navigation__list${level > 0 ? ' navigation__list--sub' : ''}`)
-        each item in items
-            li.navigation__item(class= `${item.current ? 'navigation__item--current' : ''}${item.isParent && !item.current ? ' navigation__item--parent' : ''}${item.children && item.children.length ? ' navigation__item--has-children' : ''}`)
-                a.navigation__link(href=item.link)
-                    span.navigation__text= item.name
-                if item.children && item.children.length
-                    +renderNavigation(item.children, level + 1)
+- const navigationRoot = typeof navigationIdPrefix !== "undefined" ? navigationIdPrefix : "navigation"
+- const variant = typeof navigationVariant !== "undefined" ? navigationVariant : "header"
 
-nav.navigation(id="site-navigation")
-    +renderNavigation(menu, 0)
+mixin renderPanelGroups(items, level)
+    ul(class=`navigation__groups navigation__groups--level-${level}`)
+        each item in items
+            - const hasChildren = !!(item.children && item.children.length)
+            li.navigation__group(class=`${hasChildren ? ' navigation__group--branch' : ' navigation__group--leaf'}${item.current ? ' navigation__group--current' : ''}${item.isParent ? ' navigation__group--parent' : ''}`)
+                a.navigation__group-link(
+                    class=hasChildren ? ' navigation__group-link--heading' : ''
+                    href=item.link
+                )= item.name
+                if hasChildren
+                    +renderPanelGroups(item.children, level + 1)
+
+mixin renderHeaderNavigation(items)
+    ul.navigation__list(id=`${navigationRoot}-list`)
+        each item, index in items
+            - const hasChildren = !!(item.children && item.children.length)
+            - const isOpen = false
+            - const panelId = `${navigationRoot}-panel-${index}`
+            li.navigation__item(class=`${item.current ? ' navigation__item--current' : ''}${item.isParent && !item.current ? ' navigation__item--parent' : ''}${hasChildren ? ' navigation__item--has-children' : ''}${isOpen ? ' navigation__item--open' : ''}`)
+                .navigation__entry
+                    a.navigation__link(href=item.link)
+                        span.navigation__text= item.name
+                    if hasChildren
+                        button.navigation__toggle(
+                            type="button"
+                            aria-expanded=`${isOpen ? 'true' : 'false'}`
+                            aria-controls=panelId
+                            aria-haspopup="true"
+                            aria-label=`Toggle ${item.name} submenu`
+                        )
+                if hasChildren
+                    .navigation__panel(id=panelId, hidden=!isOpen)
+                        .navigation__panel-inner
+                            +renderPanelGroups(item.children, 1)
+
+mixin renderFooterTree(items, level)
+    ul(class=`navigation__footer-list navigation__footer-list--level-${level}`)
+        each item in items
+            - const hasChildren = !!(item.children && item.children.length)
+            li.navigation__footer-item(class=`${item.current ? ' navigation__footer-item--current' : ''}${item.isParent ? ' navigation__footer-item--parent' : ''}${hasChildren ? ' navigation__footer-item--branch' : ''}`)
+                a.navigation__footer-link(
+                    class=level === 0 ? ' navigation__footer-link--heading' : ''
+                    href=item.link
+                )= item.name
+                if hasChildren
+                    +renderFooterTree(item.children, level + 1)
+
+if variant === "footer"
+    nav.navigation.navigation--footer
+        +renderFooterTree(menu, 0)
+else
+    - const hasNestedChildren = menu.some((item) => item.children && item.children.length)
+    - const useMobilePanel = menu.length > 2 || hasNestedChildren
+    nav.navigation.navigation--header(class=useMobilePanel ? ' navigation--mobile-panel' : ' navigation--mobile-inline' data-mobile-mode=useMobilePanel ? 'panel' : 'inline')
+        if useMobilePanel
+            button.navigation__mobile-toggle(
+                type="button"
+                aria-expanded="false"
+                aria-controls=`${navigationRoot}-list`
+                aria-label="Toggle navigation menu"
+            )
+                span.navigation__mobile-toggle-icon(aria-hidden="true")
+                span.navigation__mobile-toggle-label Menu
+        +renderHeaderNavigation(menu)

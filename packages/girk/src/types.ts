@@ -150,6 +150,8 @@ export interface buildHtmlArgs {
   language: Language;
   components: string[];
   socials: Social[];
+  relatedPages?: File[];
+  parentPage?: File;
   config: Payload["settings"]["config"];
   has: {
     table: boolean;

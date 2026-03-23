@@ -192,7 +192,11 @@ export const makeLink = (path: string): string => {
 
 export const getParentFile = (child: File, files: File[]): File | undefined => {
   const file = files.find(
-    (f) => f.parent == child.parent && f.home && f.id !== child.id
+    (f) =>
+      f.home &&
+      f.name == child.parent &&
+      f.id !== child.id &&
+      f.language === child.language
   );
 
   return file;

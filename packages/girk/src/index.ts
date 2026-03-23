@@ -7,6 +7,7 @@ import { readFileSync } from "fs";
 import { join } from "path";
 
 import { generateArchives } from "@/libs/archives";
+import { isSectionsArchiveChild } from "@/libs/archives";
 import { generateStyles } from "@/libs/buildStyle/style";
 import { generateFavicon } from "@/libs/favicon";
 import { getFiles } from "@/libs/files";
@@ -156,6 +157,9 @@ export const settingsAndConfig = async (payload: Payload): Promise<Payload> => {
 
 
 export const contentPages = async (payload: Payload): Promise<Payload> => {
+  const shouldCreatePage = (file: File): boolean =>
+    !file.name.startsWith("-") && !isSectionsArchiveChild(file, payload.files);
+
   if (payload.languages.length > 1) {
     // Create Content pages
     await asyncForEach(payload.languages, async (language) => {
@@ -164,7 +168,7 @@ export const contentPages = async (payload: Payload): Promise<Payload> => {
       await asyncForEach(
         payload.files
           .filter((file: File) => file.language == language)
-          .filter((file: File) => !file.name.startsWith("-")), // Don't pages that start with a -
+          .filter((file: File) => shouldCreatePage(file)),
         async (file: File) => await createPage(payload, file)
       );
     });
@@ -172,7 +176,7 @@ export const contentPages = async (payload: Payload): Promise<Payload> => {
     blockMid("Pages");
 
     await asyncForEach(
-      payload.files.filter((file: File) => !file.name.startsWith("-")), // Don't pages that start with a -
+      payload.files.filter((file: File) => shouldCreatePage(file)),
       async (file: File) => await createPage(payload, file)
     );
   }

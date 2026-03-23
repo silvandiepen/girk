@@ -13,6 +13,7 @@ import {
 } from "../types";
 import { getLanguageMenu, getDefaultLanguage } from "../libs/language";
 import { makePath, buildHtml, getParentFile } from "./files";
+import { getExcerpt } from "./helpers";
 
 import { createDir } from "@/libs/utils";
 import kleur from "kleur";
@@ -39,6 +40,40 @@ const hasColors = (file: File) =>
   file.html && !!file.html.match(/#[a-fA-F0-9]{6}|#[a-fA-F0-9]{3}/i);
 
 const hasLanguages = (languages: Language[]) => !!(languages.length > 1);
+
+const getParentPage = (file: File, files: File[]): File | undefined =>
+  files.find(
+    (candidate) =>
+      candidate.home &&
+      candidate.name == file.parent &&
+      candidate.id !== file.id &&
+      candidate.language === file.language
+  );
+
+const getRelatedPages = (file: File, files: File[]): File[] => {
+  if (file.home) return [];
+
+  const parentPage = getParentPage(file, files);
+  if (!parentPage) return [];
+
+  return files
+    .filter(
+      (candidate) =>
+        candidate.parent == file.parent &&
+        candidate.id !== file.id &&
+        !candidate.home &&
+        candidate.language === file.language &&
+        candidate.meta?.hide !== true &&
+        candidate.meta?.hide !== "true"
+    )
+    .map((candidate) => ({
+      ...candidate,
+      link: makePath(candidate),
+      excerpt: getExcerpt(candidate),
+    }))
+    .sort((a, b) => (a.meta?.order || 999) - (b.meta?.order || 999));
+};
+
 const subtitle = (file: File, payload: Payload): string => {
   if (!file.home) {
     const parent = getParentFile(file, payload.files);
@@ -94,6 +129,8 @@ export const buildPage = async (
 
   const menu = payload.menu ? menuStatus(payload.menu) : [];
   const project = getProjectByLanguage(payload.project, currentLanguage);
+  const parentPage = getParentPage(file, payload.files);
+  const relatedPages = getRelatedPages(file, payload.files);
   const favicons = payload.favicons;
   const tags = payload.tags
     ? payload.tags.filter((tag) => tag.parent == file.parent)
@@ -121,7 +158,9 @@ export const buildPage = async (
     language: currentLanguage,
     subtitle: subtitle(file, payload),
     components: [],
-    socials:payload.socials,
+    socials: payload.socials,
+    parentPage,
+    relatedPages,
     config: payload.settings.config,
     has: {
       table: hasTable(file),

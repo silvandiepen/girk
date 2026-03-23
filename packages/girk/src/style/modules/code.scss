@@ -6,7 +6,8 @@ pre code {
 
 pre[class^="language"] {
   position: relative;
-  border: var(--border-width-s) solid var(--color-foreground-10);
+  border: var(--border-width-s) solid
+    color-mix(in srgb, var(--color-foreground) 12%, transparent);
   background: color-mix(in srgb, var(--color-background) 96%, var(--color-foreground) 4%);
   color: var(--color-foreground);
   padding: var(--code-padding, var(--space));
@@ -53,7 +54,8 @@ pre[class^="language"] {
 :not(pre) > code {
   font-size: var(--font-size-s);
   background: color-mix(in srgb, var(--color-background) 94%, var(--color-foreground) 6%);
-  border: var(--border-width-s) solid var(--color-foreground-10);
+  border: var(--border-width-s) solid
+    color-mix(in srgb, var(--color-foreground) 12%, transparent);
   color: inherit;
   padding: var(--space-xxs) var(--space-xs);
   border-radius: var(--border-radius-s);

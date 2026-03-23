@@ -12,6 +12,26 @@ main.main(class=`${meta.type ? 'content--'+ meta.type : ''}`)
                 else 
                     | !{content}  
 
+    if relatedPages && relatedPages.length
+        section.section.section--related
+            div.container
+                div.content
+                    if parentPage
+                        h6= parentPage.title
+                    h2 More Pages
+                ul.archive-grid
+                    each item in relatedPages
+                        li.archive-card
+                            a.archive-card__link(href=`${item.redirect ? item.redirect : item.link}`)
+                                if item.meta.icon
+                                    span.archive-card__media.archive-card__media--icon
+                                        img.archive-card__icon(src=item.meta.icon, alt="")
+                                .archive-card__body
+                                    h3.archive-card__title= item.title
+                                    if item.excerpt
+                                        p.archive-card__excerpt
+                                            | !{item.excerpt}
+
     if archives.length
         include archive.pug
         
