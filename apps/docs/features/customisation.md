@@ -1,10 +1,10 @@
 ---
-title: Styling
+title: Customisation
 icon: /media/icon_style.svg
 tags: documentation
 ---
 
-# Styling
+# Customisation
 
 Girk gives you a default stylesheet, but it does not trap you inside it.
 

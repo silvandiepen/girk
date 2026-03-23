@@ -92,14 +92,14 @@ That becomes:
 
 If you want the shortest path to what changed recently, start with the release notes.
 
-- [Release Notes](/release-notes/index.html) gives you upcoming changes on `main` and versioned summaries for tagged releases.
+- [Release Notes](/release-notes/index.html) gives you versioned summaries for published releases.
 
 ## Explore Girk
 
 - [Features](/features/index.html) explains the main product capabilities.
 - [Examples](/examples/index.html) shows complete projects, live results, and source code.
 - [How to Use](/how-to/index.html) explains how to structure, configure, and ship a project with Girk.
-- [Release Notes](/release-notes/index.html) tracks user-facing changes across versions and upcoming work.
+- [Release Notes](/release-notes/index.html) tracks user-facing changes across published versions.
 
 ## Why It Works Well With AI
 

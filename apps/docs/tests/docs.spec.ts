@@ -33,8 +33,8 @@ const routes: RouteExpectation[] = [
     text: "Page frontmatter is how you shape navigation",
   },
   {
-    path: "/features/styling/",
-    heading: /^Styling$/,
+    path: "/features/customisation/",
+    heading: /^Customisation$/,
     text: "Girk gives you a default stylesheet",
   },
   {
@@ -63,9 +63,14 @@ const routes: RouteExpectation[] = [
     text: "The fastest way to understand Girk",
   },
   {
-    path: "/release-notes/upcoming/",
-    heading: /^Upcoming$/,
-    text: "currently on main",
+    path: "/release-notes/v1-9-0/",
+    heading: /^1.9.0$/,
+    text: "versioned pages inside the docs site itself",
+  },
+  {
+    path: "/release-notes/v1-8-0/",
+    heading: /^1.8.0$/,
+    text: "projectScriptModule now outputs real module scripts",
   },
   {
     path: "/how-to/structure/",
@@ -178,7 +183,7 @@ test.describe("generated docs", () => {
 
     await expect(main.getByRole("link", { name: "Archives", exact: true }).first()).toBeVisible();
     await expect(main.getByRole("link", { name: "Media and Assets", exact: true }).first()).toBeVisible();
-    await expect(main.getByRole("link", { name: "Styling", exact: true }).first()).toBeVisible();
+    await expect(main.getByRole("link", { name: "Customisation", exact: true }).first()).toBeVisible();
     await expect(main.getByRole("link", { name: "Multilingual Content", exact: true }).first()).toBeVisible();
     await expect(main.getByRole("link", { name: "Page Metadata", exact: true }).first()).toBeVisible();
   });
@@ -188,7 +193,7 @@ test.describe("generated docs", () => {
 
     await expect(page.locator("main").getByRole("heading", { name: "More Pages" })).toBeVisible();
     await expect(page.locator("main").getByRole("link", { name: "Media and Assets" })).toBeVisible();
-    await expect(page.locator("main").getByRole("link", { name: "Styling" })).toBeVisible();
+    await expect(page.locator("main").getByRole("link", { name: "Customisation" })).toBeVisible();
   });
 
   test("examples page links to the deployed example sites", async ({ page }) => {

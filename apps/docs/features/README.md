@@ -21,7 +21,7 @@ Girk is useful because it gives you practical site-building features without for
 
 - [Archives](/features/archives/index.html)
 - [Media and Assets](/features/media/index.html)
-- [Styling](/features/styling/index.html)
+- [Customisation](/features/customisation/index.html)
 - [Multilingual Content](/features/multilingual/index.html)
 - [Page Metadata](/features/metadata/index.html)
 
