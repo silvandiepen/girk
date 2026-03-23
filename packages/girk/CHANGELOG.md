@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/silvandiepen/girk/compare/v1.8.0...v1.9.0) (2026-03-23)
+
+
+### Features
+
+* **Docs:** Add versioned release notes to the docs ([c0c9125](https://github.com/silvandiepen/girk/commit/c0c91251cb473a9d2c2227620d698bddff8ed9e1))
+
 # [1.8.0](https://github.com/silvandiepen/girk/compare/v1.7.0...v1.8.0) (2026-03-23)
 
 
