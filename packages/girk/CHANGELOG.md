@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/silvandiepen/girk/compare/v1.3.0...v1.4.0) (2026-03-23)
+
+
+### Features
+
+* **Release:** Handle gist fetch failures gracefully ([87ac45d](https://github.com/silvandiepen/girk/commit/87ac45dd3aff20f9ba6bdb43280c8ba10eb65e6b))
+
 # [1.3.0](https://github.com/silvandiepen/girk/compare/v1.2.0...v1.3.0) (2026-03-22)
 
 
