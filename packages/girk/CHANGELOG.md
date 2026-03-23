@@ -1,3 +1,17 @@
+# [1.7.0](https://github.com/silvandiepen/girk/compare/v1.6.0...v1.7.0) (2026-03-23)
+
+
+### Bug Fixes
+
+* **Workspace:** Sync lockfile for example apps ([8c590fe](https://github.com/silvandiepen/girk/commit/8c590fe7fa6642eb416d6871b05452ed2ee6b93e))
+
+
+### Features
+
+* **Documentation:** Reframe docs as product guidance ([9afb523](https://github.com/silvandiepen/girk/commit/9afb5238e1116fb2ec446c4abd31d10faa30e287))
+* **Examples:** Add focused example projects and hosting ([1fce869](https://github.com/silvandiepen/girk/commit/1fce869ff05654545f920b2ca0ffa83d65600b5c))
+* **Generator:** Simplify theme and navigation system ([df4b576](https://github.com/silvandiepen/girk/commit/df4b576f73535ee35ab064e0f1686031eca671e9))
+
 # [1.6.0](https://github.com/silvandiepen/girk/compare/v1.5.0...v1.6.0) (2026-03-23)
 
 
