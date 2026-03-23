@@ -1,0 +1,16 @@
+:root {
+  --spacing: 1rem;
+  --font-size: 1.05rem;
+}
+
+body {
+  letter-spacing: -0.01em;
+}
+
+.header {
+  border-bottom-width: 2px;
+}
+
+.content p {
+  max-width: 66ch;
+}

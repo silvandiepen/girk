@@ -20,6 +20,18 @@ const sites = [
     key: "example-multilang",
     source: join(rootDir, "apps/example-multilang/public"),
   },
+  {
+    key: "example-config",
+    source: join(rootDir, "apps/example-config/public"),
+  },
+  {
+    key: "example-blog",
+    source: join(rootDir, "apps/example-blog/public"),
+  },
+  {
+    key: "example-recipes",
+    source: join(rootDir, "apps/example-recipes/public"),
+  },
 ];
 
 const ensureExists = async (path, label) => {

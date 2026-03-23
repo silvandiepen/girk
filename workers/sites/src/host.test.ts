@@ -12,11 +12,20 @@ describe("getSiteKey", () => {
   it("maps example subdomains to the matching site bundle", () => {
     expect(getSiteKey("example-basic.girk.dev")).toBe("example-basic");
     expect(getSiteKey("example-multilang.girk.dev")).toBe("example-multilang");
+    expect(getSiteKey("example-config.girk.dev")).toBe("example-config");
+    expect(getSiteKey("example-blog.girk.dev")).toBe("example-blog");
+    expect(getSiteKey("example-recipes.girk.dev")).toBe("example-recipes");
   });
 
   it("uses the preview query parameter for localhost development", () => {
     expect(getSiteKey("localhost", new URLSearchParams("site=example-basic"))).toBe(
       "example-basic"
+    );
+    expect(getSiteKey("localhost", new URLSearchParams("site=example-config"))).toBe(
+      "example-config"
+    );
+    expect(getSiteKey("localhost", new URLSearchParams("site=example-recipes"))).toBe(
+      "example-recipes"
     );
   });
 

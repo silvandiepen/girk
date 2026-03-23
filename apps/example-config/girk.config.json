@@ -1,0 +1,17 @@
+{
+  "project": {
+    "title": "Girk Config",
+    "description": "A sample project driven by girk.config.json",
+    "logo": "/assets/logo.svg",
+    "style": "/assets/site.css"
+  },
+  "colors": {
+    "primary": "gray",
+    "secondary": "beige",
+    "background": "light",
+    "foreground": "dark"
+  },
+  "socials": [
+    "https://github.com/silvandiepen/girk/tree/master/apps/example-config"
+  ]
+}

@@ -6,10 +6,18 @@ const subdomainSites: Record<string, SiteKey> = {
   docs: "docs",
   "example-basic": "example-basic",
   "example-multilang": "example-multilang",
+  "example-config": "example-config",
+  "example-blog": "example-blog",
+  "example-recipes": "example-recipes",
 };
 
 export const isSiteKey = (value: string | null): value is SiteKey =>
-  value === "docs" || value === "example-basic" || value === "example-multilang";
+  value === "docs" ||
+  value === "example-basic" ||
+  value === "example-multilang" ||
+  value === "example-config" ||
+  value === "example-blog" ||
+  value === "example-recipes";
 
 export const getSiteKey = (hostname: string, searchParams = new URLSearchParams()): SiteKey | null => {
   const normalizedHost = hostname.split(":")[0].toLowerCase();
