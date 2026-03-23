@@ -124,6 +124,9 @@ test.describe("generated docs", () => {
     await expect(
       page.getByRole("banner").getByRole("link", { name: "Release Notes" })
     ).toHaveCount(0);
+    await expect(
+      page.locator("main").getByRole("link", { name: "Release Notes" }).first()
+    ).toBeVisible();
 
     await page.getByRole("banner").getByRole("link", { name: "Features" }).click();
     await page.getByRole("banner").getByRole("link", { name: "Features" }).click();

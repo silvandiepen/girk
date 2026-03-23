@@ -88,6 +88,12 @@ That becomes:
 - you want a small setup that AI can reason about correctly
 - you want to ship documentation or marketing content fast
 
+## Stay Up To Date
+
+If you want the shortest path to what changed recently, start with the release notes.
+
+- [Release Notes](/release-notes/index.html) gives you upcoming changes on `main` and versioned summaries for tagged releases.
+
 ## Explore Girk
 
 - [Features](/features/index.html) explains the main product capabilities.

@@ -19,3 +19,4 @@ These notes describe the changes currently on `main` that will land in the next 
 
 - Supported Node versions are now documented and enforced as `20.19+`, `22.12+`, and `24` through `25`.
 - CI now verifies the repo across Node `20`, `22`, `24`, and `25`.
+- The docs homepage and how-to landing page now link to release notes directly so the section stays easy to find without adding it to the global navigation.
