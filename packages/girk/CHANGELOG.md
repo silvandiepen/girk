@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/silvandiepen/girk/compare/v1.5.0...v1.6.0) (2026-03-23)
+
+
+### Features
+
+* **Documentation:** Simplify generator theme and rewrite docs ([d34be2d](https://github.com/silvandiepen/girk/commit/d34be2d2f7e520f07b76b3a8b220bbb5c70ef0de))
+
 # [1.5.0](https://github.com/silvandiepen/girk/compare/v1.4.0...v1.5.0) (2026-03-23)
 
 
