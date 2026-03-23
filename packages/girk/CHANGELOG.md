@@ -1,3 +1,16 @@
+# [1.11.0](https://github.com/silvandiepen/girk/compare/v1.10.0...v1.11.0) (2026-03-23)
+
+
+### Features
+
+* **Docs:** Rename styling to customisation ([8bb2195](https://github.com/silvandiepen/girk/commit/8bb219546c3ad9578af360df464f94abbc516f3c))
+* **Docs:** Track current and next release notes ([f9716e9](https://github.com/silvandiepen/girk/commit/f9716e96bf7461c3f61edce9ae93ad145f0e0766))
+* **Footer:** Tighten footer and submenu layout ([6b820f9](https://github.com/silvandiepen/girk/commit/6b820f948da9d2393daa6d23151ae18492c474d9))
+* **Navigation:** Compact submenu and unify nav states ([3b5cbb2](https://github.com/silvandiepen/girk/commit/3b5cbb263f1502419cbf9b64e12938d0bb44a498))
+* **Navigation:** Fit submenu width to its content ([46aafaa](https://github.com/silvandiepen/girk/commit/46aafaa5d338cef4fc822eaf6fc331631a33dd84))
+* **Navigation:** Fix root active state handling ([ccff039](https://github.com/silvandiepen/girk/commit/ccff039840d92e2c012007c978be4dc1710a6ade))
+* **Theme:** Refine navigation and footer presentation ([69e5dc3](https://github.com/silvandiepen/girk/commit/69e5dc3b5f6210184d54210de044ed32d7b7cdea))
+
 # [1.10.0](https://github.com/silvandiepen/girk/compare/v1.9.0...v1.10.0) (2026-03-23)
 
 
