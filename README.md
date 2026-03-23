@@ -53,15 +53,18 @@ Relevant commands:
 - `npm run cf:build:sites`
 - `npm run deploy:sites`
 
-Deployment should be handled by Cloudflare Workers Builds, not GitHub Actions.
+Deployment is handled by GitHub Actions.
 
-Recommended Cloudflare setup:
+Workflow configuration:
+
+- Workflow: `.github/workflows/deploy-sites.yml`
+- Branch: `main`
+- Trigger paths: docs, examples, Worker code, shared package code, and build scripts
+- Required GitHub secret: `CLOUDFLARE_API_TOKEN`
+
+Cloudflare requirements:
 
 - Worker: `girk-sites`
-- Git provider: GitHub
-- Repository: `silvandiepen/girk`
-- Production branch: `main`
-- Build root directory: `/`
-- Build command: `npm run cf:build:sites`
+- Routes: `girk.dev/*`, `www.girk.dev/*`, `example-basic.girk.dev/*`, `example-multilang.girk.dev/*`
 
-This keeps npm publishing in GitHub Actions, while Cloudflare deploys the Worker directly from commits to `main` without storing Cloudflare API keys in GitHub.
+This keeps npm publishing and site deployment in GitHub Actions, so pushes to `main` update the package and the public Worker from the same repository state.
