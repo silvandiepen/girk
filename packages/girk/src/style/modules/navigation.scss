@@ -225,7 +225,7 @@
     left: 0;
     right: auto;
     z-index: 20;
-    width: max-content;
+    width: fit-content;
     min-width: min(17rem, calc(100vw - (var(--space) * 2)));
     max-width: min(28rem, calc(100vw - (var(--space) * 2)));
     border-radius: var(--border-radius-l);
@@ -250,7 +250,7 @@
     width: max-content;
     max-width: 100%;
     margin: 0;
-    padding: calc(var(--space-xxs) + 0.2rem) calc(var(--space-xs) + 0.2rem);
+    padding: calc(var(--space-xs) + 0.2rem);
   }
 
   .navigation__groups--level-1 {
