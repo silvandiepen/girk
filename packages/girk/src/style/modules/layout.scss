@@ -19,5 +19,11 @@ main .section.tags .container {
 }
 
 .page-container {
-  min-height: 100svh;
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex: 1 0 auto;
 }

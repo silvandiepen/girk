@@ -117,6 +117,7 @@
 }
 
 .color-mode-toggle {
+  --switch-segment-height: calc(var(--space) * 1.7);
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -129,11 +130,7 @@
   cursor: pointer;
   font: inherit;
   opacity: 1;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
-
-  &:hover {
-    background: color-mix(in srgb, var(--color-foreground) 22%, var(--color-background));
-  }
+  transition: box-shadow 0.2s ease;
 
   &:focus-visible {
     outline: none;
@@ -144,14 +141,22 @@
   &__option {
     position: relative;
     z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     min-width: 3rem;
     padding: 0 var(--space-xs);
+    min-height: var(--switch-segment-height);
     font-size: var(--font-size-s);
     font-weight: 600;
-    line-height: 1.8;
+    line-height: 1.2;
     text-align: center;
     color: color-mix(in srgb, var(--color-foreground) 68%, transparent);
-    transition: color 0.2s ease;
+    transition: color 0.2s ease, background-color 0.2s ease;
+  }
+
+  &__option:hover {
+    color: var(--color-foreground);
   }
 
   &__track {
@@ -165,11 +170,7 @@
   &__thumb {
     grid-column: 1;
     border-radius: var(--border-radius-s);
-    background: color-mix(
-      in srgb,
-      var(--color-secondary) 34%,
-      var(--color-background)
-    );
+    background: var(--color-background);
     box-shadow: 0 0.2rem 0.75rem color-mix(in srgb, var(--color-foreground) 18%, transparent);
     transition: transform 0.2s ease, background-color 0.2s ease;
   }

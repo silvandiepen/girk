@@ -16,7 +16,6 @@ footer.footer
                 .footer__controls
                     if langMenu.length > 1
                         .footer__control
-                            span.footer__label Language
                             ul.language
                                 each language in langMenu
                                     li.language__item(class= `${language.active ? 'language__item--active' : ''}`)

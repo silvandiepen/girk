@@ -156,6 +156,31 @@ test.describe("generated docs", () => {
     ).toBeVisible();
   });
 
+  test("navigation submenus size to their content", async ({ page }) => {
+    await page.goto("/examples/");
+
+    const toggle = page
+      .getByRole("banner")
+      .getByRole("button", { name: "Toggle How to Use submenu" });
+    const panelId = await toggle.getAttribute("aria-controls");
+
+    expect(panelId).toBeTruthy();
+
+    await toggle.click();
+
+    const panel = page.locator(`#${panelId}`);
+    const inner = panel.locator(".navigation__panel-inner");
+
+    await expect(panel).toBeVisible();
+
+    const [panelBox, innerBox] = await Promise.all([panel.boundingBox(), inner.boundingBox()]);
+
+    expect(panelBox).toBeTruthy();
+    expect(innerBox).toBeTruthy();
+    expect(Math.abs((panelBox?.width ?? 0) - (innerBox?.width ?? 0))).toBeLessThan(24);
+    expect(panelBox?.width ?? 0).toBeLessThan(380);
+  });
+
   test("footer exposes the main navigation links", async ({ page }) => {
     await page.goto("/features/");
 
