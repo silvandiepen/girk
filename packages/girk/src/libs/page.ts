@@ -19,15 +19,22 @@ import { createDir } from "@/libs/utils";
 import kleur from "kleur";
 import { getThumbnail } from "./media";
 
-const simplifyUrl = (url: string): string => url.replace("/index.html", "");
+const simplifyUrl = (url: string): string => url.replace("/index.html", "") || "/";
 
 const isActiveMenu = (link: string, current: string): boolean =>
   simplifyUrl(link) == simplifyUrl(current);
 
-const isActiveMenuParent = (link: string, current: string): boolean =>
-  simplifyUrl(current).includes(simplifyUrl(link)) &&
-  simplifyUrl(current) !== "" &&
-  simplifyUrl(link) !== "";
+export const isActiveMenuParent = (link: string, current: string): boolean => {
+  const normalizedLink = simplifyUrl(link);
+  const normalizedCurrent = simplifyUrl(current);
+
+  if (normalizedLink === "/" || normalizedCurrent === "/") return false;
+
+  return (
+    normalizedCurrent.startsWith(`${normalizedLink}/`) &&
+    normalizedCurrent !== normalizedLink
+  );
+};
 
 const hasTable = (file: File) => file.html && file.html.includes("<table>");
 

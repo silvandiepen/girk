@@ -78,7 +78,11 @@
 
   &__item:hover > &__entry > &__link,
   &__item:focus-within > &__entry > &__link {
-    color: color-mix(in srgb, var(--color-primary) 82%, var(--color-foreground));
+    color: color-mix(
+      in srgb,
+      var(--color-secondary),
+      var(--color-foreground) 50%
+    );
   }
 
   &__item--current > &__entry,
@@ -93,7 +97,11 @@
   &__item--parent > &__entry > &__link,
   &__item--open > &__entry > &__link {
     opacity: 1;
-    color: color-mix(in srgb, var(--color-primary) 88%, var(--color-foreground));
+    color: color-mix(
+      in srgb,
+      var(--color-secondary),
+      var(--color-foreground) 50%
+    );
   }
 
   &__toggle {
