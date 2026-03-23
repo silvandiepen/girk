@@ -1,49 +1,67 @@
 ---
 projectTitle: Girk
-projectDescription: Minimal static sites from Markdown with routes, archives, tags, media, and multilingual pages.
+projectDescription: Generate pragmatic static sites from Markdown, files, and a small set of settings.
 projectGroupTags: true
 hide: true
 ---
 
 # Girk
 
-Girk is a Markdown-first static site generator. It turns a folder tree into a deployable site in `public/` without asking you to define routes, components, or a CMS model first.
+Markdown-first static sites without the sprawl.
 
-## Quick Start
+Girk turns a plain folder of Markdown, media, and a small JSON config into a static site you can deploy anywhere.
+
+## Why Girk
+
+Most static site workflows get harder as soon as the content grows. Girk goes the other direction: the file tree stays the project model, Markdown stays the source of truth, and the generated site stays easy to host.
+
+## What You Build With It
+
+- documentation sites
+- product and marketing sites
+- handbooks and knowledge bases
+- blogs, journals, and archive-driven sections
+- multilingual content trees
+
+## What You Get
+
+- the file tree is the route model
+- Markdown stays the source of truth
+- frontmatter handles page behavior without extra tooling
+- `girk.config.json` keeps shared project defaults in one place
+- the output is static HTML, CSS, and assets
+
+## Why Teams Choose It
+
+- content stays readable in Git
+- structure is obvious without learning a framework
+- design can be changed without replacing the content workflow
+- AI tools can understand the project model quickly
+- the generated output is portable and deployment-friendly
+
+## Start In One Command
 
 ```bash
 npx girky
 ```
 
-Run that command inside any folder that contains Markdown files. Girk scans the project, derives routes from the file structure, copies assets, generates HTML, and writes the output to `public/`.
+Run that in a folder that contains Markdown files. Girk scans the project, derives routes from the structure, applies frontmatter and config, and writes the generated site to `public/`.
 
-## Mental Model
+## How It Works
 
-- every `.md` file is a page candidate
-- `README.md` and `index.md` become the landing page for their folder
-- folders become URL segments
-- frontmatter controls page behavior and project behavior
-- `media/` and `assets/` are copied into the generated site
-- a root `girk.config.json` can provide project defaults
+1. create a content tree with Markdown files
+2. add frontmatter or config only where needed
+3. run the generator
+4. deploy the generated `public/` folder
 
-## What Girk Handles
-
-- flat pages and nested documentation trees
-- article, blog, collection, and section-style archives
-- copied media and assets
-- language variants through filename suffixes like `README:nl.md`
-- project-level settings from frontmatter or `girk.config.json`
-- tags, redirects, custom styles, and custom scripts
-
-## Minimal Example
+## Minimal Project
 
 ```text
 my-site/
   README.md
-  about.md
-  docs/
+  features/
     README.md
-    getting-started.md
+    archives.md
   media/
     logo.svg
 ```
@@ -51,17 +69,37 @@ my-site/
 That becomes:
 
 - `/`
-- `/about/`
-- `/docs/`
-- `/docs/getting-started/`
-- copied media under the generated output
+- `/features/`
+- `/features/archives/`
 
-## Read Next
+## Core Features
 
-- [Project Structure](/docs/structure/index.html) for the route and folder rules
-- [Generation Flow](/docs/generation/index.html) for the build pipeline
-- [Settings](/docs/settings/index.html) for config precedence and JSON config
-- [Meta](/docs/meta/index.html) for the important frontmatter keys
-- [AI Usage](/docs/ai/index.html) for briefing an AI to create or maintain a Girk project
+- generated pages from Markdown
+- archive layouts for grouped content
+- copied media and assets
+- multilingual support
+- theme variables and styling hooks
+- route and menu control through frontmatter
 
-The docs site source lives in [`apps/docs`](https://github.com/silvandiepen/girk/tree/master/apps/docs), and the package source lives in [`packages/girk`](https://github.com/silvandiepen/girk/tree/master/packages/girk).
+## Good Fit If
+
+- you want a content-first site without a CMS
+- you want route structure to come from folders instead of config files
+- you want a small setup that AI can reason about correctly
+- you want to ship documentation or marketing content fast
+
+## Explore Girk
+
+- [Features](/features/index.html) explains the main product capabilities.
+- [Examples](/examples/index.html) shows complete projects, live results, and source code.
+- [How to Use](/how-to/index.html) explains how to structure, configure, and ship a project with Girk.
+
+## Why It Works Well With AI
+
+Girk is easy for AI tools to understand because:
+
+- the file tree is the route model
+- the Markdown files are the content model
+- frontmatter and config are the behavior model
+
+That makes it much easier to ask an AI to generate or maintain a Girk project without introducing a second abstraction layer.

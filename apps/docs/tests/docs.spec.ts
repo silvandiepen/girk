@@ -10,77 +10,72 @@ const routes: RouteExpectation[] = [
   {
     path: "/",
     heading: /^Girk$/,
-    text: "Girk is a Markdown-first static site generator.",
+    text: "Markdown-first static sites without the sprawl.",
   },
   {
-    path: "/about/",
-    heading: /^About$/,
-    text: "the files are the project model",
+    path: "/features/",
+    heading: /^Features$/,
+    text: "practical site-building features",
   },
   {
-    path: "/docs/",
-    heading: /^Documentation$/,
-    text: "It derives the site directly from those files",
-  },
-  {
-    path: "/docs/archive/",
+    path: "/features/archives/",
     heading: /^Archives$/,
-    text: "Archives let a folder landing page collect and present its child pages",
+    text: "turn a folder landing page into a generated overview",
   },
   {
-    path: "/docs/media/",
+    path: "/features/media/",
     heading: /^Media and Assets$/,
-    text: "Girk copies those folders into the generated site",
+    text: "copies your static files into the generated site",
   },
   {
-    path: "/docs/meta/",
-    heading: /^Meta$/,
-    text: "Most Girk behavior is driven by these keys",
+    path: "/features/metadata/",
+    heading: /^Page Metadata$/,
+    text: "Page frontmatter is how you shape navigation",
   },
   {
-    path: "/docs/partials/",
-    heading: /^Partials$/,
-    text: "Files starting with `-` are skipped during standalone page generation",
-  },
-  {
-    path: "/docs/project-settings/",
-    heading: /^Project Settings$/,
-    text: "Project settings can be declared in any Markdown file",
-  },
-  {
-    path: "/docs/settings/",
-    heading: /^Settings$/,
-    text: "Girk keeps CLI configuration minimal",
-  },
-  {
-    path: "/docs/styling/",
+    path: "/features/styling/",
     heading: /^Styling$/,
-    text: "The generated stylesheet exposes a token system",
+    text: "Girk gives you a default stylesheet",
   },
   {
-    path: "/docs/examples/",
+    path: "/features/multilingual/",
+    heading: /^Multilingual Content$/,
+    text: "supports multilingual content with filename suffixes",
+  },
+  {
+    path: "/examples/",
     heading: /^Examples$/,
-    text: "example-basic.girk.dev",
+    text: "These are complete Girk projects you can inspect",
   },
   {
-    path: "/docs/structure/",
-    heading: /^Project Structure$/,
-    text: "Girk derives routes from folders and filenames.",
+    path: "/how-to/",
+    heading: /^How to Use$/,
+    text: "the practical path is",
   },
   {
-    path: "/docs/generation/",
-    heading: /^Generation Flow$/,
-    text: "Girk follows a predictable pipeline.",
+    path: "/how-to/getting-started/",
+    heading: /^Getting Started$/,
+    text: "The fastest way to understand Girk",
   },
   {
-    path: "/docs/ai/",
-    heading: /^AI Usage$/,
-    text: "Girk works well with AI because the project model is explicit and file-based",
+    path: "/how-to/structure/",
+    heading: /^Structure a Project$/,
+    text: "Girk gets its routes from the file tree",
   },
   {
-    path: "/docs/kitchensink/",
-    heading: /^Header 123$/,
-    text: "This is an example link.",
+    path: "/how-to/configuration/",
+    heading: /^Configure a Project$/,
+    text: "Use frontmatter for page-specific behavior",
+  },
+  {
+    path: "/how-to/page-settings/",
+    heading: /^Use Page Settings$/,
+    text: "Page frontmatter is where you control titles",
+  },
+  {
+    path: "/how-to/ai/",
+    heading: /^AI Reference$/,
+    text: "This page is written to be fed to an AI assistant",
   },
 ];
 
@@ -90,10 +85,14 @@ test.describe("generated docs", () => {
     await expect(page).toHaveTitle(/^Girk$/);
 
     await page.goto("/about/");
-    await expect(page).toHaveTitle(/^About \| Girk$/);
+    await expect(page).toHaveURL(/\/(?:index\.html)?$/);
+    await expect(page).toHaveTitle(/^Girk$/);
 
-    await page.goto("/docs/");
-    await expect(page).toHaveTitle(/^Documentation \| Girk$/);
+    await page.goto("/features/");
+    await expect(page).toHaveTitle(/^Features \| Girk$/);
+
+    await page.goto("/examples/");
+    await expect(page).toHaveTitle(/^Examples \| Girk$/);
   });
 
   for (const route of routes) {
@@ -109,29 +108,68 @@ test.describe("generated docs", () => {
   test("navigation links stay reachable from the homepage", async ({ page }) => {
     await page.goto("/");
 
-    await page.getByRole("banner").getByRole("link", { name: "Documentation" }).click();
-    await expect(page).toHaveURL(/\/docs(?:\/|\/index\.html)?$/);
-    await expect(page.getByRole("heading", { level: 1, name: "Documentation" })).toBeVisible();
+    await page.getByRole("banner").getByRole("link", { name: "Features" }).click();
+    await page.getByRole("banner").getByRole("link", { name: "Features" }).click();
+    await expect(page).toHaveURL(/\/features(?:\/|\/index\.html)?$/);
+    await expect(page.getByRole("heading", { level: 1, name: "Features" })).toBeVisible();
 
     await page.getByRole("banner").getByRole("link", { name: "About" }).click();
-    await expect(page).toHaveURL(/\/about(?:\/|\/index\.html)?$/);
-    await expect(page.getByRole("heading", { level: 1, name: "About" })).toBeVisible();
+    await expect(page).toHaveURL(/\/(?:index\.html)?$/);
+    await expect(page.getByRole("heading", { level: 1, name: "Girk" })).toBeVisible();
   });
 
-  test("docs landing page exposes child docs as visible links", async ({ page }) => {
-    await page.goto("/docs/");
+  test("navigation submenus can be opened from the header", async ({ page }) => {
+    await page.goto("/");
 
-    await expect(page.getByRole("link", { name: "Archives" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Project Structure" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Generation Flow" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "AI Usage" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Examples" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Media and Assets" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Project Settings" })).toBeVisible();
+    await page
+      .getByRole("banner")
+      .getByRole("button", { name: "Toggle Features submenu" })
+      .click();
+
+    await expect(
+      page.getByRole("banner").getByRole("link", { name: "Archives" })
+    ).toBeVisible();
+  });
+
+  test("footer exposes the main navigation links", async ({ page }) => {
+    await page.goto("/features/");
+
+    await expect(
+      page.getByRole("contentinfo").getByRole("link", { name: "Features" })
+    ).toBeVisible();
+    await expect(
+      page.getByRole("contentinfo").getByRole("link", { name: "About" })
+    ).toBeVisible();
+    await expect(
+      page.getByRole("contentinfo").getByRole("link", { name: "How to Use" })
+    ).toBeVisible();
+    await expect(
+      page.getByRole("contentinfo").getByRole("link", { name: "Examples" })
+    ).toBeVisible();
+  });
+
+  test("features landing page exposes child feature pages as visible links", async ({ page }) => {
+    await page.goto("/features/");
+
+    const main = page.locator("main");
+
+    await expect(main.getByRole("link", { name: "Archives", exact: true }).first()).toBeVisible();
+    await expect(main.getByRole("link", { name: "Media and Assets", exact: true }).first()).toBeVisible();
+    await expect(main.getByRole("link", { name: "Styling", exact: true }).first()).toBeVisible();
+    await expect(main.getByRole("link", { name: "Multilingual Content", exact: true }).first()).toBeVisible();
+    await expect(main.getByRole("link", { name: "Page Metadata", exact: true }).first()).toBeVisible();
+  });
+
+  test("child pages expose related sibling pages below the content", async ({ page }) => {
+    await page.goto("/features/archives/");
+
+    await expect(page.locator("main").getByRole("heading", { name: "More Pages" })).toBeVisible();
+    await expect(page.locator("main").getByRole("link", { name: "Media and Assets" })).toBeVisible();
+    await expect(page.locator("main").getByRole("link", { name: "Styling" })).toBeVisible();
   });
 
   test("examples page links to the deployed example sites", async ({ page }) => {
-    await page.goto("/docs/examples/");
+    await page.goto("/examples/");
 
     await expect(
       page.getByRole("link", { name: "example-basic.girk.dev" })
@@ -139,5 +177,24 @@ test.describe("generated docs", () => {
     await expect(
       page.getByRole("link", { name: "example-multilang.girk.dev" })
     ).toHaveAttribute("href", "https://example-multilang.girk.dev/");
+    await expect(
+      page.getByRole("link", { name: "example-config.girk.dev" })
+    ).toHaveAttribute("href", "https://example-config.girk.dev/");
+    await expect(
+      page.getByRole("link", { name: "example-blog.girk.dev" })
+    ).toHaveAttribute("href", "https://example-blog.girk.dev/");
+    await expect(
+      page.getByRole("link", { name: "example-recipes.girk.dev" })
+    ).toHaveAttribute("href", "https://example-recipes.girk.dev/");
+  });
+
+  test("examples page shows the example sections on one page", async ({ page }) => {
+    await page.goto("/examples/");
+
+    await expect(page.getByRole("heading", { level: 2, name: "Example Basic" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: "Example Multilang" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: "Example Config" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: "Example Blog" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: "Example Recipes" })).toBeVisible();
   });
 });

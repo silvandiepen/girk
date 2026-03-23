@@ -1,5 +1,15 @@
-<svg viewBox="0 0 180 40" xmlns="http://www.w3.org/2000/svg">
-  <rect x="1" y="5" width="30" height="30" rx="6" fill="none" stroke="currentColor" stroke-width="2"/>
-  <path d="M20 15h-8v10h8v-4h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="42" y="28" font-size="24" font-weight="700" letter-spacing="5" fill="currentColor">GIRK</text>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150.14 44.55">
+  <rect x="40.5" y="4.27" width="9" height="36" />
+  <rect x="51.75" y="-6.98" width="9" height="31.5" transform="translate(47.48 65.02) rotate(-90)" />
+  <rect x="51.75" y="20.02" width="9" height="31.5" transform="translate(20.48 92.02) rotate(-90)" />
+  <rect x="76.5" y="17.77" width="9" height="22.5" transform="translate(162 58.05) rotate(180)" />
+  <rect x="76.5" y="4.05" width="9" height="9.23" transform="translate(162 17.32) rotate(180)" />
+  <rect x="96.75" y="-2.7" width="9" height="22.5" transform="translate(109.8 -92.7) rotate(90)" />
+  <rect x="90" y="4.27" width="9" height="36" transform="translate(189 44.55) rotate(180)" />
+  <rect x="117" y="4.27" width="9" height="36" transform="translate(243 44.55) rotate(180)" />
+  <rect x="131.32" y="-1.43" width="9" height="31.5" transform="translate(221.73 120.48) rotate(-135)" />
+  <rect x="131.32" y="14.48" width="9" height="31.5" transform="translate(18.41 104.89) rotate(-45)" />
+  <rect x="63" y="17.77" width="9" height="22.5" transform="translate(135 58.05) rotate(180)" />
+  <path d="M31.5,40.05H4.5c-2.49,0-2.5-2.01-2.5-4.5h0c0-2.49.01-4.5,2.5-4.5h27" style="fill: none; stroke: var(--color-primary, currentColor); stroke-linecap: square; stroke-miterlimit: 10; stroke-width: 4px;"/>
+  <path d="M2,35.55V8.55h0c0-2.49.01-4.5,2.5-4.5h27v27c-2.49,0-4.5,2.01-4.5,4.5s2.01,4.5,4.5,4.5" style="fill: none; stroke: var(--color-primary, currentColor);  stroke-linecap: square; stroke-miterlimit: 10; stroke-width: 4px;"/>
 </svg>
