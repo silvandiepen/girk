@@ -13,7 +13,6 @@ This example shows how Girk handles multilingual content without introducing a s
 - language switching in the generated site
 - translated page content with filename suffixes
 - language-specific project titles
-- a full stylesheet override
 
 ### Links
 

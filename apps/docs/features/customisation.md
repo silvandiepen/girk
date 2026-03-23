@@ -63,11 +63,9 @@ Girk does not compile Vue for you. You still need to ship browser-ready files in
 ## Live Examples
 
 - [example-basic.girk.dev](https://example-basic.girk.dev/) layers custom CSS on top of the generated stylesheet and shows both a native custom element and a Vue-mounted block
-- [example-multilang.girk.dev](https://example-multilang.girk.dev/) replaces the default stylesheet entirely
 - [example-config.girk.dev](https://example-config.girk.dev/) uses config-driven color roles
 
 ## Source Examples
 
 - [`apps/example-basic`](https://github.com/silvandiepen/girk/tree/main/apps/example-basic)
-- [`apps/example-multilang`](https://github.com/silvandiepen/girk/tree/main/apps/example-multilang)
 - [`apps/example-config`](https://github.com/silvandiepen/girk/tree/main/apps/example-config)

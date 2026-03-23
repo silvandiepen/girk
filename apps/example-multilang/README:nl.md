@@ -1,9 +1,7 @@
 ---
-projectTitle: Girk Multilang
-projectTitle:nl: Girk Meertalig
+projectTitle: Multilang Example
+projectTitle:nl: Meertalig Voorbeeld
 projectDescription: Een meertalige voorbeeldsite voor Girk.
-projectStyleOverrule: /assets/minimal.css
-projectLogo: /assets/logo.svg
 ---
 
 # Start

@@ -63,19 +63,19 @@ test("example-basic builds a feature-rich sample site", async () => {
   assert.match(copied, /book-like projects/);
 });
 
-test("example-multilang builds translated routes and style overrules", async () => {
+test("example-multilang builds translated routes with the shared default theme", async () => {
   run(["run", "build", "-w", "@girk/example-multilang"]);
 
   const home = await read("apps/example-multilang/public/index.html");
   const dutchHome = await read("apps/example-multilang/public/nl/index.html");
   const aboutNl = await read("apps/example-multilang/public/nl/about/index.html");
 
-  assert.match(home, /Girk Multilang/);
-  assert.match(home, /\/assets\/minimal\.css/);
-  assert.doesNotMatch(home, /\/style\/app\.css/);
+  assert.match(home, /Multilang Example/);
+  assert.match(home, /\/style\/app\.css/);
+  assert.doesNotMatch(home, /\/assets\/minimal\.css/);
   assert.match(home, /data-code="en"/);
   assert.match(home, /data-code="nl"/);
-  assert.match(dutchHome, /Girk Meertalig/);
+  assert.match(dutchHome, /Meertalig Voorbeeld/);
   assert.match(dutchHome, /Dit is de Nederlandse homepage/);
   assert.match(aboutNl, /Deze pagina controleert/);
 });
