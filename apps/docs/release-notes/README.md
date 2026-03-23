@@ -19,6 +19,7 @@ Use it when you want the practical summary of a release instead of the raw commi
 
 ## Read The Latest
 
+- [1.13.0](/release-notes/v1-13-0/index.html)
 - [1.12.0](/release-notes/v1-12-0/index.html)
 - [1.11.0](/release-notes/v1-11-0/index.html)
 - [1.10.0](/release-notes/v1-10-0/index.html)
