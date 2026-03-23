@@ -114,12 +114,20 @@ test("example-recipes builds checklist-driven recipe pages", async () => {
 
   const home = await read("apps/example-recipes/public/index.html");
   const recipes = await read("apps/example-recipes/public/recipes/index.html");
-  const orzo = await read("apps/example-recipes/public/recipes/one-pan-tomato-orzo/index.html");
+  const breakfast = await read("apps/example-recipes/public/recipes/breakfast/index.html");
+  const bolognese = await read(
+    "apps/example-recipes/public/recipes/pasta/spaghetti-bolognese/index.html"
+  );
 
   assert.match(home, /Girk Recipes/);
-  assert.match(recipes, /One-Pan Tomato Orzo/);
-  assert.match(recipes, /Crispy Chickpea Wraps/);
-  assert.match(orzo, /task-list/);
-  assert.match(orzo, /Ingredients/);
-  assert.match(orzo, /Steps/);
+  assert.match(recipes, /Breakfast/);
+  assert.match(recipes, /Soups/);
+  assert.match(recipes, /Dessert/);
+  assert.match(breakfast, /Buttermilk Pancakes/);
+  assert.match(breakfast, /French Toast with Cinnamon Sugar/);
+  assert.match(bolognese, /task-list/);
+  assert.match(bolognese, /Ingredients/);
+  assert.match(bolognese, /Method/);
+  assert.match(bolognese, /Notes/);
+  assert.match(bolognese, /\/assets\/spaghetti-bolognese\.svg/);
 });
