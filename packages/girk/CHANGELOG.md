@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/silvandiepen/girk/compare/v1.9.0...v1.10.0) (2026-03-23)
+
+
+### Features
+
+* **Docs:** Surface release notes in docs entry points ([9a5f281](https://github.com/silvandiepen/girk/commit/9a5f2817f89b6bb7ced9dfcd4f0a316d56ea5e72))
+
 # [1.9.0](https://github.com/silvandiepen/girk/compare/v1.8.0...v1.9.0) (2026-03-23)
 
 
