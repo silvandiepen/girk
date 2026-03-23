@@ -37,7 +37,8 @@ const filterHomePage = (payload: Payload, item: MenuItem) => {
 export const generateMenu = async (payload: Payload): Promise<Payload> => {
   let menu: MenuItem[] = payload.files
     .map((file) => {
-      let active = file.meta.hide !== "true" || !file.meta.hide;
+      const isHidden = file.meta.hide === true || file.meta.hide === "true";
+      let active = !isHidden;
 
       const relativePath = file.path.replace(process.cwd(), "");
       const pathGroup = relativePath.split("/");
@@ -47,7 +48,7 @@ export const generateMenu = async (payload: Payload): Promise<Payload> => {
       if (depth > 0) active = false;
 
       // Index in first depth can also be in menu
-      if (depth === 1 && file.home) active = true;
+      if (depth === 1 && file.home) active = !isHidden;
 
       const parent = getParentFile(file, payload.files);
 
@@ -87,7 +88,7 @@ export const generateMenu = async (payload: Payload): Promise<Payload> => {
           id: c.id,
           name: c.title,
           link: makePath(c),
-          active: c.meta.hide !== true || !c.meta.hide,
+          active: c.meta.hide !== true && c.meta.hide !== "true",
           language: c.language,
           icon: c.meta.icon,
           order: c.meta.order || 999,

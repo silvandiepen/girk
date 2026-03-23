@@ -53,9 +53,19 @@ const routes: RouteExpectation[] = [
     text: "the practical path is",
   },
   {
+    path: "/release-notes/",
+    heading: /^Release Notes$/,
+    text: "tracks what changed in Girk",
+  },
+  {
     path: "/how-to/getting-started/",
     heading: /^Getting Started$/,
     text: "The fastest way to understand Girk",
+  },
+  {
+    path: "/release-notes/upcoming/",
+    heading: /^Upcoming$/,
+    text: "currently on main",
   },
   {
     path: "/how-to/structure/",
@@ -93,6 +103,9 @@ test.describe("generated docs", () => {
 
     await page.goto("/examples/");
     await expect(page).toHaveTitle(/^Examples \| Girk$/);
+
+    await page.goto("/release-notes/");
+    await expect(page).toHaveTitle(/^Release Notes \| Girk$/);
   });
 
   for (const route of routes) {
@@ -107,6 +120,10 @@ test.describe("generated docs", () => {
 
   test("navigation links stay reachable from the homepage", async ({ page }) => {
     await page.goto("/");
+
+    await expect(
+      page.getByRole("banner").getByRole("link", { name: "Release Notes" })
+    ).toHaveCount(0);
 
     await page.getByRole("banner").getByRole("link", { name: "Features" }).click();
     await page.getByRole("banner").getByRole("link", { name: "Features" }).click();
@@ -146,6 +163,9 @@ test.describe("generated docs", () => {
     await expect(
       page.getByRole("contentinfo").getByRole("link", { name: "Examples" })
     ).toBeVisible();
+    await expect(
+      page.getByRole("contentinfo").getByRole("link", { name: "Release Notes" })
+    ).toHaveCount(0);
   });
 
   test("features landing page exposes child feature pages as visible links", async ({ page }) => {

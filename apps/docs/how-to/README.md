@@ -23,5 +23,6 @@ If you want to build a site with Girk, the practical path is:
 - [AI Reference](/how-to/ai/index.html)
 
 Use the [Examples](/examples/index.html) section when you want to see complete projects, live output, and source side by side.
+Use [Release Notes](/release-notes/index.html) when you want the short version-by-version summary of what changed.
 
 This section is written to help you build with Girk, not to explain the internals of the generator.

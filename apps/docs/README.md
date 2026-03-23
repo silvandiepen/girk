@@ -93,6 +93,7 @@ That becomes:
 - [Features](/features/index.html) explains the main product capabilities.
 - [Examples](/examples/index.html) shows complete projects, live results, and source code.
 - [How to Use](/how-to/index.html) explains how to structure, configure, and ship a project with Girk.
+- [Release Notes](/release-notes/index.html) tracks user-facing changes across versions and upcoming work.
 
 ## Why It Works Well With AI
 
