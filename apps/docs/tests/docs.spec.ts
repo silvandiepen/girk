@@ -63,14 +63,14 @@ const routes: RouteExpectation[] = [
     text: "The fastest way to understand Girk",
   },
   {
-    path: "/release-notes/v1-11-0/",
-    heading: /^1.11.0$/,
+    path: "/release-notes/v1-12-0/",
+    heading: /^1.12.0$/,
     text: "Queued from the current local main branch",
   },
   {
-    path: "/release-notes/v1-10-0/",
-    heading: /^1.10.0$/,
-    text: "surfaced more clearly from the docs homepage",
+    path: "/release-notes/v1-11-0/",
+    heading: /^1.11.0$/,
+    text: "Styling feature page is now Customisation",
   },
   {
     path: "/how-to/structure/",
