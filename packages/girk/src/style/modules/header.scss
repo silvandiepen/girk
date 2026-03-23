@@ -5,6 +5,7 @@
   background-color: var(--color-background);
   border-bottom: var(--border-width-s) solid
     color-mix(in srgb, var(--color-foreground) 12%, transparent);
+  backdrop-filter: blur(18px);
 
   &__container {
     position: static;

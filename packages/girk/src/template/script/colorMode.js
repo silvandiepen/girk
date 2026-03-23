@@ -5,10 +5,12 @@ const updateColorModeToggle = () => {
   const toggle = document.querySelector("[data-color-mode-toggle]");
   if (!toggle) return;
 
-  const value = toggle.querySelector(".color-mode-toggle__value");
-  if (!value) return;
-
-  value.textContent = localMode === "dark" ? "Dark" : "Light";
+  toggle.dataset.colorMode = localMode;
+  toggle.setAttribute("aria-pressed", localMode === "dark" ? "true" : "false");
+  toggle.setAttribute(
+    "aria-label",
+    localMode === "dark" ? "Switch to light mode" : "Switch to dark mode"
+  );
 };
 
 const initColorMode = () => {

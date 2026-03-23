@@ -26,4 +26,25 @@
       }
     }
   }
+
+  img {
+    display: block;
+    width: auto;
+    max-width: var(--logo-max-width, calc(var(--space) * 6.5));
+    height: var(--logo-height, calc(var(--space) * 1.1));
+  }
+
+  &--footer.logo--image-only {
+    svg {
+      max-width: var(--footer-logo-max-width, calc(var(--space) * 6));
+      height: var(--footer-logo-height, calc(var(--space) * 1.05));
+      opacity: 0.92;
+    }
+  }
+
+  &--footer img {
+    max-width: var(--footer-logo-max-width, calc(var(--space) * 6));
+    height: var(--footer-logo-height, calc(var(--space) * 1.05));
+    opacity: 0.92;
+  }
 }

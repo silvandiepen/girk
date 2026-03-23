@@ -159,6 +159,9 @@ test.describe("generated docs", () => {
   test("footer exposes the main navigation links", async ({ page }) => {
     await page.goto("/features/");
 
+    await expect(page.getByRole("contentinfo").locator(".logo")).toBeVisible();
+    await expect(page.getByRole("contentinfo").locator("[data-color-mode-toggle]")).toBeVisible();
+
     await expect(
       page.getByRole("contentinfo").getByRole("link", { name: "Features" })
     ).toBeVisible();

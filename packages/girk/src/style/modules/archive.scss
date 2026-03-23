@@ -39,16 +39,17 @@
 
 .archive-card {
   margin: 0;
-  border: var(--border-width-s) solid
-    color-mix(in srgb, var(--color-foreground) 12%, transparent);
-  border-radius: var(--border-radius-s);
+  border: none;
+  border-radius: var(--border-radius-m);
   background-color: color-mix(
     in srgb,
-    var(--color-background) 94%,
-    var(--color-foreground) 6%
+    var(--color-background) 95%,
+    var(--color-foreground) 5%
   );
   overflow: hidden;
-  transition: border-color 0.2s ease, background-color 0.2s ease,
+  box-shadow: 0 var(--space-xxs) var(--space-s)
+    color-mix(in srgb, var(--color-foreground) 8%, transparent);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease,
     transform 0.2s ease;
 
   &__link {
@@ -64,12 +65,13 @@
   }
 
   &:hover {
-    border-color: color-mix(in srgb, var(--color-foreground) 20%, transparent);
     background-color: color-mix(
       in srgb,
-      var(--color-background) 90%,
-      var(--color-foreground) 10%
+      var(--color-background) 92%,
+      var(--color-foreground) 8%
     );
+    box-shadow: 0 var(--space-xs) calc(var(--space) * 1.1)
+      color-mix(in srgb, var(--color-foreground) 12%, transparent);
     transform: translateY(calc(var(--space-xxs) * -1));
   }
 
@@ -83,15 +85,13 @@
     justify-content: center;
 
     &--icon {
-      width: var(--card-icon-size, var(--space-xxl));
-      height: var(--card-icon-size, var(--space-xxl));
-      border: var(--border-width-s) solid
-        color-mix(in srgb, var(--color-foreground) 12%, transparent);
-      border-radius: var(--border-radius-s);
+      width: var(--card-icon-size, calc(var(--space) * 4.5));
+      height: var(--card-icon-size, calc(var(--space) * 4.5));
+      border-radius: var(--border-radius-m);
       background-color: color-mix(
         in srgb,
-        var(--color-foreground) 4%,
-        transparent
+        var(--color-secondary) 18%,
+        transparent 82%
       );
     }
 
@@ -103,10 +103,10 @@
   }
 
   &__icon {
-    width: var(--card-icon-inner-size, var(--space-s));
-    height: var(--card-icon-inner-size, var(--space-s));
+    width: var(--card-icon-inner-size, calc(var(--space) * 1.6));
+    height: var(--card-icon-inner-size, calc(var(--space) * 1.6));
     object-fit: contain;
-    opacity: 0.85;
+    opacity: 1;
   }
 
   &__image {

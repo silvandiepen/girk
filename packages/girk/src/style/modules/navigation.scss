@@ -14,9 +14,11 @@
     display: inline-flex;
     align-items: center;
     gap: var(--space-xs);
-    padding: var(--space-xxs) var(--space-s);
-    border-radius: var(--border-radius-s);
-    transition: background-color 0.2s ease, color 0.2s ease;
+    min-height: calc(var(--space) * 1.9);
+    padding: calc(var(--space-xxs) + 0.1rem) calc(var(--space-s) + 0.1rem);
+    border-radius: var(--border-radius-round);
+    transition: background-color 0.2s ease, color 0.2s ease,
+      box-shadow 0.2s ease;
   }
 
   &__mobile-toggle {
@@ -57,7 +59,7 @@
     padding: 0;
     color: inherit;
     text-decoration: none;
-    opacity: 0.86;
+    opacity: 0.92;
     font-weight: 600;
     line-height: 1.2;
     transition: color 0.2s ease, opacity 0.2s ease;
@@ -69,18 +71,29 @@
 
   &__item:hover > &__entry,
   &__item:focus-within > &__entry {
-    background-color: color-mix(in srgb, var(--color-secondary), transparent 88%);
+    background-color: color-mix(in srgb, var(--color-secondary) 28%, transparent);
+    box-shadow: inset 0 0 0 var(--border-width-s)
+      color-mix(in srgb, var(--color-secondary) 44%, transparent);
+  }
+
+  &__item:hover > &__entry > &__link,
+  &__item:focus-within > &__entry > &__link {
+    color: color-mix(in srgb, var(--color-primary) 82%, var(--color-foreground));
   }
 
   &__item--current > &__entry,
   &__item--parent > &__entry,
   &__item--open > &__entry {
-    background-color: color-mix(in srgb, var(--color-secondary), transparent 75%);
+    background-color: color-mix(in srgb, var(--color-primary) 18%, transparent);
+    box-shadow: inset 0 0 0 var(--border-width-s)
+      color-mix(in srgb, var(--color-primary) 32%, transparent);
   }
 
   &__item--current > &__entry > &__link,
-  &__item--parent > &__entry > &__link {
+  &__item--parent > &__entry > &__link,
+  &__item--open > &__entry > &__link {
     opacity: 1;
+    color: color-mix(in srgb, var(--color-primary) 88%, var(--color-foreground));
   }
 
   &__toggle {
@@ -196,24 +209,33 @@
     margin-top: var(--space-xs);
     border: var(--border-width-s) solid
       color-mix(in srgb, var(--color-foreground) 12%, transparent);
-    background-color: var(--color-background);
+    border-radius: var(--border-radius-l);
+    background-color: color-mix(in srgb, var(--color-background) 94%, var(--color-foreground) 6%);
     box-shadow: 0 var(--space-xs) var(--space)
       color-mix(in srgb, var(--color-foreground) 8%, transparent);
+    opacity: 0;
+    transform: translateY(calc(var(--space-xs) * -1)) scale(0.98);
+    transform-origin: top right;
+    transition: opacity 0.18s ease, transform 0.18s ease;
   }
 
-  .navigation__item--open > .navigation__panel {
+  .navigation__item--open > .navigation__panel,
+  .navigation__panel[data-state="open"],
+  .navigation__panel[data-state="opening"] {
     display: block;
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 
   .navigation__panel-inner {
     width: 100%;
     margin: 0;
-    padding: var(--space) var(--space);
+    padding: var(--space-s) var(--space);
   }
 
   .navigation__groups--level-1 {
     grid-template-columns: repeat(2, minmax(14rem, 1fr));
-    gap: var(--space);
+    gap: var(--space-s);
   }
 
   .navigation__groups--level-2,
@@ -229,13 +251,17 @@
       width: 100%;
       margin-top: 0;
       border: none;
+      border-radius: 0;
       box-shadow: none;
       background: transparent;
+      opacity: 1;
+      transform: none;
+      transition: none;
     }
 
     .navigation__panel-inner {
       width: 100%;
-      padding: var(--space-xs) 0 0 var(--space);
+      padding: var(--space-xs) 0 0 calc(var(--space) * 0.9);
     }
 
     .navigation__groups--level-1 {
@@ -268,7 +294,7 @@
       flex-direction: column;
       align-items: stretch;
       gap: var(--space-xxs);
-      border-radius: var(--border-radius-s);
+      border-radius: var(--border-radius-l);
     }
 
     &.navigation--mobile-open .navigation__list {
@@ -282,7 +308,7 @@
     .navigation__entry {
       width: 100%;
       justify-content: space-between;
-      padding: var(--space-xs) var(--space-s);
+      padding: var(--space-xs) calc(var(--space-s) + 0.1rem);
     }
 
     .navigation__link {

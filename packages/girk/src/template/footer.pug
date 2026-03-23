@@ -6,6 +6,11 @@ footer.footer
                 - const navigationIdPrefix = "footer-navigation"
                 include navigation.pug
 
+        if logo
+            .footer__brand
+                - const logoVariant = "footer"
+                include logo.pug
+
         .footer__controls
             if langMenu.length > 1
                 .footer__control
@@ -18,8 +23,11 @@ footer.footer
 
             .footer__control
                 span.footer__label Theme
-                button.color-mode-toggle(type="button", data-color-mode-toggle, aria-label="Toggle color mode")
-                    span.color-mode-toggle__value
+                button.color-mode-toggle(type="button", data-color-mode-toggle, aria-label="Toggle color mode", aria-pressed="false")
+                    span.color-mode-toggle__option Light
+                    span.color-mode-toggle__track(aria-hidden="true")
+                        span.color-mode-toggle__thumb
+                    span.color-mode-toggle__option Dark
 
         if config.copyright || (socials && socials.length)
             .footer__meta

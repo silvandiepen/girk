@@ -3,6 +3,15 @@ const getNavigationItems = (navigation) =>
     navigation.querySelectorAll(".navigation__item--has-children")
   );
 
+const PANEL_TRANSITION_MS = 180;
+
+const clearPanelHideTimer = (submenu) => {
+  if (!submenu || typeof submenu.__hideTimer !== "number") return;
+
+  window.clearTimeout(submenu.__hideTimer);
+  delete submenu.__hideTimer;
+};
+
 const setNavigationItemOpen = (item, isOpen) => {
   const toggle = item.querySelector(".navigation__toggle");
   const controls = toggle?.getAttribute("aria-controls");
@@ -10,9 +19,27 @@ const setNavigationItemOpen = (item, isOpen) => {
 
   if (!toggle || !submenu) return;
 
+  clearPanelHideTimer(submenu);
   item.classList.toggle("navigation__item--open", isOpen);
   toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-  submenu.hidden = !isOpen;
+
+  if (isOpen) {
+    submenu.hidden = false;
+    submenu.setAttribute("data-state", "opening");
+
+    window.requestAnimationFrame(() => {
+      submenu.setAttribute("data-state", "open");
+    });
+
+    return;
+  }
+
+  submenu.setAttribute("data-state", "closing");
+  submenu.__hideTimer = window.setTimeout(() => {
+    submenu.hidden = true;
+    submenu.setAttribute("data-state", "closed");
+    clearPanelHideTimer(submenu);
+  }, PANEL_TRANSITION_MS);
 };
 
 const closeSiblingItems = (item) => {

@@ -9,7 +9,7 @@
     padding: var(--footer-padding-y, var(--space-xl))
       var(--footer-padding-x, var(--space));
     display: grid;
-    gap: var(--space-s);
+    gap: var(--space);
   }
 
   &__navigation {
@@ -25,6 +25,11 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--footer-gap, var(--space-l));
+  }
+
+  &__brand {
+    display: flex;
+    align-items: center;
   }
 
   &__control {
@@ -87,27 +92,65 @@
 }
 
 .color-mode-toggle {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: var(--color-mode-gap, var(--space-xxs));
-  padding: 0;
+  gap: var(--color-mode-gap, var(--space-xs));
+  padding: var(--space-xxs);
   border: none;
-  background: transparent;
+  border-radius: var(--border-radius-round);
+  background: color-mix(in srgb, var(--color-foreground) 8%, transparent);
   color: inherit;
   cursor: pointer;
   font: inherit;
-  opacity: 0.75;
-
-  &__value {
-    font-size: var(--font-size);
-    border-bottom: var(--border-width-s) solid transparent;
-  }
+  opacity: 1;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
-    opacity: 1;
+    background: color-mix(in srgb, var(--color-foreground) 12%, transparent);
   }
 
-  &:hover &__value {
-    border-bottom-color: var(--color-primary);
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 var(--border-width-m)
+      color-mix(in srgb, var(--color-primary) 24%, transparent);
+  }
+
+  &__option {
+    position: relative;
+    z-index: 1;
+    min-width: 3rem;
+    padding: 0 var(--space-xs);
+    font-size: var(--font-size-s);
+    font-weight: 600;
+    line-height: 1.8;
+    text-align: center;
+    color: color-mix(in srgb, var(--color-foreground) 54%, transparent);
+    transition: color 0.2s ease;
+  }
+
+  &__track {
+    position: absolute;
+    inset: var(--space-xxs);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    pointer-events: none;
+  }
+
+  &__thumb {
+    grid-column: 1;
+    border-radius: var(--border-radius-round);
+    background: color-mix(in srgb, var(--color-background) 88%, var(--color-foreground) 12%);
+    box-shadow: 0 0.2rem 0.75rem color-mix(in srgb, var(--color-foreground) 12%, transparent);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  &[data-color-mode="light"] &__option:first-child,
+  &[data-color-mode="dark"] &__option:last-child {
+    color: var(--color-foreground);
+  }
+
+  &[data-color-mode="dark"] &__thumb {
+    transform: translateX(100%);
   }
 }
