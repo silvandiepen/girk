@@ -2,7 +2,8 @@
 - const variant = typeof navigationVariant !== "undefined" ? navigationVariant : "header"
 
 mixin renderPanelGroups(items, level)
-    ul(class=`navigation__groups navigation__groups--level-${level}`)
+    - const compactColumnClass = level === 1 && items.length <= 5 ? ' navigation__groups--compact-column' : ''
+    ul(class=`navigation__groups navigation__groups--level-${level}${compactColumnClass}`)
         each item in items
             - const hasChildren = !!(item.children && item.children.length)
             li.navigation__group(class=`${hasChildren ? ' navigation__group--branch' : ' navigation__group--leaf'}${item.current ? ' navigation__group--current' : ''}${item.isParent ? ' navigation__group--parent' : ''}`)

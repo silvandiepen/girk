@@ -19,12 +19,25 @@
       color-mix(in srgb, var(--color-foreground) 12%, transparent);
   }
 
+  &__bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space);
+    flex-wrap: wrap;
+  }
+
+  &__bar--end {
+    justify-content: flex-end;
+  }
+
   &__controls {
     display: flex;
-    justify-content: flex-start;
+    justify-content: flex-end;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--footer-gap, var(--space-l));
+    gap: var(--footer-gap, var(--space));
+    margin-left: auto;
   }
 
   &__brand {
@@ -35,7 +48,7 @@
   &__control {
     display: flex;
     align-items: center;
-    gap: var(--space-s);
+    gap: var(--space-xs);
   }
 
   &__label {
@@ -67,6 +80,18 @@
 
   .navigation__list {
     justify-content: flex-start;
+  }
+
+  @media screen and (max-width: 720px) {
+    &__bar {
+      align-items: flex-start;
+    }
+
+    &__controls {
+      width: 100%;
+      justify-content: space-between;
+      margin-left: 0;
+    }
   }
 }
 

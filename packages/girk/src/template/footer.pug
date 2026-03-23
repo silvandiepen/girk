@@ -6,28 +6,38 @@ footer.footer
                 - const navigationIdPrefix = "footer-navigation"
                 include navigation.pug
 
-        if logo
-            .footer__brand
-                - const logoVariant = "footer"
-                include logo.pug
+        if logo || langMenu.length > 1
+            .footer__bar
+                if logo
+                    .footer__brand
+                        - const logoVariant = "footer"
+                        include logo.pug
 
-        .footer__controls
-            if langMenu.length > 1
-                .footer__control
-                    span.footer__label Language
-                    ul.language
-                        each language in langMenu
-                            li.language__item(class= `${language.active ? 'language__item--active' : ''}`)
-                                a.language__link(href=`${language.link}`,data-title=`${language.title}`,data-code=`${language.code}`,data-name=`${language.name}`)
-                                    span.language__text=language.code
+                .footer__controls
+                    if langMenu.length > 1
+                        .footer__control
+                            span.footer__label Language
+                            ul.language
+                                each language in langMenu
+                                    li.language__item(class= `${language.active ? 'language__item--active' : ''}`)
+                                        a.language__link(href=`${language.link}`,data-title=`${language.title}`,data-code=`${language.code}`,data-name=`${language.name}`)
+                                            span.language__text=language.code
 
-            .footer__control
-                span.footer__label Theme
-                button.color-mode-toggle(type="button", data-color-mode-toggle, aria-label="Toggle color mode", aria-pressed="false")
-                    span.color-mode-toggle__option Light
-                    span.color-mode-toggle__track(aria-hidden="true")
-                        span.color-mode-toggle__thumb
-                    span.color-mode-toggle__option Dark
+                    .footer__control
+                        button.color-mode-toggle(type="button", data-color-mode-toggle, aria-label="Toggle color mode", aria-pressed="false")
+                            span.color-mode-toggle__option Light
+                            span.color-mode-toggle__track(aria-hidden="true")
+                                span.color-mode-toggle__thumb
+                            span.color-mode-toggle__option Dark
+        else
+            .footer__bar.footer__bar--end
+                .footer__controls
+                    .footer__control
+                        button.color-mode-toggle(type="button", data-color-mode-toggle, aria-label="Toggle color mode", aria-pressed="false")
+                            span.color-mode-toggle__option Light
+                            span.color-mode-toggle__track(aria-hidden="true")
+                                span.color-mode-toggle__thumb
+                            span.color-mode-toggle__option Dark
 
         if config.copyright || (socials && socials.length)
             .footer__meta
