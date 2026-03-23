@@ -123,8 +123,8 @@
   gap: var(--color-mode-gap, var(--space-xs));
   padding: var(--space-xxs);
   border: none;
-  border-radius: var(--border-radius-round);
-  background: color-mix(in srgb, var(--color-foreground) 8%, transparent);
+  border-radius: var(--border-radius-m);
+  background: color-mix(in srgb, var(--color-foreground) 16%, var(--color-background));
   color: inherit;
   cursor: pointer;
   font: inherit;
@@ -132,7 +132,7 @@
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
-    background: color-mix(in srgb, var(--color-foreground) 12%, transparent);
+    background: color-mix(in srgb, var(--color-foreground) 22%, var(--color-background));
   }
 
   &:focus-visible {
@@ -150,7 +150,7 @@
     font-weight: 600;
     line-height: 1.8;
     text-align: center;
-    color: color-mix(in srgb, var(--color-foreground) 54%, transparent);
+    color: color-mix(in srgb, var(--color-foreground) 68%, transparent);
     transition: color 0.2s ease;
   }
 
@@ -164,9 +164,13 @@
 
   &__thumb {
     grid-column: 1;
-    border-radius: var(--border-radius-round);
-    background: color-mix(in srgb, var(--color-background) 88%, var(--color-foreground) 12%);
-    box-shadow: 0 0.2rem 0.75rem color-mix(in srgb, var(--color-foreground) 12%, transparent);
+    border-radius: var(--border-radius-s);
+    background: color-mix(
+      in srgb,
+      var(--color-secondary) 34%,
+      var(--color-background)
+    );
+    box-shadow: 0 0.2rem 0.75rem color-mix(in srgb, var(--color-foreground) 18%, transparent);
     transition: transform 0.2s ease, background-color 0.2s ease;
   }
 

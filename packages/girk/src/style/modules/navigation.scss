@@ -16,9 +16,8 @@
     gap: var(--space-xs);
     min-height: calc(var(--space) * 1.9);
     padding: calc(var(--space-xxs) + 0.1rem) calc(var(--space-s) + 0.1rem);
-    border-radius: var(--border-radius-round);
-    transition: background-color 0.2s ease, color 0.2s ease,
-      box-shadow 0.2s ease;
+    border-radius: var(--border-radius-m);
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   &__mobile-toggle {
@@ -71,9 +70,7 @@
 
   &__item:hover > &__entry,
   &__item:focus-within > &__entry {
-    background-color: color-mix(in srgb, var(--color-secondary) 28%, transparent);
-    box-shadow: inset 0 0 0 var(--border-width-s)
-      color-mix(in srgb, var(--color-secondary) 44%, transparent);
+    background-color: color-mix(in srgb, var(--color-secondary) 22%, transparent);
   }
 
   &__item:hover > &__entry > &__link,
@@ -88,9 +85,7 @@
   &__item--current > &__entry,
   &__item--parent > &__entry,
   &__item--open > &__entry {
-    background-color: color-mix(in srgb, var(--color-primary) 18%, transparent);
-    box-shadow: inset 0 0 0 var(--border-width-s)
-      color-mix(in srgb, var(--color-primary) 32%, transparent);
+    background-color: color-mix(in srgb, var(--color-secondary) 30%, transparent);
   }
 
   &__item--current > &__entry > &__link,
@@ -164,20 +159,37 @@
     align-items: center;
     color: inherit;
     text-decoration: none;
-    padding: 0.1rem 0;
+    padding: 0.3rem 0.5rem;
+    border-radius: var(--border-radius-s);
     opacity: 0.88;
     font-weight: 500;
-    transition: opacity 0.2s ease;
+    transition: opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease;
   }
 
   &__group-link:hover {
     opacity: 1;
+    background-color: color-mix(in srgb, var(--color-secondary) 18%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--color-secondary),
+      var(--color-foreground) 50%
+    );
   }
 
   &__group-link--heading,
   &__group--current > &__group-link,
   &__group--parent > &__group-link {
     opacity: 1;
+  }
+
+  &__group--current > &__group-link,
+  &__group--parent > &__group-link {
+    background-color: color-mix(in srgb, var(--color-secondary) 24%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--color-secondary),
+      var(--color-foreground) 50%
+    );
   }
 
   &__group-link--heading {
@@ -204,21 +216,20 @@
   }
 
   .navigation__item {
-    position: static;
+    position: relative;
   }
 
   .navigation__panel {
     position: absolute;
-    top: 100%;
-    right: 0;
-    left: auto;
+    top: calc(100% + var(--space-xs));
+    left: 0;
+    right: auto;
     z-index: 20;
-    width: min(100vw - (var(--space) * 2), 58rem);
-    margin-top: var(--space-xs);
-    border: var(--border-width-s) solid
-      color-mix(in srgb, var(--color-foreground) 12%, transparent);
+    width: max-content;
+    min-width: min(17rem, calc(100vw - (var(--space) * 2)));
+    max-width: min(28rem, calc(100vw - (var(--space) * 2)));
     border-radius: var(--border-radius-l);
-    background-color: color-mix(in srgb, var(--color-background) 94%, var(--color-foreground) 6%);
+    background-color: var(--color-background);
     box-shadow: 0 var(--space-xs) var(--space)
       color-mix(in srgb, var(--color-foreground) 8%, transparent);
     opacity: 0;
@@ -236,14 +247,15 @@
   }
 
   .navigation__panel-inner {
-    width: 100%;
+    width: max-content;
+    max-width: 100%;
     margin: 0;
-    padding: calc(var(--space-xs) + 0.15rem) var(--space-s);
+    padding: calc(var(--space-xxs) + 0.2rem) calc(var(--space-xs) + 0.2rem);
   }
 
   .navigation__groups--level-1 {
-    grid-template-columns: repeat(2, minmax(14rem, 1fr));
-    gap: var(--space-xs) var(--space-s);
+    grid-template-columns: repeat(2, minmax(11rem, max-content));
+    gap: calc(var(--space-xxs) + 0.1rem) var(--space-xs);
   }
 
   .navigation__groups--compact-column {
@@ -261,6 +273,8 @@
     .navigation__panel {
       position: static;
       width: 100%;
+      min-width: 0;
+      max-width: none;
       margin-top: 0;
       border: none;
       border-radius: 0;
@@ -273,7 +287,7 @@
 
     .navigation__panel-inner {
       width: 100%;
-      padding: var(--space-xs) 0 0 calc(var(--space) * 0.9);
+      padding: var(--space-xs) 0 0 calc(var(--space) * 0.65);
     }
 
     .navigation__groups--level-1 {
@@ -376,16 +390,24 @@
 
   .navigation__footer-link {
     width: fit-content;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.5rem;
+    border-radius: var(--border-radius-s);
     color: inherit;
     text-decoration: none;
     opacity: 0.78;
-    border-bottom: var(--border-width-s) solid transparent;
-    transition: opacity 0.2s ease, border-color 0.2s ease;
+    transition: opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease;
   }
 
   .navigation__footer-link:hover {
     opacity: 1;
-    border-bottom-color: currentColor;
+    background-color: color-mix(in srgb, var(--color-secondary) 18%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--color-secondary),
+      var(--color-foreground) 50%
+    );
   }
 
   .navigation__footer-link--heading {
@@ -396,6 +418,12 @@
   .navigation__footer-item--current > .navigation__footer-link,
   .navigation__footer-item--parent > .navigation__footer-link {
     opacity: 1;
+    background-color: color-mix(in srgb, var(--color-secondary) 24%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--color-secondary),
+      var(--color-foreground) 50%
+    );
   }
 
   @media screen and (max-width: 720px) {
