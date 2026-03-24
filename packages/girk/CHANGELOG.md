@@ -1,3 +1,13 @@
+# [1.13.0](https://github.com/silvandiepen/girk/compare/v1.12.0...v1.13.0) (2026-03-24)
+
+
+### Features
+
+* **Data:** Add build-time data sources ([f98cdbd](https://github.com/silvandiepen/girk/commit/f98cdbd32dade81f2a78521b68fb4bc1ab6f580a))
+* **Docs:** Roll queued notes forward to 1.13.0 ([f407f8c](https://github.com/silvandiepen/girk/commit/f407f8cadda9ba43e7db6007341fdb39299fd7a9))
+* **Examples:** Expand the blog example content ([9cb14e0](https://github.com/silvandiepen/girk/commit/9cb14e01cce70ed89fc2d7d12d7f9c29a1893c4a))
+* **Examples:** Grow the recipes example into a cookbook ([d519858](https://github.com/silvandiepen/girk/commit/d51985873fb81cb32c757673e47c45ea2af6fc46))
+
 # [1.12.0](https://github.com/silvandiepen/girk/compare/v1.11.0...v1.12.0) (2026-03-23)
 
 
