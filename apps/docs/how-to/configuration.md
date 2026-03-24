@@ -43,6 +43,35 @@ Use a config file when you want to define shared project settings once instead o
 - `projectGroupTags`
 - `projectCopyFiles`
 
+## Colors In `girk.config.json`
+
+Use the top-level `colors` object for theme tokens.
+
+```json
+{
+  "colors": {
+    "primary": "gray",
+    "secondary": "beige",
+    "background": "light",
+    "foreground": "dark"
+  }
+}
+```
+
+The values can be:
+
+- built-in palette tokens such as `blue`, `gray`, `beige`, `dark`, and `light`
+- direct color values such as `#2b59ff`
+
+Girk then generates CSS variables such as:
+
+- `--color-primary`
+- `--color-primary-contrast`
+- `--color-background`
+- `--color-foreground`
+
+For the full color model and section color behavior, see [Customisation](/features/customisation/).
+
 ## Custom CSS And JS
 
 Use flat project keys in frontmatter when you want a page to define project-wide hooks:

@@ -6,6 +6,8 @@ main .section .container {
 
 main .section {
   padding: var(--space-xxl) 0;
+  background-color: var(--section-background-color, transparent);
+  color: var(--section-text-color, currentColor);
 }
 
 .content {

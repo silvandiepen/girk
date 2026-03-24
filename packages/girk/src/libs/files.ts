@@ -9,6 +9,7 @@ import { asyncForEach, getFileData, renamePath } from "@/libs/utils";
 import { File, buildHtmlArgs, FileType, Dirent, Archive } from "@/types";
 import { fixLangInPath, getLangFromFilename } from "@/libs/language";
 import { removeTitle } from "@/libs/helpers";
+import { buildSectionStyle } from "@/libs/section-style";
 
 /*
 	::getFileTree
@@ -150,7 +151,10 @@ export const buildHtml = async (
     name: file.name,
     title: file.title,
     content: file.html,
-    meta: file.meta,
+    meta: {
+      ...file.meta,
+      sectionStyle: buildSectionStyle(file.meta),
+    },
     pretty: true,
     archives: archives,
     type: file.type,

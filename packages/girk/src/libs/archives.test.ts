@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { ArchiveType, type File } from "@/types";
-import { isSectionsArchiveChild } from "./archives";
+import { ArchiveType, type File, type Payload } from "@/types";
+import { generateArchives, isSectionsArchiveChild } from "./archives";
 
 const createFile = (overrides: Partial<File>): File =>
   ({
@@ -56,5 +56,37 @@ describe("archives helpers", () => {
     });
 
     expect(isSectionsArchiveChild(child, [parent, child])).toBe(false);
+  });
+
+  it("builds section style variables from child meta colors", async () => {
+    const parent = createFile({
+      id: "examples",
+      name: "examples",
+      fileName: "README",
+      path: "/tmp/examples/README.md",
+      home: true,
+      meta: { archive: ArchiveType.SECTIONS },
+    });
+
+    const child = createFile({
+      id: "intro",
+      name: "intro",
+      fileName: "intro",
+      path: "/tmp/examples/intro.md",
+      parent: "examples",
+      meta: { color: "blue" },
+    });
+
+    const payload = {
+      files: [parent, child],
+      tags: [],
+    } as unknown as Payload;
+
+    const result = await generateArchives(payload);
+    const archiveChild = result.files[0].archives?.[0]?.children?.[0];
+
+    expect(archiveChild?.meta.sectionStyle).toBe(
+      "--section-background-color: var(--color-blue); --section-text-color: var(--color-blue-contrast)"
+    );
   });
 });

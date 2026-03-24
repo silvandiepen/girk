@@ -40,6 +40,131 @@ You can start with a working default and then decide how much control you need:
 }
 ```
 
+## Colors
+
+Girk ships with a generated color system. You define project colors in `girk.config.json`, and Girk turns them into CSS variables such as `--color-primary`, `--color-primary-contrast`, `--color-background`, and `--color-foreground`.
+
+### Semantic tokens
+
+These are the main project-level tokens:
+
+- `primary`
+- `secondary`
+- `background`
+- `foreground`
+- `error`
+- `info`
+- `warning`
+- `success`
+
+### Palette tokens
+
+These are the built-in palette names you can map the semantic tokens to:
+
+- `red`
+- `blue`
+- `green`
+- `yellow`
+- `orange`
+- `purple`
+- `pink`
+- `lime`
+- `brown`
+- `gray`
+- `magenta`
+- `beige`
+- `dark`
+- `light`
+
+### Project color config
+
+You can map semantic roles to palette tokens:
+
+```json
+{
+  "colors": {
+    "primary": "gray",
+    "secondary": "beige",
+    "background": "light",
+    "foreground": "dark",
+    "warning": "orange",
+    "success": "green"
+  }
+}
+```
+
+You can also override palette values directly:
+
+```json
+{
+  "colors": {
+    "blue": "#2b59ff",
+    "beige": "#efe2cf",
+    "primary": "blue",
+    "secondary": "beige"
+  }
+}
+```
+
+That means:
+
+- `blue` becomes a real project color token
+- `primary` resolves to that `blue`
+- Girk also generates `--color-blue-contrast` and `--color-primary-contrast`
+
+### What Girk generates
+
+For each configured color token, Girk generates:
+
+- `--color-[token]`
+- `--color-[token]-contrast`
+
+Examples:
+
+- `--color-primary`
+- `--color-primary-contrast`
+- `--color-blue`
+- `--color-blue-contrast`
+
+Use those variables in your own CSS:
+
+```css
+.hero {
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+}
+```
+
+### Section colors from frontmatter
+
+Page and section frontmatter can now use `color` to apply a section-local background and text color.
+
+```md
+---
+title: Highlighted Section
+color: blue
+---
+```
+
+That maps to:
+
+```css
+--section-background-color: var(--color-blue);
+--section-text-color: var(--color-blue-contrast);
+```
+
+By default, sections fall back to the project theme. When `color` is present, only that section gets the alternate background and text colors.
+
+You can combine it with `style`:
+
+```md
+---
+title: Callout
+color: primary
+style: scroll-margin-top: calc(var(--space-xxl) * 2);
+---
+```
+
 ## Web Components And Vue
 
 Markdown content allows raw HTML, so you can place a custom element directly in a page and register it from a script.

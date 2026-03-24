@@ -11,6 +11,7 @@ The clearest reference for `girk.config.json`. Use it when you want project defa
 
 - project defaults driven by `girk.config.json`
 - semantic color mapping through the palette
+- section-level `color` frontmatter on top of project tokens
 - shared project settings outside the page files
 - a cleaner content tree for smaller brochure or docs sites
 

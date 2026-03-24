@@ -26,6 +26,8 @@ Most of the time, you do not need a separate admin panel or route config. A few 
 - `redirect`
 - `archive`
 - `menuChildren`
+- `color`
+- `style`
 
 ## Example
 
@@ -35,9 +37,27 @@ title: Install
 description: Start a new Girk project
 order: 10
 icon: /assets/icon-install.svg
+color: primary
 tags: guide, basics
 ---
 ```
+
+## Styling Keys
+
+- `color` maps a section to `--section-background-color` and `--section-text-color`
+- `style` adds extra inline CSS to that section
+
+Example:
+
+```md
+---
+title: Highlight
+color: blue
+style: border-radius: 1rem;
+---
+```
+
+For the full project color system and token mapping, see [Customisation](/features/customisation/).
 
 ## Live Example
 

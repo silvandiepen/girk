@@ -3,6 +3,7 @@ import { parentPath } from "@/libs/utils";
 import { makePath } from "@/libs/files";
 import { ArchiveType, Payload, File } from "@/types";
 import { getExcerpt } from "@/libs/helpers";
+import { buildSectionStyle } from "@/libs/section-style";
 /*
  *  Archives
  */
@@ -57,7 +58,11 @@ export const generateArchives = async (payload: Payload): Promise<Payload> => {
             ...item,
             date: item?.meta?.date,
             created: item?.meta?.date || item.created,
-            meta: { ...item.meta, hide: true },
+            meta: {
+              ...item.meta,
+              hide: true,
+              sectionStyle: buildSectionStyle(item.meta),
+            },
             link: makePath(item),
             redirect: item.meta.redirect ? item.meta.redirect : null,
             excerpt: getExcerpt(item),
