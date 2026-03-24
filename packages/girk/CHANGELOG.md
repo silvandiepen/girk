@@ -1,3 +1,10 @@
+# [1.15.0](https://github.com/silvandiepen/girk/compare/v1.14.0...v1.15.0) (2026-03-24)
+
+
+### Features
+
+* **Docs:** Show remote data-source examples ([803c309](https://github.com/silvandiepen/girk/commit/803c30959f8b08e150b44a7da63607cf58db6dd1))
+
 # [1.14.0](https://github.com/silvandiepen/girk/compare/v1.13.0...v1.14.0) (2026-03-24)
 
 
