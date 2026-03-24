@@ -1,3 +1,10 @@
+# [1.16.0](https://github.com/silvandiepen/girk/compare/v1.15.0...v1.16.0) (2026-03-24)
+
+
+### Features
+
+* **Docs:** Use a real remote endpoint example ([966f88f](https://github.com/silvandiepen/girk/commit/966f88f51d3812c48e8a10e2463faef1164f4187))
+
 # [1.15.0](https://github.com/silvandiepen/girk/compare/v1.14.0...v1.15.0) (2026-03-24)
 
 
