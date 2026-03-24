@@ -7,6 +7,7 @@ This workspace deploys the docs site and all example sites through a single Clou
 - `girk.dev/*` -> docs
 - `www.girk.dev/*` -> docs
 - `example-basic.girk.dev/*` -> `apps/example-basic`
+- `example-data.girk.dev/*` -> `apps/example-data`
 - `example-multilang.girk.dev/*` -> `apps/example-multilang`
 
 ## Commands

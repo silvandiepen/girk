@@ -28,8 +28,6 @@ test("example-basic builds a feature-rich sample site", async () => {
 
   const home = await read("apps/example-basic/public/index.html");
   const guide = await read("apps/example-basic/public/guide/index.html");
-  const dataDriven = await read("apps/example-basic/public/data-driven/index.html");
-  const atlas = await read("apps/example-basic/public/data-driven/atlas/index.html");
   const sections = await read("apps/example-basic/public/sections/index.html");
   const hidden = await read("apps/example-basic/public/hidden/index.html");
   const groupedTag = await read(
@@ -50,11 +48,6 @@ test("example-basic builds a feature-rich sample site", async () => {
   assert.match(home, /https:\/\/example\.com\/support/);
   assert.match(guide, /Install/);
   assert.match(guide, /Configuration/);
-  assert.match(dataDriven, /This page repeats over a JSON data source during the build/);
-  assert.match(dataDriven, /Atlas/);
-  assert.match(dataDriven, /Beacon/);
-  assert.match(atlas, /A content migration project generated from local JSON data/);
-  assert.match(atlas, /Delivery: Static documentation hub/);
   assert.match(sections, /Intro Section/);
   assert.match(sections, /Deep Dive/);
   assert.equal(
@@ -68,6 +61,21 @@ test("example-basic builds a feature-rich sample site", async () => {
   assert.match(hidden, /Hidden Page/);
   assert.match(groupedTag, /#basics/);
   assert.match(copied, /book-like projects/);
+});
+
+test("example-data builds repeated pages and generated detail routes from local json", async () => {
+  run(["run", "build", "-w", "@girk/example-data"]);
+
+  const home = await read("apps/example-data/public/index.html");
+  const projects = await read("apps/example-data/public/projects/index.html");
+  const atlas = await read("apps/example-data/public/projects/atlas/index.html");
+
+  assert.match(home, /Girk Data/);
+  assert.match(projects, /This page repeats over a JSON data source during the build/);
+  assert.match(projects, /Atlas/);
+  assert.match(projects, /Beacon/);
+  assert.match(atlas, /A content migration project generated from local JSON data/);
+  assert.match(atlas, /Delivery: Static documentation hub/);
 });
 
 test("example-multilang builds translated routes with the shared default theme", async () => {

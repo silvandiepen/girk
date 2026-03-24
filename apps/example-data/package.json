@@ -1,0 +1,16 @@
+{
+  "name": "@girk/example-data",
+  "private": true,
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0 <26"
+  },
+  "scripts": {
+    "build": "rimraf public && node ../../packages/girk/dist/index.js",
+    "serve": "npx serve public",
+    "test:run": "npm run build"
+  },
+  "dependencies": {
+    "girky": "file:../../packages/girk",
+    "rimraf": "^4.3.0"
+  }
+}

@@ -17,6 +17,10 @@ const sites = [
     source: join(rootDir, "apps/example-basic/public"),
   },
   {
+    key: "example-data",
+    source: join(rootDir, "apps/example-data/public"),
+  },
+  {
     key: "example-multilang",
     source: join(rootDir, "apps/example-multilang/public"),
   },

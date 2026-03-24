@@ -8,6 +8,7 @@ on:
       - ".github/workflows/deploy-sites.yml"
       - "apps/docs/**"
       - "apps/example-basic/**"
+      - "apps/example-data/**"
       - "apps/example-multilang/**"
       - "packages/girk/**"
       - "packages/utils/**"

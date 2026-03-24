@@ -43,8 +43,8 @@ title: {{result.title}}
 
 ## Live Example
 
-- [example-basic.girk.dev/data-driven/](https://example-basic.girk.dev/data-driven/)
+- [example-data.girk.dev/projects/](https://example-data.girk.dev/projects/)
 
 ## Source Example
 
-- [`apps/example-basic`](https://github.com/silvandiepen/girk/tree/main/apps/example-basic)
+- [`apps/example-data`](https://github.com/silvandiepen/girk/tree/main/apps/example-data)

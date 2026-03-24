@@ -5,6 +5,7 @@ const localHosts = new Set(["localhost", "127.0.0.1"]);
 const subdomainSites: Record<string, SiteKey> = {
   docs: "docs",
   "example-basic": "example-basic",
+  "example-data": "example-data",
   "example-multilang": "example-multilang",
   "example-config": "example-config",
   "example-blog": "example-blog",
@@ -14,6 +15,7 @@ const subdomainSites: Record<string, SiteKey> = {
 export const isSiteKey = (value: string | null): value is SiteKey =>
   value === "docs" ||
   value === "example-basic" ||
+  value === "example-data" ||
   value === "example-multilang" ||
   value === "example-config" ||
   value === "example-blog" ||

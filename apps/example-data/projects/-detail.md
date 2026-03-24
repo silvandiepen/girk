@@ -1,5 +1,5 @@
 ---
-dataSource: data/projects.json
+dataSource: projects.json
 dataItems: items
 dataSlug: slug
 title: {{result.title}}
