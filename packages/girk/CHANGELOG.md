@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/silvandiepen/girk/compare/v1.13.0...v1.14.0) (2026-03-24)
+
+
+### Features
+
+* **Examples:** Add dedicated data-source example ([cbdc6bc](https://github.com/silvandiepen/girk/commit/cbdc6bc2ae505c010e8b0535cf399a54643251d8))
+
 # [1.13.0](https://github.com/silvandiepen/girk/compare/v1.12.0...v1.13.0) (2026-03-24)
 
 
