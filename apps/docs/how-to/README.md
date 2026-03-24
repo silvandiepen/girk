@@ -22,6 +22,7 @@ If you are looking for upgrade notes or recent changes instead of setup guidance
 - [Structure a Project](/how-to/structure/index.html)
 - [Configure a Project](/how-to/configuration/index.html)
 - [Use Page Settings](/how-to/page-settings/index.html)
+- [Use Data Sources](/how-to/data-sources/index.html)
 - [AI Reference](/how-to/ai/index.html)
 
 Use the [Examples](/examples/index.html) section when you want to see complete projects, live output, and source side by side.

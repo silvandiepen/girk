@@ -18,6 +18,7 @@ This sample site exists to exercise the main single-language features of Girk.
 - redirects
 - hidden pages
 - grouped tags
+- build-time data-driven pages from JSON
 - custom style and script
 - module-loaded custom element
 - Vue mounted from a module script

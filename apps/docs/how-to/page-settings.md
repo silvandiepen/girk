@@ -34,6 +34,9 @@ tags: guide, basics
 - `redirect`
 - `archive`
 - `menuChildren`
+- `dataSource`
+- `dataItems`
+- `dataSlug`
 
 ## Practical Advice
 

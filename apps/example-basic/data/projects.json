@@ -1,0 +1,20 @@
+{
+  "items": [
+    {
+      "slug": "atlas",
+      "title": "Atlas",
+      "summary": "A content migration project generated from local JSON data.",
+      "delivery": "Static documentation hub",
+      "teamSize": 3,
+      "order": 10
+    },
+    {
+      "slug": "beacon",
+      "title": "Beacon",
+      "summary": "A product microsite built from one markdown template and shared structured data.",
+      "delivery": "Campaign launch site",
+      "teamSize": 5,
+      "order": 20
+    }
+  ]
+}

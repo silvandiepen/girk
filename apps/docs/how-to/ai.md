@@ -29,6 +29,8 @@ Girk is a Markdown-first static site generator. It turns a folder tree into a st
 - `archive` on a landing page turns a folder into a generated archive
 - `menuChildren: true` exposes archive children in the navigation
 - multilingual content uses filename suffixes such as `:nl`
+- `dataSource` can load build-time JSON from a URL or local file
+- `dataSlug` can generate many pages from one Markdown template
 
 ## Common Frontmatter Keys
 
@@ -44,6 +46,9 @@ Girk is a Markdown-first static site generator. It turns a folder tree into a st
 - `redirect`
 - `archive`
 - `menuChildren`
+- `dataSource`
+- `dataItems`
+- `dataSlug`
 
 ## Common Project Keys
 

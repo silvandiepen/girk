@@ -16,6 +16,7 @@ Girk is useful because it gives you practical site-building features without for
 - styling hooks and theme variables
 - multilingual content
 - page metadata for navigation and behavior
+- build-time data sources for repeated content and generated pages
 
 ## Explore The Features
 
@@ -24,5 +25,6 @@ Girk is useful because it gives you practical site-building features without for
 - [Customisation](/features/customisation/index.html)
 - [Multilingual Content](/features/multilingual/index.html)
 - [Page Metadata](/features/metadata/index.html)
+- [Data Sources](/features/data-sources/index.html)
 
 Each feature page explains what the feature is for, when to use it, and where you can see it in a live example.

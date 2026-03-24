@@ -1,0 +1,50 @@
+---
+title: Data Sources
+icon: /media/icon_settings.svg
+tags: documentation
+---
+
+# Data Sources
+
+Girk can pull JSON in at build time and use it either to repeat content inside a page or to generate many detail pages from one Markdown template.
+
+## Why You Want It
+
+Use data sources when you want static output without hand-writing the same page structure hundreds of times.
+
+Typical uses:
+
+- product, project, or case-study detail pages
+- landing pages that repeat cards or summaries from structured data
+- builds that should stay deterministic with local JSON checked into the repo
+
+## What It Gives You
+
+- `dataSource` to load remote JSON or a local JSON file
+- `dataItems` to point at the array or object you want to use
+- `{{result.field}}` replacements in frontmatter and Markdown
+- `{{#each result}} ... {{/each}}` repeated blocks inside a page
+- `dataSlug` to fan one template file out into many real routes
+
+## Example
+
+```markdown
+---
+dataSource: data/projects.json
+dataItems: items
+dataSlug: slug
+title: {{result.title}}
+---
+
+# {{result.title}}
+
+{{result.summary}}
+```
+
+## Live Example
+
+- [example-basic.girk.dev/data-driven/](https://example-basic.girk.dev/data-driven/)
+
+## Source Example
+
+- [`apps/example-basic`](https://github.com/silvandiepen/girk/tree/main/apps/example-basic)

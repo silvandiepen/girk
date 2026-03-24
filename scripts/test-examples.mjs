@@ -28,6 +28,8 @@ test("example-basic builds a feature-rich sample site", async () => {
 
   const home = await read("apps/example-basic/public/index.html");
   const guide = await read("apps/example-basic/public/guide/index.html");
+  const dataDriven = await read("apps/example-basic/public/data-driven/index.html");
+  const atlas = await read("apps/example-basic/public/data-driven/atlas/index.html");
   const sections = await read("apps/example-basic/public/sections/index.html");
   const hidden = await read("apps/example-basic/public/hidden/index.html");
   const groupedTag = await read(
@@ -48,6 +50,11 @@ test("example-basic builds a feature-rich sample site", async () => {
   assert.match(home, /https:\/\/example\.com\/support/);
   assert.match(guide, /Install/);
   assert.match(guide, /Configuration/);
+  assert.match(dataDriven, /This page repeats over a JSON data source during the build/);
+  assert.match(dataDriven, /Atlas/);
+  assert.match(dataDriven, /Beacon/);
+  assert.match(atlas, /A content migration project generated from local JSON data/);
+  assert.match(atlas, /Delivery: Static documentation hub/);
   assert.match(sections, /Intro Section/);
   assert.match(sections, /Deep Dive/);
   assert.equal(

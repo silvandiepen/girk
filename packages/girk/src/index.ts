@@ -9,6 +9,7 @@ import { join } from "path";
 import { generateArchives } from "@/libs/archives";
 import { isSectionsArchiveChild } from "@/libs/archives";
 import { generateStyles } from "@/libs/buildStyle/style";
+import { prepareDataFiles } from "@/libs/data";
 import { generateFavicon } from "@/libs/favicon";
 import { getFiles } from "@/libs/files";
 import { fileTitle } from "@/libs/helpers";
@@ -41,6 +42,7 @@ const { version } = JSON.parse(
  */
 export const files = async (payload: Payload): Promise<Payload> => {
   let files = await getFiles(process.cwd(), ".md");
+  files = await prepareDataFiles(files);
   // const project: Project = {};
 
   /*

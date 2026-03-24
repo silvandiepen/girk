@@ -12,6 +12,7 @@ The broadest reference project in the repository. Use it when you want to see mu
 - article archives for documentation-style sections
 - a blog archive for dated posts
 - `sections` for one assembled long page
+- data-driven repeated content and generated detail pages from local JSON
 - redirects and hidden files
 - copied files and custom assets
 - grouped tags, custom CSS, custom JavaScript, a module-loaded custom element, and a Vue-mounted block

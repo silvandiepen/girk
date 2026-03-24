@@ -34,6 +34,7 @@ Girk keeps the content model simple:
 - Markdown stays the source of truth
 - frontmatter handles page behavior without extra tooling
 - `girk.config.json` keeps shared project defaults in one place
+- build-time data sources can repeat content or fan one template out into many pages
 - the output is static HTML, CSS, and assets
 
 Use it for:
@@ -100,6 +101,39 @@ Girk supports:
 - custom JavaScript
 - custom web components
 - Vue-powered mounts from browser-ready scripts
+- JSON-driven build-time content from local files or remote endpoints
+
+## Build-Time Data Sources
+
+Use page frontmatter when one Markdown file should be driven by structured JSON:
+
+```md
+---
+dataSource: data/projects.json
+dataItems: items
+title: Projects
+---
+
+{{#each result}}
+## [{{result.title}}](/projects/{{result.slug}}/)
+{{result.summary}}
+{{/each}}
+```
+
+Use `dataSlug` when one template file should generate many real pages:
+
+```md
+---
+dataSource: data/projects.json
+dataItems: items
+dataSlug: slug
+title: {{result.title}}
+---
+
+# {{result.title}}
+```
+
+`dataSource` accepts remote JSON URLs and local JSON files resolved from the project root.
 
 Girk does not compile Vue for you. You ship browser-ready assets and reference them from project settings.
 

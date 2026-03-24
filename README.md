@@ -57,6 +57,7 @@ That becomes:
 - Markdown stays the source of truth
 - frontmatter handles page behavior without extra tooling
 - `girk.config.json` keeps shared project defaults in one place
+- build-time data sources can repeat content or generate detail pages from one template
 - the output is static HTML, CSS, and assets
 - archive layouts for grouped content
 - multilingual support
