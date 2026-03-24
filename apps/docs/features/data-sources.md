@@ -28,6 +28,20 @@ Typical uses:
 
 Both local files and remote endpoints are resolved during the build, so the final site still deploys as plain static files.
 
+Remote endpoint example:
+
+```markdown
+---
+dataSource: https://jsonplaceholder.typicode.com/posts
+title: Posts
+---
+
+{{#each result}}
+## {{result.title}}
+{{result.body}}
+{{/each}}
+```
+
 ## Example
 
 ```markdown

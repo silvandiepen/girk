@@ -139,14 +139,13 @@ Remote endpoint example:
 
 ```md
 ---
-dataSource: https://example.com/api/projects
-dataItems: items
-title: Projects
+dataSource: https://jsonplaceholder.typicode.com/posts
+title: Posts
 ---
 
 {{#each result}}
 ## {{result.title}}
-{{result.summary}}
+{{result.body}}
 {{/each}}
 ```
 

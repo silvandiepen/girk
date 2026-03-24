@@ -37,18 +37,18 @@ Use this when you want one static page to render a list, grid, or summary block 
 
 ## Use A Remote Endpoint
 
-`dataSource` can also point at a JSON endpoint:
+`dataSource` can also point at a real JSON endpoint. For example, JSONPlaceholder returns an array from `https://jsonplaceholder.typicode.com/posts`:
 
 ```markdown
 ---
-dataSource: https://example.com/api/projects
-dataItems: items
-title: Projects
+dataSource: https://jsonplaceholder.typicode.com/posts
+title: Posts
 ---
 
 {{#each result}}
-## [{{result.title}}](/projects/{{result.slug}}/)
-{{result.summary}}
+## {{result.title}}
+
+{{result.body}}
 {{/each}}
 ```
 
