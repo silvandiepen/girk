@@ -135,6 +135,23 @@ title: {{result.title}}
 
 `dataSource` accepts remote JSON URLs and local JSON files resolved from the project root.
 
+Remote endpoint example:
+
+```md
+---
+dataSource: https://example.com/api/projects
+dataItems: items
+title: Projects
+---
+
+{{#each result}}
+## {{result.title}}
+{{result.summary}}
+{{/each}}
+```
+
+Remote JSON is fetched at build time. If the endpoint is unavailable, the build fails.
+
 Girk does not compile Vue for you. You ship browser-ready assets and reference them from project settings.
 
 ## Learn More

@@ -26,6 +26,8 @@ Typical uses:
 - `{{#each result}} ... {{/each}}` repeated blocks inside a page
 - `dataSlug` to fan one template file out into many real routes
 
+Both local files and remote endpoints are resolved during the build, so the final site still deploys as plain static files.
+
 ## Example
 
 ```markdown

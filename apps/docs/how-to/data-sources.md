@@ -35,6 +35,25 @@ title: Projects
 
 Use this when you want one static page to render a list, grid, or summary block from structured data.
 
+## Use A Remote Endpoint
+
+`dataSource` can also point at a JSON endpoint:
+
+```markdown
+---
+dataSource: https://example.com/api/projects
+dataItems: items
+title: Projects
+---
+
+{{#each result}}
+## [{{result.title}}](/projects/{{result.slug}}/)
+{{result.summary}}
+{{/each}}
+```
+
+Girk fetches that endpoint during the build, not in the browser at runtime.
+
 ## Generate Detail Pages
 
 Create a template file such as `projects/-detail.md`:
@@ -67,3 +86,4 @@ Girk will fetch the source, take each item from `dataItems`, and generate real p
 - prefer local JSON when you want deterministic builds and repository-backed content
 - prefer remote JSON when the build should reflect an external system
 - keep slugs stable, because `dataSlug` becomes the route
+- expect remote builds to fail if the endpoint is unavailable or returns invalid JSON
