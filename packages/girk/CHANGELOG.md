@@ -1,3 +1,10 @@
+# [1.17.0](https://github.com/silvandiepen/girk/compare/v1.16.0...v1.17.0) (2026-03-24)
+
+
+### Features
+
+* **Customisation:** add section color tokens and docs ([63a9642](https://github.com/silvandiepen/girk/commit/63a96427265f72eb26bf860312ac0bbf87efa903))
+
 # [1.16.0](https://github.com/silvandiepen/girk/compare/v1.15.0...v1.16.0) (2026-03-24)
 
 
