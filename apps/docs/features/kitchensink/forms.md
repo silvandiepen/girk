@@ -1,100 +1,10 @@
 ---
-title: Kitchen Sink
-icon: /media/icon_kitchensink.svg
-tags: documentation
+title: Native Form Controls
+order: 3
+color: secondary
 ---
 
-# Kitchen Sink
-
-This page shows how Girk renders common content and native HTML controls before you add any project-specific components or CSS.
-
-## Why You Want It
-
-Use this page when you need a quick visual check for the generated defaults:
-
-- headings and body copy
-- lists, quotes, and tables
-- inline code and fenced code blocks
-- native HTML forms with `--color-primary` as the accent color
-
-## Typography And Content
-
-This paragraph is normal body copy. It shows the default measure, spacing, and tone of the generated stylesheet. If you need a callout, a table, or a form right inside Markdown, this is the baseline you are starting from.
-
-> Girk aims to make plain HTML look deliberate before you start layering project styles on top.
-
-### Mixed content
-
-- one list item with enough text to show line length and spacing
-- a second item with `inline code` and a [standard link](/features/customisation/index.html)
-- a third item that exists only to show consistent defaults across elements
-
-#### Small data table
-
-| Element | What it demonstrates | Why it matters |
-| --- | --- | --- |
-| Heading | scale and spacing | sets the visual hierarchy |
-| Table | responsive table defaults | keeps structured content readable |
-| Form control | native input styling | gives plain HTML a usable baseline |
-
-## Code
-
-```html
-<label for="email">Email</label>
-<input id="email" name="email" type="email" placeholder="hello@example.com" />
-```
-
-## Semantic Elements
-
-Use <abbr title="Application Programming Interface">API</abbr> labels, highlight text with <mark>mark</mark>, and show shortcuts like <kbd>Cmd</kbd> + <kbd>K</kbd> without reaching for custom classes.
-
-H<sub>2</sub>O and E = mc<sup>2</sup> should also look sane out of the box.
-
-<details>
-  <summary>Expandable content with native details/summary</summary>
-  <p>
-    This block uses the browser's native disclosure element, but it should still
-    feel like it belongs in the generated design system.
-  </p>
-</details>
-
-<figure>
-  <svg viewBox="0 0 280 120" role="img" aria-labelledby="kitchen-figure-title">
-    <title id="kitchen-figure-title">Example figure</title>
-    <rect
-      x="0"
-      y="0"
-      width="280"
-      height="120"
-      rx="12"
-      fill="none"
-      stroke="currentColor"
-      opacity="0.2"
-    ></rect>
-    <circle cx="60" cy="60" r="24" fill="var(--color-primary)"></circle>
-    <path
-      d="M120 34h112M120 60h84M120 86h96"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="8"
-      stroke-linecap="round"
-      opacity="0.38"
-    ></path>
-  </svg>
-  <figcaption>A plain figure with figcaption should inherit the same visual language.</figcaption>
-</figure>
-
-<p>
-  Progress
-  <progress max="100" value="72">72%</progress>
-</p>
-
-<p>
-  Meter
-  <meter min="0" max="100" low="35" high="80" optimum="90" value="68">68</meter>
-</p>
-
-## Form Controls
+## Native Form Controls
 
 The form below is intentionally plain HTML. No framework classes, no custom components, just the generated defaults for native controls.
 
@@ -216,6 +126,69 @@ Output
 File
 <input id="kitchen-file" name="attachment" type="file" />
 </label>
+
+<fieldset>
+<legend>Project Brief</legend>
+
+<label for="kitchen-brief-title">Project title</label>
+<input id="kitchen-brief-title" name="brief-title" type="text" placeholder="Spring campaign site" />
+
+<label>
+Primary goal
+<select name="brief-goal">
+<option value="">Choose one</option>
+<option selected>Lead generation</option>
+<option>Documentation</option>
+<option>Internal knowledge base</option>
+</select>
+</label>
+
+<label for="kitchen-brief-summary">Summary</label>
+<textarea id="kitchen-brief-summary" name="brief-summary" placeholder="Outline what this site needs to do."></textarea>
+</fieldset>
+
+<fieldset>
+<legend>Publishing Settings</legend>
+
+<label>
+Owner email
+<input name="publish-owner" type="email" placeholder="owner@example.com" />
+</label>
+
+<label for="kitchen-publish-slug">Public URL slug</label>
+<input id="kitchen-publish-slug" name="publish-slug" type="text" placeholder="launch-notes" />
+
+<label>
+Visibility
+<select name="publish-visibility">
+<option selected>Internal only</option>
+<option>Public</option>
+<option>Password protected</option>
+</select>
+</label>
+</fieldset>
+
+<fieldset>
+<legend>Inline Labels</legend>
+
+<label>
+<span>Accent</span>
+<input id="kitchen-inline-accent" name="inline-accent" type="color" value="#e2921b" />
+<output for="kitchen-inline-accent">#e2921b</output>
+</label>
+
+<label>
+<span>Intensity</span>
+<input id="kitchen-inline-intensity" name="inline-intensity" type="range" min="0" max="100" value="72" />
+<output for="kitchen-inline-intensity">72%</output>
+</label>
+
+<label>
+<span>Columns</span>
+<input id="kitchen-inline-columns" name="inline-columns" type="range" min="1" max="12" value="4" />
+<input id="kitchen-inline-columns-number" name="inline-columns-number" type="number" min="1" max="12" value="4" />
+</label>
+</fieldset>
 
 <fieldset>
 <legend>Checkboxes</legend>
