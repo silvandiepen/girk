@@ -1,5 +1,6 @@
 ---
 title: About
+icon: ui/home-location
 order: 1
 redirect: /
 ---

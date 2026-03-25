@@ -1,5 +1,6 @@
 ---
 title: Features
+icon: ui/grid
 archive: articles
 menuChildren: true
 order: 2

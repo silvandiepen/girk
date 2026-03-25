@@ -1,6 +1,6 @@
 ---
 title: Use Data Sources
-icon: /media/icon_settings.svg
+icon: ui/file-graphs
 tags: documentation
 ---
 

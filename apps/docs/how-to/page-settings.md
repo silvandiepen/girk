@@ -1,6 +1,6 @@
 ---
 title: Use Page Settings
-icon: /media/icon_meta.svg
+icon: ui/file-info
 tags: documentation
 ---
 

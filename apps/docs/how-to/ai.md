@@ -1,6 +1,6 @@
 ---
 title: AI Reference
-icon: /media/icon_settings.svg
+icon: misc/ai-robot
 tags: documentation
 ---
 

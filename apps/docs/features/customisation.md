@@ -1,6 +1,6 @@
 ---
 title: Customisation
-icon: /media/icon_style.svg
+icon: ui/paint-brush
 tags: documentation
 ---
 

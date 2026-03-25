@@ -1,5 +1,6 @@
 ---
 title: Examples
+icon: ui/book-pages
 archive: sections
 order: 3
 ---

@@ -1,6 +1,6 @@
 ---
 title: Getting Started
-icon: /media/icon_settings.svg
+icon: ui/folder-star
 tags: documentation
 ---
 

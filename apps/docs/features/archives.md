@@ -1,6 +1,6 @@
 ---
 title: Archives
-icon: /media/icon_archive.svg
+icon: ui/file-archive
 tags: documentation
 ---
 

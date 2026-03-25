@@ -1,6 +1,6 @@
 ---
 title: Multilingual Content
-icon: /media/icon_project.svg
+icon: ui/globe
 tags: documentation
 ---
 

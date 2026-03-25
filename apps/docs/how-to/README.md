@@ -1,5 +1,6 @@
 ---
 title: How to Use
+icon: ui/list-checklist
 archive: articles
 menuChildren: true
 order: 4

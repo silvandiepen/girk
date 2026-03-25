@@ -1,6 +1,6 @@
 ---
 title: Media and Assets
-icon: /media/icon_media.svg
+icon: media/image
 tags: documentation
 ---
 

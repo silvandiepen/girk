@@ -1,6 +1,6 @@
 ---
 title: Configure a Project
-icon: /media/icon_settings.svg
+icon: ui/settings
 tags: documentation
 ---
 

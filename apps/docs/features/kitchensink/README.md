@@ -1,6 +1,6 @@
 ---
 title: Kitchen Sink
-icon: /media/icon_kitchensink.svg
+icon: misc/kitchen-utensils
 tags: documentation
 archive: sections
 ---

@@ -1,6 +1,6 @@
 ---
 title: Structure a Project
-icon: /media/icon_project.svg
+icon: ui/folder
 tags: documentation
 ---
 
