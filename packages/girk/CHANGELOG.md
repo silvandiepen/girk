@@ -1,3 +1,11 @@
+## [1.20.1](https://github.com/silvandiepen/girk/compare/v1.20.0...v1.20.1) (2026-03-25)
+
+
+### Bug Fixes
+
+* **Content:** Replace blanket flow spacing ([0629053](https://github.com/silvandiepen/girk/commit/0629053668473a6f0d80d71deca8439411ad21cd))
+* **Content:** Use underline link styling ([1a55938](https://github.com/silvandiepen/girk/commit/1a5593805bad638c22ef14cb0b16e7bacca94059))
+
 # [1.20.0](https://github.com/silvandiepen/girk/compare/v1.19.5...v1.20.0) (2026-03-25)
 
 
