@@ -1,3 +1,11 @@
+# [1.19.0](https://github.com/silvandiepen/girk/compare/v1.18.0...v1.19.0) (2026-03-25)
+
+
+### Features
+
+* **Docs:** Document style variables and code theme ([7b2a290](https://github.com/silvandiepen/girk/commit/7b2a2909ba93c142e607ef8e59c3f93a786119d8))
+* **Theme:** Add kitchen sink native control defaults ([3ea3c37](https://github.com/silvandiepen/girk/commit/3ea3c37d79f5f82655da8c149a5d8a5519de1dc9))
+
 # [1.18.0](https://github.com/silvandiepen/girk/compare/v1.17.1...v1.18.0) (2026-03-25)
 
 
