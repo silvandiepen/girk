@@ -42,6 +42,12 @@ export interface Style {
   page?: string;
   og?: string;
 }
+
+export interface GeneratorInfo {
+  name: string;
+  version: string;
+}
+
 interface Favicons {
   default: string;
   light: string;
@@ -61,6 +67,7 @@ export interface Payload extends Settings {
   tags?: Tag[];
   socials: Social[];
   favicons?: Favicons;
+  generator?: GeneratorInfo;
 }
 export interface Tag {
   name: string;
@@ -143,6 +150,7 @@ export interface buildHtmlArgs {
   menu: MenuItem[];
   style: Style;
   project: Project;
+  generator?: GeneratorInfo;
   media: File[];
   logo: File;
   archives?: File[];

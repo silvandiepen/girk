@@ -153,6 +153,7 @@ export const buildPage = async (
     tags,
     thumbnail: getThumbnail(file),
     project,
+    generator: payload.generator,
     style,
     favicons,
     media: payload.media,

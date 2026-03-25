@@ -144,7 +144,14 @@ export const settingsAndConfig = async (payload: Payload): Promise<Payload> => {
     config,
   };
 
-  return { ...payload, settings };
+  return {
+    ...payload,
+    settings,
+    generator: {
+      name: "Girk",
+      version,
+    },
+  };
 };
 
 /*
