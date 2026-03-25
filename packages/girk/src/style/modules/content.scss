@@ -105,4 +105,102 @@
     padding-left: var(--space);
     border-left: var(--border-width-m) solid var(--color-foreground);
   }
+
+  details {
+    padding: calc(var(--space-s) + var(--space-xs)) var(--space);
+    border: var(--border-width-s) solid
+      color-mix(in srgb, currentColor 12%, transparent);
+    border-radius: var(--border-radius-m);
+    background-color: color-mix(in srgb, currentColor 2%, transparent);
+
+    > :first-child {
+      margin-top: 0;
+    }
+
+    > :not(summary) {
+      margin-top: var(--space);
+    }
+  }
+
+  summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+    cursor: pointer;
+    font-weight: 650;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &::before {
+      content: "";
+      width: 0.55rem;
+      height: 0.55rem;
+      flex: 0 0 auto;
+      border-right: var(--border-width-s) solid currentColor;
+      border-bottom: var(--border-width-s) solid currentColor;
+      transform: translateY(-0.08rem) rotate(45deg);
+      opacity: 0.7;
+      transition: transform 160ms ease, opacity 160ms ease;
+    }
+  }
+
+  details[open] > summary::before {
+    transform: translateY(0.08rem) rotate(225deg);
+    opacity: 1;
+  }
+
+  mark {
+    padding: 0.1em 0.25em;
+    border-radius: var(--border-radius-s);
+    background-color: color-mix(in srgb, var(--color-primary) 24%, transparent);
+    color: inherit;
+  }
+
+  kbd {
+    display: inline-block;
+    padding: 0.1em 0.4em;
+    border: var(--border-width-s) solid
+      color-mix(in srgb, currentColor 16%, transparent);
+    border-bottom-width: var(--border-width-m);
+    border-radius: var(--border-radius-s);
+    background-color: color-mix(in srgb, currentColor 4%, transparent);
+    font-size: var(--font-size-s);
+    line-height: 1.2;
+    font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+  }
+
+  abbr[title] {
+    cursor: help;
+    text-decoration: underline dotted color-mix(in srgb, currentColor 35%, transparent);
+    text-underline-offset: 0.16em;
+  }
+
+  sup,
+  sub {
+    font-size: 0.75em;
+    line-height: 0;
+  }
+
+  figure {
+    margin-left: 0;
+    margin-right: 0;
+
+    > :first-child {
+      margin-top: 0;
+    }
+  }
+
+  figcaption {
+    font-size: var(--font-size-s);
+    opacity: 0.72;
+  }
+
+  progress,
+  meter {
+    width: min(100%, 20rem);
+    height: 0.75rem;
+  }
 }

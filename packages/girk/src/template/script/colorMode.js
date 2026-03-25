@@ -21,6 +21,7 @@ const initColorMode = () => {
 const setCurrentMode = (mode) => {
   localMode = mode;
   localStorage.setItem("colorMode", localMode);
+  document.documentElement.setAttribute("color-mode", mode);
   document.body.setAttribute("color-mode", mode);
   updateColorModeToggle();
 };

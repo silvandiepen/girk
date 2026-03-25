@@ -51,6 +51,7 @@ const SEMANTIC_KEYS = [
 type ThemeKey = keyof typeof DEFAULT_THEME;
 type PaletteKey = (typeof PALETTE_KEYS)[number];
 type SemanticKey = (typeof SEMANTIC_KEYS)[number];
+type SemanticAssignment = Record<SemanticKey, string>;
 
 const clamp = (value: number, min: number, max: number): number =>
   Math.min(Math.max(value, min), max);
@@ -222,6 +223,25 @@ const resolveToken = (
   return resolved;
 };
 
+const resolveReference = (
+  token: string,
+  source: Record<string, string>,
+  stack = new Set<string>()
+): string => {
+  const key = token.trim().toLowerCase();
+  if (!source[key]) return token;
+  if (stack.has(key)) return key;
+
+  const next = source[key].trim().toLowerCase();
+  if (!source[next]) return key;
+
+  stack.add(key);
+  const resolved = resolveReference(next, source, stack);
+  stack.delete(key);
+
+  return resolved;
+};
+
 const buildSemanticColors = (
   colors: ColorConfig | null,
   mode: Mode,
@@ -259,27 +279,68 @@ const buildSemanticColors = (
   }, {}) as Record<ThemeKey | PaletteKey | SemanticKey, string>;
 };
 
-export const createColorVariables = (
-  colors: Record<ThemeKey | PaletteKey | SemanticKey, string>
-): string => {
-  const keys = [
-    "dark",
-    "light",
-    ...PALETTE_KEYS,
-    ...SEMANTIC_KEYS,
-  ] as const;
+const buildSemanticAssignments = (
+  colors: ColorConfig | null,
+  mode: Mode
+): SemanticAssignment => {
+  const overrides = Object.entries(colors || {}).reduce<Record<string, string>>(
+    (result, [key, value]) => {
+      result[normalizeKey(key)] = value;
+      return result;
+    },
+    {}
+  );
 
-  return keys
-    .flatMap((key) => {
-      const value = colors[key];
-      const contrast = getContrastReference(
-        value,
-        colors.dark,
-        colors.light
-      );
-      return [`--color-${key}: ${value};`, `--color-${key}-contrast: ${contrast};`];
-    })
-    .join("");
+  return {
+    primary: overrides.primary || "red",
+    secondary: overrides.secondary || "blue",
+    error: overrides.error || "red",
+    info: overrides.info || "blue",
+    warning: overrides.warning || "orange",
+    success: overrides.success || "green",
+    background:
+      overrides[`background${mode}`] ||
+      overrides.background ||
+      (mode === "dark" ? "dark" : "light"),
+    foreground:
+      overrides[`foreground${mode}`] ||
+      overrides.foreground ||
+      (mode === "dark" ? "light" : "dark"),
+  };
+};
+
+export const createColorVariables = (
+  colors: Record<ThemeKey | PaletteKey | SemanticKey, string>,
+  semanticAssignments?: SemanticAssignment
+): string => {
+  const paletteKeys = ["dark", "light", ...PALETTE_KEYS] as const;
+  const paletteVariables = paletteKeys.flatMap((key) => {
+    const value = colors[key];
+    const contrast = getContrastReference(
+      value,
+      colors.dark,
+      colors.light
+    );
+
+    return [`--color-${key}: ${value};`, `--color-${key}-contrast: ${contrast};`];
+  });
+
+  const semanticVariables = SEMANTIC_KEYS.flatMap((key) => {
+    const value = colors[key];
+    const assignment = semanticAssignments?.[key];
+    const reference = assignment
+      ? resolveReference(assignment, colors as Record<string, string>)
+      : "";
+    const hasReference = Boolean(reference) && reference in colors;
+    const variableValue = hasReference ? `var(--color-${reference})` : value;
+    const contrast = hasReference
+      ? `var(--color-${reference}-contrast)`
+      : getContrastReference(value, colors.dark, colors.light);
+
+    return [`--color-${key}: ${variableValue};`, `--color-${key}-contrast: ${contrast};`];
+  });
+
+  return [...paletteVariables, ...semanticVariables].join("");
 };
 
 export const buildModeColorVariables = (
@@ -287,7 +348,12 @@ export const buildModeColorVariables = (
   mode: Mode
 ): string => {
   const palette = buildPalette(colors);
-  return createColorVariables(buildSemanticColors(colors, mode, palette));
+  const semanticAssignments = buildSemanticAssignments(colors, mode);
+
+  return createColorVariables(
+    buildSemanticColors(colors, mode, palette),
+    semanticAssignments
+  );
 };
 
 export const buildCss = async (colors: ColorConfig | null) => {

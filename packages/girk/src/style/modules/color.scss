@@ -20,19 +20,25 @@ body {
   color: var(--color-foreground);
 }
 
-body[color-mode="dark"] {
+:root[color-mode="dark"] {
+  color-scheme: dark;
   content: "[DARKMODE]";
 }
-body[color-mode="light"] {
+:root[color-mode="light"] {
+  color-scheme: light;
   content: "[LIGHTMODE]";
 }
+
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([color-mode]) {
+    color-scheme: dark;
     content: "[DARKMODE]";
   }
 }
+
 @media (prefers-color-scheme: light) {
-  :root {
+  :root:not([color-mode]) {
+    color-scheme: light;
     content: "[LIGHTMODE]";
   }
 }

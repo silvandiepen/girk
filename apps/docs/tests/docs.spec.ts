@@ -38,6 +38,11 @@ const routes: RouteExpectation[] = [
     text: "Girk gives you a default stylesheet",
   },
   {
+    path: "/features/kitchensink/",
+    heading: /^Kitchen Sink$/,
+    text: "shows how Girk renders common content and native HTML controls",
+  },
+  {
     path: "/features/multilingual/",
     heading: /^Multilingual Content$/,
     text: "supports multilingual content with filename suffixes",
@@ -212,8 +217,39 @@ test.describe("generated docs", () => {
     await expect(main.getByRole("link", { name: "Archives", exact: true }).first()).toBeVisible();
     await expect(main.getByRole("link", { name: "Media and Assets", exact: true }).first()).toBeVisible();
     await expect(main.getByRole("link", { name: "Customisation", exact: true }).first()).toBeVisible();
+    await expect(main.getByRole("link", { name: "Kitchen Sink", exact: true }).first()).toBeVisible();
     await expect(main.getByRole("link", { name: "Multilingual Content", exact: true }).first()).toBeVisible();
     await expect(main.getByRole("link", { name: "Page Metadata", exact: true }).first()).toBeVisible();
+  });
+
+  test("kitchen sink exposes native form controls", async ({ page }) => {
+    await page.goto("/features/kitchensink/");
+
+    const main = page.locator("main");
+
+    await expect(main.locator("#kitchen-name")).toBeVisible();
+    await expect(main.locator("#kitchen-search")).toBeVisible();
+    await expect(main.locator("#kitchen-email")).toBeVisible();
+    await expect(main.locator("#kitchen-password")).toBeVisible();
+    await expect(main.locator("#kitchen-phone")).toBeVisible();
+    await expect(main.locator("#kitchen-url")).toBeVisible();
+    await expect(main.locator("#kitchen-number")).toBeVisible();
+    await expect(main.locator("#kitchen-date")).toBeVisible();
+    await expect(main.locator("#kitchen-time")).toBeVisible();
+    await expect(main.locator("#kitchen-datetime")).toBeVisible();
+    await expect(main.locator("#kitchen-month")).toBeVisible();
+    await expect(main.locator("#kitchen-week")).toBeVisible();
+    await expect(main.locator("#kitchen-role")).toBeVisible();
+    await expect(main.locator("#kitchen-stack")).toBeVisible();
+    await expect(main.locator("#kitchen-country")).toBeVisible();
+    await expect(main.locator("#kitchen-message")).toBeVisible();
+    await expect(main.locator("#kitchen-color")).toBeVisible();
+    await expect(main.locator("#kitchen-range")).toBeVisible();
+    await expect(main.locator("#kitchen-file")).toBeVisible();
+    await expect(main.getByRole("checkbox", { name: /send product updates/i })).toBeVisible();
+    await expect(main.getByRole("checkbox", { name: /send security notices/i })).toBeVisible();
+    await expect(main.getByRole("radio", { name: "Email" })).toBeVisible();
+    await expect(main.getByRole("radio", { name: "RSS" })).toBeVisible();
   });
 
   test("child pages expose related sibling pages below the content", async ({ page }) => {

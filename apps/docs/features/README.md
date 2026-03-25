@@ -14,6 +14,7 @@ Girk is useful because it gives you practical site-building features without for
 - archive pages for grouped content
 - copied media and assets
 - styling hooks and theme variables
+- a kitchensink reference page for the generated defaults
 - multilingual content
 - page metadata for navigation and behavior
 - build-time data sources for repeated content and generated pages
@@ -23,6 +24,7 @@ Girk is useful because it gives you practical site-building features without for
 - [Archives](/features/archives/index.html)
 - [Media and Assets](/features/media/index.html)
 - [Customisation](/features/customisation/index.html)
+- [Kitchen Sink](/features/kitchensink/index.html)
 - [Multilingual Content](/features/multilingual/index.html)
 - [Page Metadata](/features/metadata/index.html)
 - [Data Sources](/features/data-sources/index.html)

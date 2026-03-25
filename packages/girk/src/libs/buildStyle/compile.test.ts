@@ -17,8 +17,10 @@ describe("buildStyle compile", () => {
     expect(variables).toContain("--color-primary-contrast:");
     expect(variables).not.toContain("--color-primary-10:");
     expect(variables).not.toContain("--primary-h:");
-    expect(variables).toContain("--color-primary: #c44747;");
-    expect(variables).toContain("--color-secondary: #3f63dd;");
+    expect(variables).toContain("--color-primary: var(--color-red);");
+    expect(variables).toContain("--color-secondary: var(--color-blue);");
+    expect(variables).toContain("--color-background: var(--color-light);");
+    expect(variables).toContain("--color-foreground: var(--color-dark);");
   });
 
   it("resolves semantic colors from palette references", () => {
@@ -33,8 +35,8 @@ describe("buildStyle compile", () => {
     );
 
     expect(variables).toContain("--color-red: #aa0000;");
-    expect(variables).toContain("--color-primary: #aa0000;");
-    expect(variables).toContain("--color-background: #efe2cf;");
+    expect(variables).toContain("--color-primary: var(--color-red);");
+    expect(variables).toContain("--color-background: var(--color-beige);");
   });
 
   it("supports mode-specific background overrides", () => {
@@ -47,6 +49,6 @@ describe("buildStyle compile", () => {
       "light"
     );
 
-    expect(variables).toContain("--color-background: #efe2cf;");
+    expect(variables).toContain("--color-background: var(--color-beige);");
   });
 });
