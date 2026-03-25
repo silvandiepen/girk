@@ -4,12 +4,37 @@ const getNavigationItems = (navigation) =>
   );
 
 const PANEL_TRANSITION_MS = 180;
+const DESKTOP_NAVIGATION_MEDIA = "(min-width: 721px)";
 
 const clearPanelHideTimer = (submenu) => {
   if (!submenu || typeof submenu.__hideTimer !== "number") return;
 
   window.clearTimeout(submenu.__hideTimer);
   delete submenu.__hideTimer;
+};
+
+const setNavigationItemPanelAlignment = (item) => {
+  const toggle = item.querySelector(".navigation__toggle");
+  const controls = toggle?.getAttribute("aria-controls");
+  const submenu = controls ? document.getElementById(controls) : null;
+
+  item.classList.remove("navigation__item--align-end");
+
+  if (!submenu || !window.matchMedia(DESKTOP_NAVIGATION_MEDIA).matches) return;
+
+  const gutter = 16;
+  const submenuRect = submenu.getBoundingClientRect();
+
+  if (submenuRect.right > window.innerWidth - gutter) {
+    item.classList.add("navigation__item--align-end");
+  }
+
+  if (!item.classList.contains("navigation__item--align-end")) return;
+
+  const alignedRect = submenu.getBoundingClientRect();
+  if (alignedRect.left < gutter) {
+    item.classList.remove("navigation__item--align-end");
+  }
 };
 
 const setNavigationItemOpen = (item, isOpen) => {
@@ -26,14 +51,17 @@ const setNavigationItemOpen = (item, isOpen) => {
   if (isOpen) {
     submenu.hidden = false;
     submenu.setAttribute("data-state", "opening");
+    setNavigationItemPanelAlignment(item);
 
     window.requestAnimationFrame(() => {
+      setNavigationItemPanelAlignment(item);
       submenu.setAttribute("data-state", "open");
     });
 
     return;
   }
 
+  item.classList.remove("navigation__item--align-end");
   submenu.setAttribute("data-state", "closing");
   submenu.__hideTimer = window.setTimeout(() => {
     submenu.hidden = true;
@@ -63,6 +91,14 @@ const setMobileNavigationOpen = (navigation, isOpen) => {
 
 const initHeaderNavigation = (navigation) => {
   const items = getNavigationItems(navigation);
+
+  const updateOpenPanelAlignment = () => {
+    items.forEach((item) => {
+      if (!item.classList.contains("navigation__item--open")) return;
+      setNavigationItemPanelAlignment(item);
+    });
+  };
+
   items.forEach((item) => {
     const toggle = item.querySelector(".navigation__toggle");
     const link = item.querySelector(".navigation__link");
@@ -114,6 +150,8 @@ const initHeaderNavigation = (navigation) => {
       setNavigationItemOpen(item, false);
     });
   });
+
+  window.addEventListener("resize", updateOpenPanelAlignment);
 };
 
 const initMobileNavigation = (navigation) => {

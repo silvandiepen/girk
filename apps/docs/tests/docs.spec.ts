@@ -186,6 +186,35 @@ test.describe("generated docs", () => {
     expect(panelBox?.width ?? 0).toBeLessThan(380);
   });
 
+  test("navigation submenus stay within the desktop viewport", async ({ page }) => {
+    await page.setViewportSize({ width: 1024, height: 768 });
+    await page.goto("/examples/");
+
+    const toggle = page
+      .getByRole("banner")
+      .getByRole("button", { name: "Toggle How to Use submenu" });
+    const panelId = await toggle.getAttribute("aria-controls");
+
+    expect(panelId).toBeTruthy();
+
+    await toggle.click();
+
+    const panel = page.locator(`#${panelId}`);
+    await expect(panel).toBeVisible();
+
+    const [panelBox, viewportWidth] = await Promise.all([
+      panel.boundingBox(),
+      page.evaluate(() => window.innerWidth),
+    ]);
+
+    expect(panelBox).toBeTruthy();
+    const panelLeft = panelBox?.x ?? 0;
+    const panelRight = panelLeft + (panelBox?.width ?? 0);
+
+    expect(panelLeft).toBeGreaterThanOrEqual(16);
+    expect(panelRight).toBeLessThanOrEqual(viewportWidth - 16);
+  });
+
   test("footer exposes the main navigation links", async ({ page }) => {
     await page.goto("/features/");
 

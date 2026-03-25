@@ -234,8 +234,14 @@
       color-mix(in srgb, var(--color-foreground) 8%, transparent);
     opacity: 0;
     transform: translateY(calc(var(--space-xs) * -1)) scale(0.98);
-    transform-origin: top right;
+    transform-origin: top left;
     transition: opacity 0.18s ease, transform 0.18s ease;
+  }
+
+  .navigation__item--align-end > .navigation__panel {
+    left: auto;
+    right: 0;
+    transform-origin: top right;
   }
 
   .navigation__item--open > .navigation__panel,
