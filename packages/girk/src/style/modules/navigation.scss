@@ -55,6 +55,7 @@
   &__link {
     display: inline-flex;
     align-items: center;
+    gap: var(--space-xs);
     padding: 0;
     color: inherit;
     text-decoration: none;
@@ -157,6 +158,7 @@
     width: fit-content;
     display: inline-flex;
     align-items: center;
+    gap: var(--space-xs);
     color: inherit;
     text-decoration: none;
     padding: 0.3em 0.5em;
@@ -196,6 +198,22 @@
     font-size: var(--font-size);
     line-height: 1.2;
     font-weight: 600;
+  }
+
+  &__icon {
+    width: var(--navigation-icon-size, 1em);
+    height: var(--navigation-icon-size, 1em);
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__icon-asset,
+  &__icon-asset > svg {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 }
 
@@ -404,6 +422,7 @@
     width: fit-content;
     display: inline-flex;
     align-items: center;
+    gap: var(--space-xs);
     padding: 0.3em 0.5em;
     border-radius: var(--border-radius-s);
     color: inherit;

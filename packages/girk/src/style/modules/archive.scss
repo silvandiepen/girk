@@ -109,6 +109,13 @@
     opacity: 1;
   }
 
+  &__icon,
+  &__icon > svg {
+    display: block;
+    width: var(--card-icon-inner-size, calc(var(--space) * 1.6));
+    height: var(--card-icon-inner-size, calc(var(--space) * 1.6));
+  }
+
   &__image {
     display: block;
     width: 100%;

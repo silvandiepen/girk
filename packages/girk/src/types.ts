@@ -48,6 +48,13 @@ export interface GeneratorInfo {
   version: string;
 }
 
+export interface ResolvedIcon {
+  svg?: string;
+  src?: string;
+  name?: string;
+  provider?: "asset" | "inline" | "open-icon";
+}
+
 interface Favicons {
   default: string;
   light: string;
@@ -116,6 +123,7 @@ export interface File {
   type?: FileType;
   thumbnail?: string;
   thumbnailSvg?: string;
+  icon?: ResolvedIcon;
 }
 export interface MenuItem {
   id: string;
@@ -123,7 +131,7 @@ export interface MenuItem {
   link: string;
   active: boolean;
   language: Language;
-  icon?: string;
+  icon?: ResolvedIcon;
   current?: boolean;
   isParent?: boolean;
   children?: MenuItem[];

@@ -1,3 +1,5 @@
+include icon.pug
+
 section.section.archive.archive--articles
     div.container
         if archive.title
@@ -7,9 +9,8 @@ section.section.archive.archive--articles
             each item in archive.children
                 li.archive-card
                     a.archive-card__link(href=`${item.redirect ? item.redirect : item.link}`)
-                        if item.meta.icon
-                            span.archive-card__media.archive-card__media--icon
-                                img.archive-card__icon(src=item.meta.icon, alt="")
+                        if item.icon
+                            +renderIcon(item.icon, "archive-card__media archive-card__media--icon", "archive-card__icon")
                         .archive-card__body
                             h3.archive-card__title= item.title
                             if item.excerpt

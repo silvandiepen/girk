@@ -1,6 +1,8 @@
 - const navigationRoot = typeof navigationIdPrefix !== "undefined" ? navigationIdPrefix : "navigation"
 - const variant = typeof navigationVariant !== "undefined" ? navigationVariant : "header"
 
+include icon.pug
+
 mixin renderPanelGroups(items, level)
     - const compactColumnClass = level === 1 && items.length <= 5 ? ' navigation__groups--compact-column' : ''
     ul(class=`navigation__groups navigation__groups--level-${level}${compactColumnClass}`)
@@ -10,7 +12,9 @@ mixin renderPanelGroups(items, level)
                 a.navigation__group-link(
                     class=hasChildren ? ' navigation__group-link--heading' : ''
                     href=item.link
-                )= item.name
+                )
+                    +renderIcon(item.icon, "navigation__icon", "navigation__icon-asset")
+                    span.navigation__text= item.name
                 if hasChildren
                     +renderPanelGroups(item.children, level + 1)
 
@@ -23,6 +27,7 @@ mixin renderHeaderNavigation(items)
             li.navigation__item(class=`${item.current ? ' navigation__item--current' : ''}${item.isParent && !item.current ? ' navigation__item--parent' : ''}${hasChildren ? ' navigation__item--has-children' : ''}${isOpen ? ' navigation__item--open' : ''}`)
                 .navigation__entry
                     a.navigation__link(href=item.link)
+                        +renderIcon(item.icon, "navigation__icon", "navigation__icon-asset")
                         span.navigation__text= item.name
                     if hasChildren
                         button.navigation__toggle(
@@ -45,7 +50,9 @@ mixin renderFooterTree(items, level)
                 a.navigation__footer-link(
                     class=level === 0 ? ' navigation__footer-link--heading' : ''
                     href=item.link
-                )= item.name
+                )
+                    +renderIcon(item.icon, "navigation__icon", "navigation__icon-asset")
+                    span.navigation__text= item.name
                 if hasChildren
                     +renderFooterTree(item.children, level + 1)
 

@@ -1,6 +1,6 @@
 ---
 title: Page Metadata
-icon: /media/icon_meta.svg
+icon: ADD
 tags: documentation
 ---
 
@@ -31,12 +31,14 @@ Most of the time, you do not need a separate admin panel or route config. A few 
 
 ## Example
 
+`icon` accepts either a normal asset path or an Open Icon lookup. A bare uppercase value like `ADD` resolves to the matching medium UI icon when one exists.
+
 ```markdown
 ---
 title: Install
 description: Start a new Girk project
 order: 10
-icon: /assets/icon-install.svg
+icon: ADD
 color: primary
 tags: guide, basics
 ---

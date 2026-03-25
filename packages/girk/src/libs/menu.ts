@@ -1,35 +1,11 @@
 import { blockLine, blockSettings, blockMid } from "cli-block";
 
-import { getParentFile, makePath } from "@/libs/files";
+import { makePath } from "@/libs/files";
 import { isSectionsArchiveParent } from "@/libs/archives";
-import { Payload, MenuItem, ArchiveType } from "@/types";
-import { getSVGData } from "@/libs/svg";
-
-export const getMenuIcons = async (menu: MenuItem[]): Promise<MenuItem[]> => {
-  return await Promise.all(
-    menu.map(async (item) => {
-      let icon = item.icon;
-
-      if (icon && icon.includes(".svg")) {
-        icon = await getSVGData(item.icon);
-      }
-
-      if (item.children) {
-        item = {
-          ...item,
-          children: await getMenuIcons(item.children),
-        };
-      }
-      return { ...item, icon: icon || "" };
-    })
-  );
-};
+import { Payload, MenuItem } from "@/types";
 
 const filterHomePage = (payload: Payload, item: MenuItem) => {
-  const langUrls = [
-    "/index.html",
-    ...payload.languages.map((l) => `/${l}/index.html`),
-  ];
+  const langUrls = ["/index.html", ...payload.languages.map((l) => `/${l}/index.html`)];
 
   return !langUrls.includes(item.link);
 };
@@ -50,8 +26,6 @@ export const generateMenu = async (payload: Payload): Promise<Payload> => {
       // Index in first depth can also be in menu
       if (depth === 1 && file.home) active = !isHidden;
 
-      const parent = getParentFile(file, payload.files);
-
       let link = makePath(file);
 
       if (file.meta.redirect) {
@@ -64,7 +38,7 @@ export const generateMenu = async (payload: Payload): Promise<Payload> => {
         link: link,
         active,
         language: file.language,
-        icon: file.meta.icon,
+        icon: file.icon,
         order: file.meta.order || 999,
       };
     })
@@ -76,12 +50,9 @@ export const generateMenu = async (payload: Payload): Promise<Payload> => {
 
   menu.forEach((item) => {
     const file = payload.files.find((f) => f.id == item.id);
+    if (!file) return;
 
-      if (
-        !!file.meta.archive &&
-        file.meta.menuChildren &&
-        !isSectionsArchiveParent(file)
-      ) {
+    if (!!file.meta.archive && file.meta.menuChildren && !isSectionsArchiveParent(file)) {
       const children = payload.files
         .filter((f) => f.parent == file.name)
         .map((c) => ({
@@ -90,7 +61,7 @@ export const generateMenu = async (payload: Payload): Promise<Payload> => {
           link: makePath(c),
           active: c.meta.hide !== true && c.meta.hide !== "true",
           language: c.language,
-          icon: c.meta.icon,
+          icon: c.icon,
           order: c.meta.order || 999,
         }))
         .sort((a, b) => a.order - b.order);
@@ -98,8 +69,6 @@ export const generateMenu = async (payload: Payload): Promise<Payload> => {
       item.children = children;
     }
   });
-
-  menu = await getMenuIcons(menu);
 
   blockMid("Navigation");
 

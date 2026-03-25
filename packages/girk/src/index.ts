@@ -14,6 +14,7 @@ import { generateFavicon } from "@/libs/favicon";
 import { getFiles } from "@/libs/files";
 import { isHomePath } from "@/libs/files";
 import { fileTitle } from "@/libs/helpers";
+import { resolveFileIcons } from "@/libs/icon";
 import { getLanguageName } from "@/libs/language";
 import { toHtml } from "@/libs/markdown";
 import {
@@ -34,9 +35,9 @@ import { asyncForEach, hello } from "@/libs/utils";
 import { generateSocials } from "./libs/socials";
 import { File, Payload, Project, Settings } from "./types";
 
-const { version } = JSON.parse(
-  readFileSync(join(__dirname, "../package.json"), "utf-8")
-) as { version: string };
+const { version } = JSON.parse(readFileSync(join(__dirname, "../package.json"), "utf-8")) as {
+  version: string;
+};
 
 /*
  * Files
@@ -51,8 +52,7 @@ export const files = async (payload: Payload): Promise<Payload> => {
    */
   const languages = [];
   for (let i = 0; i < files.length; i++) {
-    if (!languages.includes(files[i].language))
-      languages.push(files[i].language);
+    if (!languages.includes(files[i].language)) languages.push(files[i].language);
   }
 
   /*
@@ -68,10 +68,7 @@ export const files = async (payload: Payload): Promise<Payload> => {
     };
   });
 
-
   const project: Project = await getProjectData(files);
-
-
 
   /*
    * When the file is a "home" file, it gets certain privileges
@@ -92,6 +89,8 @@ export const files = async (payload: Payload): Promise<Payload> => {
     files[index].title = title.toString();
   });
 
+  files = await resolveFileIcons(files);
+
   /*
    * Set the thumbnail for each file
    */
@@ -110,9 +109,7 @@ export const files = async (payload: Payload): Promise<Payload> => {
    * filtering can happen.
    */
   if (project?.ignore)
-    files = files.filter(
-      (file) => !project.ignore.some((ignore) => file.path.includes(ignore))
-    );
+    files = files.filter((file) => !project.ignore.some((ignore) => file.path.includes(ignore)));
 
   /*
    * Logging
@@ -158,8 +155,6 @@ export const settingsAndConfig = async (payload: Payload): Promise<Payload> => {
  *  Build
  */
 
-
-
 export const contentPages = async (payload: Payload): Promise<Payload> => {
   const shouldCreatePage = (file: File): boolean =>
     !file.name.startsWith("-") && !isSectionsArchiveChild(file, payload.files);
@@ -173,7 +168,7 @@ export const contentPages = async (payload: Payload): Promise<Payload> => {
         payload.files
           .filter((file: File) => file.language == language)
           .filter((file: File) => shouldCreatePage(file)),
-        async (file: File) => await createPage(payload, file)
+        async (file: File) => await createPage(payload, file),
       );
     });
   } else {
@@ -181,7 +176,7 @@ export const contentPages = async (payload: Payload): Promise<Payload> => {
 
     await asyncForEach(
       payload.files.filter((file: File) => shouldCreatePage(file)),
-      async (file: File) => await createPage(payload, file)
+      async (file: File) => await createPage(payload, file),
     );
   }
 
@@ -210,7 +205,6 @@ const removeUrlParts = (payload: Payload): Payload => {
   return payload;
 };
 
-
 hello()
   .then(settingsAndConfig)
   .then((s) => {
@@ -218,12 +212,8 @@ hello()
     return s;
   })
   .then((s) => {
-    s.settings.args &&
-      Object.keys(s.settings.args).length &&
-      blockSettings(s.settings.args);
-    s.settings.config &&
-      Object.keys(s.settings.config).length &&
-      blockSettings(s.settings.config);
+    s.settings.args && Object.keys(s.settings.args).length && blockSettings(s.settings.args);
+    s.settings.config && Object.keys(s.settings.config).length && blockSettings(s.settings.config);
     return s;
   })
   .then(files)
