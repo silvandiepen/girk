@@ -1,3 +1,10 @@
+## [1.19.1](https://github.com/silvandiepen/girk/compare/v1.19.0...v1.19.1) (2026-03-25)
+
+
+### Bug Fixes
+
+* **Theme:** Reduce native color input size ([1cc7005](https://github.com/silvandiepen/girk/commit/1cc7005d44b6c184b29e5402b4115353298323a3))
+
 # [1.19.0](https://github.com/silvandiepen/girk/compare/v1.18.0...v1.19.0) (2026-03-25)
 
 
