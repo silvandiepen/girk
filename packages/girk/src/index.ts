@@ -12,6 +12,7 @@ import { generateStyles } from "@/libs/buildStyle/style";
 import { prepareDataFiles } from "@/libs/data";
 import { generateFavicon } from "@/libs/favicon";
 import { getFiles } from "@/libs/files";
+import { isHomePath } from "@/libs/files";
 import { fileTitle } from "@/libs/helpers";
 import { getLanguageName } from "@/libs/language";
 import { toHtml } from "@/libs/markdown";
@@ -76,13 +77,7 @@ export const files = async (payload: Payload): Promise<Payload> => {
    * When the file is a "home" file, it gets certain privileges
    */
   await asyncForEach(files, async (file: File, index: number) => {
-    const relativePath = file.path.replace(process.cwd(), "");
-    const pathGroup = relativePath.split("/");
-
-    const thePath = pathGroup[pathGroup.length - 1].toLowerCase();
-    const isHome = thePath.includes("readme") || thePath.includes("index");
-
-    files[index].home = isHome ? isHome && file.meta.archive : false;
+    files[index].home = isHomePath(file.path);
   });
 
   /*

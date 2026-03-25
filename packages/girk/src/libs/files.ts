@@ -22,6 +22,12 @@ export const fileId = (path: string): string =>
     .split(".")[0]
     .toLowerCase();
 
+export const isHomePath = (path: string): boolean => {
+  const fileName = basename(path, extname(path)).split(":")[0].toLowerCase();
+
+  return fileName === "readme" || fileName === "index";
+};
+
 export const getFileTree = async (
   dir: string,
   filter: string[] = null
