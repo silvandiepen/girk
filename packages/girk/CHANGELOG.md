@@ -1,3 +1,10 @@
+## [1.19.5](https://github.com/silvandiepen/girk/compare/v1.19.4...v1.19.5) (2026-03-25)
+
+
+### Bug Fixes
+
+* **Docs:** Use local SVG favicon ([63e2b35](https://github.com/silvandiepen/girk/commit/63e2b35cad6319c5894a028772a07202b90b5285))
+
 ## [1.19.4](https://github.com/silvandiepen/girk/compare/v1.19.3...v1.19.4) (2026-03-25)
 
 
