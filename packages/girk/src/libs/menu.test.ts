@@ -80,4 +80,54 @@ describe("Menu generation", () => {
       "API",
     ]);
   });
+
+  it("keeps child folder landing pages visible in archive menus", async () => {
+    const payload = await generateMenu({
+      files: [
+        {
+          id: "features",
+          title: "Features",
+          name: "Features",
+          path: `${process.cwd()}/features/README.md`,
+          home: true,
+          language: "en",
+          meta: { archive: "articles", menuChildren: true, order: 1 },
+        },
+        {
+          id: "customisation",
+          title: "Customisation",
+          name: "Customisation",
+          path: `${process.cwd()}/features/customisation.md`,
+          parent: "Features",
+          language: "en",
+          meta: { order: 1 },
+        },
+        {
+          id: "kitchensink",
+          title: "Kitchen Sink",
+          name: "Kitchen Sink",
+          path: `${process.cwd()}/features/kitchensink/README.md`,
+          parent: "Features",
+          home: true,
+          language: "en",
+          meta: { archive: "sections", order: 2 },
+        },
+        {
+          id: "typography",
+          title: "Typography",
+          name: "Typography",
+          path: `${process.cwd()}/features/kitchensink/typography.md`,
+          parent: "Kitchen Sink",
+          language: "en",
+          meta: { order: 1 },
+        },
+      ],
+      languages: ["en"],
+    } as any);
+
+    expect(payload.menu[0].children?.map((item) => item.name)).toEqual([
+      "Customisation",
+      "Kitchen Sink",
+    ]);
+  });
 });

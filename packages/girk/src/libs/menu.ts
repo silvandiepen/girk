@@ -83,7 +83,7 @@ export const generateMenu = async (payload: Payload): Promise<Payload> => {
         !isSectionsArchiveParent(file)
       ) {
       const children = payload.files
-        .filter((f) => f.parent == file.name && !f.home)
+        .filter((f) => f.parent == file.name)
         .map((c) => ({
           id: c.id,
           name: c.title,
