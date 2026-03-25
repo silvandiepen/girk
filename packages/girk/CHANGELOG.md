@@ -1,3 +1,10 @@
+## [1.17.1](https://github.com/silvandiepen/girk/compare/v1.17.0...v1.17.1) (2026-03-25)
+
+
+### Bug Fixes
+
+* **Navigation:** include first-level section home pages ([7e68694](https://github.com/silvandiepen/girk/commit/7e6869483f84f854f74cfeb7b9486ef004c72890))
+
 # [1.17.0](https://github.com/silvandiepen/girk/compare/v1.16.0...v1.17.0) (2026-03-24)
 
 
