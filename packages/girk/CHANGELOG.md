@@ -1,3 +1,12 @@
+# [1.21.0](https://github.com/silvandiepen/girk/compare/v1.20.1...v1.21.0) (2026-03-25)
+
+
+### Features
+
+* **Docs:** Migrate docs pages to Open Icon ([e693838](https://github.com/silvandiepen/girk/commit/e6938386c5fd4148dd63d7a71976a6d8615e2bb5))
+* **Icon:** Integrate Open Icon page metadata ([24517f5](https://github.com/silvandiepen/girk/commit/24517f54ce2c3b697f53fe3c78956d42b47624e7))
+* **Theme:** Use icon-only color mode toggle ([10e764a](https://github.com/silvandiepen/girk/commit/10e764ae67f46c9b61e2ef81eff6285b0aa2525d))
+
 ## [1.20.1](https://github.com/silvandiepen/girk/compare/v1.20.0...v1.20.1) (2026-03-25)
 
 
