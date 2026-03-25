@@ -1,5 +1,3 @@
-@use "sass:color";
-
 pre code {
   font-size: var(--font-size-s);
 }
@@ -103,23 +101,45 @@ pre[class*="language-"] {
 }
 
 :root {
-  --lightness: 30%;
-}
-
-// @media (prefers-color-scheme: dark) {
-//   :root {
-//     --lightness: 80%;
-//   }
-// }
-body[color-mode="dark"] {
-  --lightness: 70%;
-}
-
-@function setLightness($color, $lightness) {
-  @return hsl(
-    color.channel($color, "hue", $space: hsl)
-      color.channel($color, "saturation", $space: hsl)
-      $lightness
+  --code-token-comment: color-mix(
+    in srgb,
+    var(--color-foreground) 42%,
+    var(--color-background) 58%
+  );
+  --code-token-punctuation: color-mix(
+    in srgb,
+    var(--color-foreground) 70%,
+    var(--color-background) 30%
+  );
+  --code-token-keyword: color-mix(
+    in srgb,
+    var(--color-primary) 82%,
+    var(--color-foreground) 18%
+  );
+  --code-token-name: color-mix(
+    in srgb,
+    var(--color-secondary) 76%,
+    var(--color-foreground) 24%
+  );
+  --code-token-string: color-mix(
+    in srgb,
+    var(--color-success) 78%,
+    var(--color-foreground) 22%
+  );
+  --code-token-number: color-mix(
+    in srgb,
+    var(--color-warning) 84%,
+    var(--color-foreground) 16%
+  );
+  --code-token-accent: color-mix(
+    in srgb,
+    var(--color-info) 74%,
+    var(--color-foreground) 26%
+  );
+  --code-token-strong: color-mix(
+    in srgb,
+    var(--color-foreground) 88%,
+    var(--color-primary) 12%
   );
 }
 
@@ -128,110 +148,111 @@ body[color-mode="dark"] {
     all: unset;
   }
   &.comment {
-    //color: setLightness(slategray, var(--lightness));
-    opacity: 0.33;
+    color: var(--code-token-comment);
+    opacity: 1;
   }
   &.prolog {
-    //color: setLightness(slategray, var(--lightness));
-    opacity: 0.75;
+    color: var(--code-token-comment);
+    opacity: 1;
   }
   &.doctype {
-    //  color: setLightness(slategray, var(--lightness));
-    opacity: 0.75;
+    color: var(--code-token-comment);
+    opacity: 1;
   }
   &.cdata {
-    // color: setLightness(slategray, var(--lightness));
-    opacity: 0.75;
+    color: var(--code-token-comment);
+    opacity: 1;
   }
   &.punctuation {
-    opacity: 0.25;
+    color: var(--code-token-punctuation);
+    opacity: 1;
   }
   &.namespace {
     opacity: 0.7;
   }
   &.property {
-    color: setLightness(rgb(130, 130, 130), var(--lightness));
+    color: var(--code-token-name);
   }
   &.tag {
-    color: setLightness(rgb(85, 85, 85), var(--lightness));
+    color: var(--code-token-keyword);
   }
   &.boolean {
-    color: setLightness(rgb(85, 85, 85), var(--lightness));
+    color: var(--code-token-number);
   }
   &.number {
-    color: setLightness(rgb(85, 85, 85), var(--lightness));
+    color: var(--code-token-number);
   }
   &.constant {
-    color: setLightness(rgb(85, 85, 85), var(--lightness));
+    color: var(--code-token-number);
   }
   &.symbol {
-    color: setLightness(rgb(85, 85, 85), var(--lightness));
+    color: var(--code-token-number);
   }
   &.deleted {
-    color: setLightness(rgb(85, 85, 85), var(--lightness));
+    color: var(--color-error);
   }
   &.selector {
-    color: setLightness(rgb(115, 115, 115), var(--lightness));
+    color: var(--code-token-name);
   }
   &.attr-name {
-    color: setLightness(rgb(115, 115, 115), var(--lightness));
+    color: var(--code-token-name);
   }
   &.string {
-    color: setLightness(rgb(115, 115, 115), var(--lightness));
+    color: var(--code-token-string);
   }
   &.char {
-    color: setLightness(rgb(115, 115, 115), var(--lightness));
+    color: var(--code-token-string);
   }
   &.builtin {
-    color: setLightness(rgb(115, 115, 115), var(--lightness));
+    color: var(--code-token-accent);
   }
   &.inserted {
-    color: setLightness(rgb(115, 115, 115), var(--lightness));
+    color: var(--color-success);
   }
   &.operator {
-    color: setLightness(rgb(95, 95, 95), var(--lightness));
+    color: var(--code-token-punctuation);
   }
   &.entity {
-    color: setLightness(rgb(95, 95, 95), var(--lightness));
+    color: var(--code-token-accent);
     cursor: help;
   }
   &.url {
-    color: setLightness(rgb(95, 95, 95), var(--lightness));
+    color: var(--code-token-accent);
   }
   .language-css {
     &.string {
-      color: setLightness(rgb(95, 95, 95), var(--lightness));
+      color: var(--code-token-string);
     }
   }
   .style {
     &.string {
-      color: setLightness(rgb(95, 95, 95), var(--lightness));
+      color: var(--code-token-string);
     }
   }
   &.atrule {
-    color: setLightness(rgb(70, 70, 70), var(--lightness));
+    color: var(--code-token-keyword);
   }
   &.attr-value {
-    color: setLightness(rgb(70, 70, 70), var(--lightness));
+    color: var(--code-token-string);
   }
   &.keyword {
-    color: setLightness(rgb(70, 70, 70), var(--lightness));
+    color: var(--code-token-keyword);
   }
   &.function {
-    color: setLightness(rgb(55, 55, 55), var(--lightness));
+    color: var(--code-token-accent);
   }
   &.class-name {
-    color: setLightness(rgb(55, 55, 55), var(--lightness));
+    color: var(--code-token-strong);
   }
   &.regex {
-    color: setLightness(rgb(145, 145, 145), var(--lightness));
+    color: var(--code-token-string);
   }
   &.important {
-    color: setLightness(rgb(145, 145, 145), var(--lightness));
+    color: var(--code-token-strong);
     font-weight: bold;
   }
   &.variable {
-    color: setLightness(rgb(145, 145, 145), var(--lightness));
+    color: var(--code-token-name);
   }
   &.bold {
     font-weight: bold;
