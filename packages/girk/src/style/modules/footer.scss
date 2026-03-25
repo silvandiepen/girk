@@ -144,19 +144,29 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 3em;
-    padding: 0 var(--space-xs);
+    min-width: var(--switch-segment-height);
     min-height: var(--switch-segment-height);
-    font-size: var(--font-size-s);
-    font-weight: 600;
-    line-height: 1.2;
-    text-align: center;
+    padding: 0;
     color: color-mix(in srgb, var(--color-foreground) 68%, transparent);
     transition: color 0.2s ease, background-color 0.2s ease;
   }
 
   &__option:hover {
     color: var(--color-foreground);
+  }
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--color-mode-icon-size, 1em);
+    height: var(--color-mode-icon-size, 1em);
+  }
+
+  &__icon-asset {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
   &__track {
