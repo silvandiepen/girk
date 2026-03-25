@@ -1,3 +1,10 @@
+## [1.19.2](https://github.com/silvandiepen/girk/compare/v1.19.1...v1.19.2) (2026-03-25)
+
+
+### Bug Fixes
+
+* **Navigation:** Keep header submenus in view ([8329649](https://github.com/silvandiepen/girk/commit/83296490652cafd46287baa7b7e1d3f388a14dc1))
+
 ## [1.19.1](https://github.com/silvandiepen/girk/compare/v1.19.0...v1.19.1) (2026-03-25)
 
 

@@ -13,6 +13,7 @@ These pages are generated during the publish workflow from the conventional comm
 
 ## Read The Latest
 
+- [1.19.2](/release-notes/v1-19-2/index.html)
 - [1.19.1](/release-notes/v1-19-1/index.html)
 - [1.19.0](/release-notes/v1-19-0/index.html)
 - [1.18.0](/release-notes/v1-18-0/index.html)
