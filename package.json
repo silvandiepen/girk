@@ -24,7 +24,7 @@
     "cf:build:example-recipes": "npm run build:lib && npm run build -w @girk/example-recipes",
     "cf:build:sites": "npm run build:lib && npm run build:docs && npm run build:examples && npm run build:worker",
     "deploy:sites": "npm run cf:build:sites && npm run deploy -w @girk/sites-worker",
-    "test": "npm run test -w @girk/utils && npm run test -w girky",
+    "test": "node --test scripts/release-notes.test.mjs && npm run test -w @girk/utils && npm run test -w girky",
     "test:worker": "npm run test -w @girk/sites-worker",
     "test:e2e": "npm run build:lib && npm run build:docs && npm run build -w @girk/example-basic && playwright test",
     "test:examples": "npm run build:lib && node --test scripts/test-examples.mjs",

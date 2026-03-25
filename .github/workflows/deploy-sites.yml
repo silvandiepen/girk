@@ -1,27 +1,15 @@
 name: Deploy Sites
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - ".github/workflows/deploy-sites.yml"
-      - "apps/docs/**"
-      - "apps/example-basic/**"
-      - "apps/example-data/**"
-      - "apps/example-multilang/**"
-      - "packages/girk/**"
-      - "packages/utils/**"
-      - "workers/sites/**"
-      - "scripts/build-sites-worker.mjs"
-      - "package.json"
-      - "package-lock.json"
-      - ".nvmrc"
-      - ".node-version"
+  workflow_run:
+    workflows:
+      - Publish
+    types:
+      - completed
   workflow_dispatch:
 
 concurrency:
-  group: deploy-sites-${{ github.ref }}
+  group: deploy-sites-${{ github.event.workflow_run.head_branch || github.ref }}
   cancel-in-progress: false
 
 permissions:
@@ -29,11 +17,14 @@ permissions:
 
 jobs:
   deploy:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          ref: main
 
       - name: Set up Node
         uses: actions/setup-node@v5

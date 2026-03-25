@@ -15,12 +15,14 @@ export default {
         pkgRoot: "packages/girk",
       },
     ],
+    "./scripts/semantic-release/release-notes-plugin.mjs",
     [
       "@semantic-release/git",
       {
         assets: [
           "packages/girk/package.json",
           "packages/girk/CHANGELOG.md",
+          "apps/docs/release-notes/*.md",
         ],
         message:
           "chore(Release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}",

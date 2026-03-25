@@ -7,19 +7,16 @@ order: 5
 
 # Release Notes
 
-This section tracks what changed in Girk in a user-facing way.
+This section tracks what changed in each released version of Girk.
 
-Use it when you want the practical summary of a release instead of the raw commit history.
-
-## What You Will Find Here
-
-- versioned release summaries for published changes
-- the next versioned page for local changes that are queued to release next
-- short explanations of what changed for builders, maintainers, and deployed sites
+These pages are generated during the publish workflow from the conventional commits that were included in that release.
 
 ## Read The Latest
 
 - [1.17.0](/release-notes/v1-17-0/index.html)
+- [1.16.0](/release-notes/v1-16-0/index.html)
+- [1.15.0](/release-notes/v1-15-0/index.html)
+- [1.14.0](/release-notes/v1-14-0/index.html)
 - [1.13.0](/release-notes/v1-13-0/index.html)
 - [1.12.0](/release-notes/v1-12-0/index.html)
 - [1.11.0](/release-notes/v1-11-0/index.html)
