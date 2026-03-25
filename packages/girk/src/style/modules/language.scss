@@ -28,7 +28,7 @@
         opacity: 1;
         background: var(--color-background);
         color: var(--color-foreground);
-        box-shadow: 0 0.2rem 0.75rem
+        box-shadow: 0 0.2em 0.75em
           color-mix(in srgb, var(--color-foreground) 18%, transparent);
       }
     }
@@ -48,7 +48,7 @@
     opacity: 1;
     border-radius: var(--border-radius-s);
     color: color-mix(in srgb, var(--color-foreground) 68%, transparent);
-    min-width: 2.5rem;
+    min-width: 2.5em;
     padding: 0 var(--space-xs);
     min-height: var(--switch-segment-height);
     transition: background-color 0.2s ease, color 0.2s ease,

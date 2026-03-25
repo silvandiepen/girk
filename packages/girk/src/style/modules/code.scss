@@ -51,7 +51,11 @@ pre[class^="language"] {
 
 :not(pre) > code {
   font-size: var(--font-size-s);
-  background: color-mix(in srgb, var(--color-background) 94%, var(--color-foreground) 6%);
+  background: color-mix(
+    in srgb,
+    var(--color-foreground) 25%,
+    transparent 75%
+  );
   border: var(--border-width-s) solid
     color-mix(in srgb, var(--color-foreground) 12%, transparent);
   color: inherit;

@@ -1,6 +1,6 @@
 :root {
   --form-accent-color: var(--color-primary);
-  --form-width: min(100%, 42rem);
+  --form-width: min(100%, 42em);
   --form-gap: var(--space);
   --form-help-font-size: var(--font-size-s);
   --form-help-opacity: 0.68;
@@ -12,13 +12,22 @@
   --form-legend-padding-x: var(--space-xs);
   --form-legend-font-weight: 650;
   --form-label-gap: var(--space-xs);
+  --form-label-inline-gap: var(--form-label-gap);
   --form-label-font-weight: 600;
+  --form-inline-control-width: 14em;
+  --form-inline-range-width: 12em;
   --form-choice-gap: var(--space-s);
   --form-choice-font-weight: 500;
-  --form-control-width: min(100%, 42rem);
-  --form-control-min-height: calc(var(--space-xl) + var(--space-xs));
-  --form-control-padding-y: calc(var(--space-s) + var(--border-width-s));
-  --form-control-padding-x: var(--space);
+  --form-control-width: min(100%, 42em);
+  --form-input-line-height: 1.4;
+  --form-input-padding: var(--space-xs);
+  --form-input-padding-y: var(--form-input-padding);
+  --form-input-padding-x: var(--form-input-padding);
+  --form-control-line-height: var(--form-input-line-height);
+  --form-control-padding: var(--form-input-padding);
+  --form-control-padding-y: var(--form-input-padding-y);
+  --form-control-padding-x: var(--form-input-padding-x);
+  --form-control-color: var(--color-foreground);
   --form-control-border-color: color-mix(in srgb, currentColor 14%, transparent);
   --form-control-radius: var(--border-radius-m);
   --form-control-background: var(--color-background);
@@ -28,18 +37,16 @@
     border-color var(--form-control-transition-duration) var(--form-control-transition-easing),
     box-shadow var(--form-control-transition-duration) var(--form-control-transition-easing),
     color var(--form-control-transition-duration) var(--form-control-transition-easing);
+  --form-number-width: 8em;
   --form-select-padding-right: calc(var(--space-xl) + var(--space-s));
-  --form-select-indicator-size: 0.35rem;
-  --form-select-indicator-offset-y: calc(50% - 0.12rem);
-  --form-select-indicator-first-offset-x: 1rem;
-  --form-select-indicator-second-offset-x: 0.65rem;
-  --form-multiselect-min-height: 9rem;
+  --form-select-indicator-color: var(--form-control-color);
+  --form-select-indicator-size: 0.35em;
+  --form-select-indicator-offset-y: calc(50% - 0.12em);
+  --form-select-indicator-first-offset-x: 1em;
+  --form-select-indicator-second-offset-x: 0.65em;
+  --form-multiselect-min-height: 9em;
   --form-multiselect-padding: var(--space-xs);
-  --form-multiselect-background: color-mix(
-    in srgb,
-    var(--color-background) 92%,
-    var(--color-foreground) 8%
-  );
+  --form-multiselect-background: var(--form-control-background);
   --form-multiselect-option-padding-y: calc(var(--space-xxs) + 1px);
   --form-multiselect-option-padding-x: var(--space-s);
   --form-multiselect-selected-background: color-mix(
@@ -47,29 +54,25 @@
     var(--color-primary) 18%,
     var(--color-background)
   );
-  --form-textarea-min-height: 8rem;
-  --form-color-input-size: calc(var(--space-xl) * 0.5);
-  --form-color-input-padding: 0.16rem;
+  --form-textarea-min-height: 8em;
+  --form-color-input-size: var(--space);
+  --form-color-input-padding: 0;
   --form-color-input-radius: var(--border-radius-round);
-  --form-color-input-background: color-mix(
-    in srgb,
-    var(--color-background) 94%,
-    var(--color-foreground) 6%
-  );
+  --form-color-input-background: transparent;
   --form-color-input-transition:
     border-color var(--form-control-transition-duration) var(--form-control-transition-easing),
     box-shadow var(--form-control-transition-duration) var(--form-control-transition-easing),
     background-color var(--form-control-transition-duration) var(--form-control-transition-easing);
-  --form-range-track-height: 0.45rem;
+  --form-range-track-height: 0.45em;
   --form-range-track-background: color-mix(in srgb, currentColor 14%, transparent);
-  --form-range-thumb-size: 1rem;
-  --form-range-thumb-offset: -0.275rem;
+  --form-range-thumb-size: 1em;
+  --form-range-thumb-offset: -0.275em;
   --form-range-thumb-border-color: var(--color-primary);
   --form-range-thumb-background: var(--color-background);
   --form-range-thumb-transition:
     box-shadow var(--form-control-transition-duration) var(--form-control-transition-easing),
     border-color var(--form-control-transition-duration) var(--form-control-transition-easing);
-  --form-choice-size: 1.15rem;
+  --form-choice-size: 1.15em;
   --form-choice-border-color: color-mix(in srgb, currentColor 22%, transparent);
   --form-choice-background: var(--color-background);
   --form-choice-transition:
@@ -77,26 +80,27 @@
     box-shadow var(--form-control-transition-duration) var(--form-control-transition-easing),
     background-color var(--form-control-transition-duration) var(--form-control-transition-easing);
   --form-checkbox-radius: calc(var(--border-radius-s) + 1px);
-  --form-checkmark-width: 0.6rem;
-  --form-checkmark-height: 0.35rem;
-  --form-checkmark-stroke: 0.14rem;
+  --form-checkmark-width: 0.6em;
+  --form-checkmark-height: 0.35em;
+  --form-checkmark-stroke: 0.14em;
   --form-checkmark-color: var(--color-primary);
-  --form-checkmark-offset-y: -0.03rem;
+  --form-checkmark-offset-y: -0.03em;
   --form-checkmark-transition:
     transform var(--form-control-transition-duration) var(--form-control-transition-easing);
-  --form-radio-dot-size: 0.5rem;
+  --form-radio-dot-size: 0.5em;
   --form-radio-dot-color: var(--color-primary);
   --form-radio-transition:
     transform var(--form-control-transition-duration) var(--form-control-transition-easing);
   --form-choice-checked-border-color: var(--color-primary);
-  --form-choice-file-width: min(100%, 42rem);
-  --form-choice-file-padding: 0.3rem;
+  --form-choice-file-width: min(100%, 42em);
+  --form-choice-file-padding: 0.3em;
   --form-choice-file-border-color: var(--form-control-border-color);
   --form-choice-file-radius: var(--form-control-radius);
   --form-choice-file-background: var(--form-control-background);
-  --form-button-min-height: calc(var(--space) * 2.3);
-  --form-button-padding-y: calc(var(--space-xs) + var(--border-width-s));
-  --form-button-padding-x: var(--space);
+  --form-button-line-height: 1.2;
+  --form-button-padding: var(--space-xs);
+  --form-button-padding-y: var(--form-button-padding);
+  --form-button-padding-x: var(--form-button-padding);
   --form-button-radius: var(--border-radius-round);
   --form-button-background: var(--color-primary);
   --form-button-border-color: var(--color-primary);
@@ -107,11 +111,14 @@
     box-shadow var(--form-control-transition-duration) var(--form-control-transition-easing),
     color var(--form-control-transition-duration) var(--form-control-transition-easing),
     background-color var(--form-control-transition-duration) var(--form-control-transition-easing);
-  --form-output-min-height: calc(var(--space-xl) + var(--space-xs));
-  --form-output-padding-x: var(--space);
+  --form-output-line-height: var(--form-control-line-height);
+  --form-output-padding: var(--space-xs);
+  --form-output-padding-y: var(--form-output-padding);
+  --form-output-padding-x: var(--form-output-padding);
   --form-output-border-color: color-mix(in srgb, currentColor 12%, transparent);
   --form-output-radius: var(--border-radius-m);
   --form-output-background: color-mix(in srgb, currentColor 3%, transparent);
+  --form-output-color: var(--form-control-color);
   --form-output-font-weight: 600;
   --form-focus-border-color: var(--color-primary);
   --form-focus-ring-width: calc(var(--border-width-m) + 1px);
@@ -152,116 +159,342 @@ label:not([class]) {
   margin-top: 0;
 }
 
-  fieldset:not([class]) {
-    min-inline-size: 0;
-    margin: 0;
-    padding: var(--form-fieldset-padding);
-    display: grid;
-    gap: var(--form-fieldset-gap);
-    border: var(--border-width-s) solid var(--form-fieldset-border-color);
-    border-radius: var(--form-fieldset-radius);
-    background-color: var(--form-fieldset-background);
-  }
+fieldset:not([class]) {
+  min-inline-size: 0;
+  margin: 0;
+  padding: var(--form-fieldset-padding);
+  display: grid;
+  gap: var(--form-fieldset-gap);
+  border: var(--border-width-s) solid var(--form-fieldset-border-color);
+  border-radius: var(--form-fieldset-radius);
+  background-color: var(--form-fieldset-background);
+}
 
-  legend:not([class]) {
-    padding: 0 var(--form-legend-padding-x);
-    font-weight: var(--form-legend-font-weight);
-  }
+legend:not([class]) {
+  padding: 0 var(--form-legend-padding-x);
+  font-weight: var(--form-legend-font-weight);
+}
 
-  label:not([class]) {
-    display: grid;
-    gap: var(--form-label-gap);
-    font-weight: var(--form-label-font-weight);
-  }
+label:not([class]) {
+  font-weight: var(--form-label-font-weight);
+}
 
-  label:not([class]):has(> input[type="checkbox"]:not([class])),
-  label:not([class]):has(> input[type="radio"]:not([class])) {
-    grid-template-columns: auto 1fr;
-    align-items: start;
-    gap: var(--form-choice-gap);
-    font-weight: var(--form-choice-font-weight);
-  }
+label:not([class]):has(
+  > :where(
+      input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+      select:not([class]),
+      textarea:not([class]),
+      output:not([class])
+    )
+) {
+  display: grid;
+  gap: var(--form-label-gap);
+}
 
-  :where(
+label:not([class]):has(
+  + :where(
+      input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+      select:not([class]),
+      textarea:not([class]),
+      output:not([class])
+    )
+) {
+  display: block;
+  margin-bottom: var(--form-label-inline-gap);
+}
+
+label:not([class]):has(
+  > span:first-child + :where(
+      input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]),
+      select:not([class]),
+      textarea:not([class]),
+      output:not([class])
+    )
+) {
+  width: min(100%, var(--form-control-width));
+  max-width: 100%;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-items: center;
+  gap: var(--form-label-inline-gap);
+}
+
+label:not([class]):has(
+  > span:first-child + :where(
+      input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]),
+      select:not([class]),
+      textarea:not([class]),
+      output:not([class])
+    )
+) > span:first-child {
+  min-inline-size: 0;
+}
+
+label:not([class]):has(
+  > span:first-child + :where(
+      input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]),
+      select:not([class]),
+      textarea:not([class]),
+      output:not([class])
+    )
+) > :where(
+    input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]),
+    select:not([class]),
+    textarea:not([class]),
+    output:not([class])
+  ) {
+  width: 100%;
+  min-inline-size: 0;
+}
+
+label:not([class]):has(
+  > span:first-child
+    + :where(
+        input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+        select:not([class]),
+        textarea:not([class]),
+        output:not([class])
+      )
+    + :where(
+        input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+        select:not([class]),
+        textarea:not([class]),
+        output:not([class])
+      )
+) {
+  width: min(100%, var(--form-control-width));
+  max-width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--form-label-inline-gap);
+}
+
+label:not([class]):has(
+  > span:first-child
+    + :where(
+        input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+        select:not([class]),
+        textarea:not([class]),
+        output:not([class])
+      )
+    + :where(
+        input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+        select:not([class]),
+        textarea:not([class]),
+        output:not([class])
+      )
+) > span:first-child {
+  flex: 0 0 auto;
+}
+
+label:not([class]):has(
+  > span:first-child
+    + :where(
+        input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+        select:not([class]),
+        textarea:not([class]),
+        output:not([class])
+      )
+    + :where(
+        input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+        select:not([class]),
+        textarea:not([class]),
+        output:not([class])
+      )
+) > :where(
     input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]),
     select:not([class]),
     textarea:not([class])
   ) {
-    width: var(--form-control-width);
-    min-height: var(--form-control-min-height);
-    padding: var(--form-control-padding-y) var(--form-control-padding-x);
-    border: var(--border-width-s) solid var(--form-control-border-color);
-    border-radius: var(--form-control-radius);
-    background-color: var(--form-control-background);
-    color: inherit;
-    transition: var(--form-control-transition);
-  }
+  flex: 1 1 var(--form-inline-control-width);
+  width: auto;
+  min-inline-size: 0;
+}
 
-  select:not([class]) {
-    appearance: none;
-    padding-right: var(--form-select-padding-right);
-    background-image:
-      linear-gradient(45deg, transparent 50%, currentColor 50%),
-      linear-gradient(135deg, currentColor 50%, transparent 50%);
-    background-position:
-      calc(100% - var(--form-select-indicator-first-offset-x)) var(--form-select-indicator-offset-y),
-      calc(100% - var(--form-select-indicator-second-offset-x)) var(--form-select-indicator-offset-y);
-    background-size:
-      var(--form-select-indicator-size) var(--form-select-indicator-size),
-      var(--form-select-indicator-size) var(--form-select-indicator-size);
-    background-repeat: no-repeat;
-  }
+label:not([class]):has(
+  > span:first-child
+    + :where(
+        input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+        select:not([class]),
+        textarea:not([class]),
+        output:not([class])
+      )
+    + :where(
+        input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+        select:not([class]),
+        textarea:not([class]),
+        output:not([class])
+      )
+) > input[type="range"]:not([class]) {
+  flex: 1 1 var(--form-inline-range-width);
+  width: auto;
+  min-inline-size: 0;
+}
 
-  select[multiple]:not([class]) {
-    appearance: auto;
-    min-height: var(--form-multiselect-min-height);
-    padding: var(--form-multiselect-padding);
-    padding-right: var(--form-multiselect-padding);
-    background-image: none;
-    background-color: var(--form-multiselect-background);
-    line-height: 1.35;
-  }
+label:not([class]):has(
+  > span:first-child
+    + :where(
+        input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+        select:not([class]),
+        textarea:not([class]),
+        output:not([class])
+      )
+    + :where(
+        input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+        select:not([class]),
+        textarea:not([class]),
+        output:not([class])
+      )
+) > :where(
+    output:not([class])
+  ) {
+  flex: 0 0 auto;
+  width: auto;
+}
 
-  select[multiple]:not([class]) option {
-    padding: var(--form-multiselect-option-padding-y)
-      var(--form-multiselect-option-padding-x);
-    border-radius: var(--border-radius-s);
-    background: transparent;
-  }
+label:not([class]):has(
+  > span:first-child
+    + input[type="color"]:not([class])
+    + output:not([class])
+) > input[type="color"]:not([class]) {
+  flex: 0 0 var(--form-color-input-size);
+  width: var(--form-color-input-size);
+  min-inline-size: var(--form-color-input-size);
+}
 
-  select[multiple]:not([class]) option:checked {
-    background: var(--form-multiselect-selected-background);
-    color: inherit;
-  }
+label:not([class]):has(
+  > span:first-child
+    + input[type="color"]:not([class])
+    + output:not([class])
+) > output:not([class]) {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
 
-  textarea:not([class]) {
-    min-height: var(--form-textarea-min-height);
-    resize: vertical;
-  }
+label:not([class]):has(
+  > span:first-child
+    + :where(
+        input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+        select:not([class]),
+        textarea:not([class]),
+        output:not([class])
+      )
+    + :where(
+        input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+        select:not([class]),
+        textarea:not([class]),
+        output:not([class])
+      )
+) > input[type="number"]:not([class]) {
+  flex: 0 0 min(100%, var(--form-number-width));
+  width: min(100%, var(--form-number-width));
+}
 
-  input[type="color"]:not([class]) {
-    inline-size: var(--form-color-input-size);
-    block-size: var(--form-color-input-size);
-    padding: var(--form-color-input-padding);
-    border: var(--border-width-s) solid
-      var(--form-control-border-color);
-    border-radius: var(--form-color-input-radius);
-    background-color: var(--form-color-input-background);
-    cursor: pointer;
-    justify-self: start;
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary) 0%, transparent);
-    transition: var(--form-color-input-transition);
-  }
+label:not([class]):has(> input[type="checkbox"]:not([class])),
+label:not([class]):has(> input[type="radio"]:not([class])) {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: var(--form-choice-gap);
+  font-weight: var(--form-choice-font-weight);
+}
 
-  input[type="color"]:not([class])::-webkit-color-swatch-wrapper {
-    padding: 0;
-  }
+label:not([class]):has(> input[type="checkbox"]:not([class])) > :not([class]):not(input),
+label:not([class]):has(> input[type="radio"]:not([class])) > :not([class]):not(input) {
+  display: grid;
+  gap: var(--form-label-gap);
+}
 
-  input[type="color"]:not([class])::-webkit-color-swatch,
-  input[type="color"]:not([class])::-moz-color-swatch {
-    border: none;
-    border-radius: calc(var(--form-color-input-radius) - var(--form-color-input-padding));
-  }
+:where(
+  input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]),
+  select:not([class]),
+  textarea:not([class])
+) {
+  width: var(--form-control-width);
+  line-height: var(--form-control-line-height);
+  padding: var(--form-control-padding-y) var(--form-control-padding-x);
+  border: var(--border-width-s) solid var(--form-control-border-color);
+  border-radius: var(--form-control-radius);
+  background-color: var(--form-control-background);
+  color: var(--form-control-color);
+  transition: var(--form-control-transition);
+}
+
+select:not([class]) {
+  appearance: none;
+  padding-right: var(--form-select-padding-right);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--form-select-indicator-color) 50%),
+    linear-gradient(135deg, var(--form-select-indicator-color) 50%, transparent 50%);
+  background-position:
+    calc(100% - var(--form-select-indicator-first-offset-x)) var(--form-select-indicator-offset-y),
+    calc(100% - var(--form-select-indicator-second-offset-x)) var(--form-select-indicator-offset-y);
+  background-size:
+    var(--form-select-indicator-size) var(--form-select-indicator-size),
+    var(--form-select-indicator-size) var(--form-select-indicator-size);
+  background-repeat: no-repeat;
+}
+
+select[multiple]:not([class]) {
+  appearance: auto;
+  min-height: var(--form-multiselect-min-height);
+  padding: var(--form-multiselect-padding);
+  padding-right: var(--form-multiselect-padding);
+  background-image: none;
+  background-color: var(--form-multiselect-background);
+  line-height: 1.35;
+}
+
+select[multiple]:not([class]) option {
+  padding: var(--form-multiselect-option-padding-y)
+    var(--form-multiselect-option-padding-x);
+  border-radius: var(--border-radius-s);
+  background: transparent;
+}
+
+select[multiple]:not([class]) option:checked {
+  background: var(--form-multiselect-selected-background);
+  color: inherit;
+}
+
+textarea:not([class]) {
+  min-height: var(--form-textarea-min-height);
+  resize: vertical;
+}
+
+input[type="number"]:not([class]) {
+  width: min(100%, var(--form-number-width));
+  font-variant-numeric: tabular-nums;
+}
+
+input[type="color"]:not([class]) {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  inline-size: var(--form-color-input-size);
+  block-size: var(--form-color-input-size);
+  padding: var(--form-color-input-padding);
+  border: var(--border-width-s) solid var(--form-control-border-color);
+  border-radius: var(--form-color-input-radius);
+  background-color: var(--form-color-input-background);
+  overflow: hidden;
+  cursor: pointer;
+  justify-self: start;
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary) 0%, transparent);
+  transition: var(--form-color-input-transition);
+}
+
+input[type="color"]:not([class])::-webkit-color-swatch-wrapper {
+  padding: 0;
+  border-radius: inherit;
+}
+
+input[type="color"]:not([class])::-webkit-color-swatch,
+input[type="color"]:not([class])::-moz-color-swatch {
+  border: none;
+  border-radius: inherit;
+}
 
   input[type="range"]:not([class]) {
     width: var(--form-control-width);
@@ -366,13 +599,14 @@ label:not([class]) {
     transform: scale(1);
   }
 
-  input[type="file"]:not([class]) {
-    width: var(--form-choice-file-width);
-    padding: var(--form-choice-file-padding);
-    border: var(--border-width-s) solid var(--form-choice-file-border-color);
-    border-radius: var(--form-choice-file-radius);
-    background-color: var(--form-choice-file-background);
-  }
+input[type="file"]:not([class]) {
+  width: var(--form-choice-file-width);
+  padding: var(--form-choice-file-padding);
+  border: var(--border-width-s) solid var(--form-choice-file-border-color);
+  border-radius: var(--form-choice-file-radius);
+  background-color: var(--form-choice-file-background);
+  color: var(--form-control-color);
+}
 
   input[type="file"]:not([class])::file-selector-button,
   :where(
@@ -381,7 +615,7 @@ label:not([class]) {
     input[type="button"]:not([class]),
     input[type="reset"]:not([class])
   ) {
-    min-height: var(--form-button-min-height);
+    line-height: var(--form-button-line-height);
     padding: var(--form-button-padding-y) var(--form-button-padding-x);
     border: var(--border-width-s) solid var(--form-button-border-color);
     border-radius: var(--form-button-radius);
@@ -401,16 +635,17 @@ label:not([class]) {
     justify-self: start;
   }
 
-  output:not([class]) {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--form-output-min-height);
-    padding: 0 var(--form-output-padding-x);
-    border: var(--border-width-s) solid var(--form-output-border-color);
-    border-radius: var(--form-output-radius);
-    background-color: var(--form-output-background);
-    font-weight: var(--form-output-font-weight);
-  }
+output:not([class]) {
+  display: inline-flex;
+  align-items: center;
+  line-height: var(--form-output-line-height);
+  padding: var(--form-output-padding-y) var(--form-output-padding-x);
+  border: var(--border-width-s) solid var(--form-output-border-color);
+  border-radius: var(--form-output-radius);
+  background-color: var(--form-output-background);
+  color: var(--form-output-color);
+  font-weight: var(--form-output-font-weight);
+}
 
   :where(
     button:not([class]),

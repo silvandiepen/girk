@@ -175,8 +175,9 @@ These variables are defined on `:root` by default:
 
 ```css
 :root {
-  --spacing: clamp(0.95rem, 0.7rem + 0.9vw, 1.25rem);
-  --space: var(--spacing);
+  --font-size-base: 18px;
+  --spacing: clamp(2em, 6vw, 8em);
+  --space: 1em;
   --space-xxs: calc(var(--space) * 0.25);
   --space-xs: calc(var(--space) * 0.5);
   --space-s: calc(var(--space) * 0.75);
@@ -184,7 +185,7 @@ These variables are defined on `:root` by default:
   --space-xl: calc(var(--space) * 2.5);
   --space-xxl: calc(var(--space) * 4);
 
-  --font-size: 1.0625rem;
+  --font-size: 1em;
   --font-size-xs: calc(var(--font-size) * 0.75);
   --font-size-s: calc(var(--font-size) * 0.875);
   --font-size-l: calc(var(--font-size) * 1.125);
@@ -193,7 +194,7 @@ These variables are defined on `:root` by default:
   --font-size-xxxl: calc(var(--font-size) * 4.5);
   --font-size-lead: calc(var(--font-size) * 1.4);
 
-  --border-radius: 0.375rem;
+  --border-radius: 0.5em;
   --border-radius-s: calc(var(--border-radius) * 0.5);
   --border-radius-m: var(--border-radius);
   --border-radius-l: calc(var(--border-radius) * 2);
@@ -215,7 +216,7 @@ The default native form styles expose a dedicated variable contract on `:root`. 
 ```css
 :root {
   --form-accent-color: var(--color-primary);
-  --form-width: min(100%, 42rem);
+  --form-width: min(100%, 42em);
   --form-gap: var(--space);
   --form-help-font-size: var(--font-size-s);
   --form-help-opacity: 0.68;
@@ -227,13 +228,22 @@ The default native form styles expose a dedicated variable contract on `:root`. 
   --form-legend-padding-x: var(--space-xs);
   --form-legend-font-weight: 650;
   --form-label-gap: var(--space-xs);
+  --form-label-inline-gap: var(--form-label-gap);
   --form-label-font-weight: 600;
+  --form-inline-control-width: 14em;
+  --form-inline-range-width: 12em;
   --form-choice-gap: var(--space-s);
   --form-choice-font-weight: 500;
-  --form-control-width: min(100%, 42rem);
-  --form-control-min-height: calc(var(--space-xl) + var(--space-xs));
-  --form-control-padding-y: calc(var(--space-s) + var(--border-width-s));
-  --form-control-padding-x: var(--space);
+  --form-control-width: min(100%, 42em);
+  --form-input-line-height: 1.4;
+  --form-input-padding: var(--space-xs);
+  --form-input-padding-y: var(--form-input-padding);
+  --form-input-padding-x: var(--form-input-padding);
+  --form-control-line-height: var(--form-input-line-height);
+  --form-control-padding: var(--form-input-padding);
+  --form-control-padding-y: var(--form-input-padding-y);
+  --form-control-padding-x: var(--form-input-padding-x);
+  --form-control-color: var(--color-foreground);
   --form-control-border-color: color-mix(in srgb, currentColor 14%, transparent);
   --form-control-radius: var(--border-radius-m);
   --form-control-background: var(--color-background);
@@ -243,18 +253,16 @@ The default native form styles expose a dedicated variable contract on `:root`. 
     border-color var(--form-control-transition-duration) var(--form-control-transition-easing),
     box-shadow var(--form-control-transition-duration) var(--form-control-transition-easing),
     color var(--form-control-transition-duration) var(--form-control-transition-easing);
+  --form-number-width: 8em;
   --form-select-padding-right: calc(var(--space-xl) + var(--space-s));
-  --form-select-indicator-size: 0.35rem;
-  --form-select-indicator-offset-y: calc(50% - 0.12rem);
-  --form-select-indicator-first-offset-x: 1rem;
-  --form-select-indicator-second-offset-x: 0.65rem;
-  --form-multiselect-min-height: 9rem;
+  --form-select-indicator-color: var(--form-control-color);
+  --form-select-indicator-size: 0.35em;
+  --form-select-indicator-offset-y: calc(50% - 0.12em);
+  --form-select-indicator-first-offset-x: 1em;
+  --form-select-indicator-second-offset-x: 0.65em;
+  --form-multiselect-min-height: 9em;
   --form-multiselect-padding: var(--space-xs);
-  --form-multiselect-background: color-mix(
-    in srgb,
-    var(--color-background) 92%,
-    var(--color-foreground) 8%
-  );
+  --form-multiselect-background: var(--form-control-background);
   --form-multiselect-option-padding-y: calc(var(--space-xxs) + 1px);
   --form-multiselect-option-padding-x: var(--space-s);
   --form-multiselect-selected-background: color-mix(
@@ -262,29 +270,25 @@ The default native form styles expose a dedicated variable contract on `:root`. 
     var(--color-primary) 18%,
     var(--color-background)
   );
-  --form-textarea-min-height: 8rem;
-  --form-color-input-size: calc(var(--space-xl) * 0.5);
-  --form-color-input-padding: 0.16rem;
+  --form-textarea-min-height: 8em;
+  --form-color-input-size: var(--space);
+  --form-color-input-padding: 0;
   --form-color-input-radius: var(--border-radius-round);
-  --form-color-input-background: color-mix(
-    in srgb,
-    var(--color-background) 94%,
-    var(--color-foreground) 6%
-  );
+  --form-color-input-background: transparent;
   --form-color-input-transition:
     border-color var(--form-control-transition-duration) var(--form-control-transition-easing),
     box-shadow var(--form-control-transition-duration) var(--form-control-transition-easing),
     background-color var(--form-control-transition-duration) var(--form-control-transition-easing);
-  --form-range-track-height: 0.45rem;
+  --form-range-track-height: 0.45em;
   --form-range-track-background: color-mix(in srgb, currentColor 14%, transparent);
-  --form-range-thumb-size: 1rem;
-  --form-range-thumb-offset: -0.275rem;
+  --form-range-thumb-size: 1em;
+  --form-range-thumb-offset: -0.275em;
   --form-range-thumb-border-color: var(--color-primary);
   --form-range-thumb-background: var(--color-background);
   --form-range-thumb-transition:
     box-shadow var(--form-control-transition-duration) var(--form-control-transition-easing),
     border-color var(--form-control-transition-duration) var(--form-control-transition-easing);
-  --form-choice-size: 1.15rem;
+  --form-choice-size: 1.15em;
   --form-choice-border-color: color-mix(in srgb, currentColor 22%, transparent);
   --form-choice-background: var(--color-background);
   --form-choice-transition:
@@ -292,26 +296,27 @@ The default native form styles expose a dedicated variable contract on `:root`. 
     box-shadow var(--form-control-transition-duration) var(--form-control-transition-easing),
     background-color var(--form-control-transition-duration) var(--form-control-transition-easing);
   --form-checkbox-radius: calc(var(--border-radius-s) + 1px);
-  --form-checkmark-width: 0.6rem;
-  --form-checkmark-height: 0.35rem;
-  --form-checkmark-stroke: 0.14rem;
+  --form-checkmark-width: 0.6em;
+  --form-checkmark-height: 0.35em;
+  --form-checkmark-stroke: 0.14em;
   --form-checkmark-color: var(--color-primary);
-  --form-checkmark-offset-y: -0.03rem;
+  --form-checkmark-offset-y: -0.03em;
   --form-checkmark-transition:
     transform var(--form-control-transition-duration) var(--form-control-transition-easing);
-  --form-radio-dot-size: 0.5rem;
+  --form-radio-dot-size: 0.5em;
   --form-radio-dot-color: var(--color-primary);
   --form-radio-transition:
     transform var(--form-control-transition-duration) var(--form-control-transition-easing);
   --form-choice-checked-border-color: var(--color-primary);
-  --form-choice-file-width: min(100%, 42rem);
-  --form-choice-file-padding: 0.3rem;
+  --form-choice-file-width: min(100%, 42em);
+  --form-choice-file-padding: 0.3em;
   --form-choice-file-border-color: var(--form-control-border-color);
   --form-choice-file-radius: var(--form-control-radius);
   --form-choice-file-background: var(--form-control-background);
-  --form-button-min-height: calc(var(--space) * 2.3);
-  --form-button-padding-y: calc(var(--space-xs) + var(--border-width-s));
-  --form-button-padding-x: var(--space);
+  --form-button-line-height: 1.2;
+  --form-button-padding: var(--space-xs);
+  --form-button-padding-y: var(--form-button-padding);
+  --form-button-padding-x: var(--form-button-padding);
   --form-button-radius: var(--border-radius-round);
   --form-button-background: var(--color-primary);
   --form-button-border-color: var(--color-primary);
@@ -322,11 +327,14 @@ The default native form styles expose a dedicated variable contract on `:root`. 
     box-shadow var(--form-control-transition-duration) var(--form-control-transition-easing),
     color var(--form-control-transition-duration) var(--form-control-transition-easing),
     background-color var(--form-control-transition-duration) var(--form-control-transition-easing);
-  --form-output-min-height: calc(var(--space-xl) + var(--space-xs));
-  --form-output-padding-x: var(--space);
+  --form-output-line-height: var(--form-control-line-height);
+  --form-output-padding: var(--space-xs);
+  --form-output-padding-y: var(--form-output-padding);
+  --form-output-padding-x: var(--form-output-padding);
   --form-output-border-color: color-mix(in srgb, currentColor 12%, transparent);
   --form-output-radius: var(--border-radius-m);
   --form-output-background: color-mix(in srgb, currentColor 3%, transparent);
+  --form-output-color: var(--form-control-color);
   --form-output-font-weight: 600;
   --form-focus-border-color: var(--color-primary);
   --form-focus-ring-width: calc(var(--border-width-m) + 1px);
@@ -342,10 +350,14 @@ Example override:
 :root {
   --form-control-radius: calc(var(--border-radius) * 1.5);
   --form-control-background: color-mix(in srgb, var(--color-background) 96%, var(--color-primary) 4%);
+  --form-control-color: var(--color-foreground);
   --form-button-background: var(--color-secondary);
   --form-button-border-color: var(--color-secondary);
   --form-button-color: var(--color-secondary-contrast);
-  --form-color-input-size: calc(var(--space-xl) * 0.9);
+  --form-input-padding: var(--space-xs);
+  --form-number-width: 6em;
+  --form-select-indicator-color: var(--form-control-color);
+  --form-color-input-size: calc(var(--space) * 1.25);
   --form-multiselect-selected-background: color-mix(
     in srgb,
     var(--color-secondary) 18%,

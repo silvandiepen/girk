@@ -15,7 +15,7 @@
     align-items: center;
     gap: var(--space-xs);
     min-height: calc(var(--space) * 1.9);
-    padding: calc(var(--space-xxs) + 0.1rem) calc(var(--space-s) + 0.1rem);
+    padding: calc(var(--space-xxs) + 0.1em) calc(var(--space-s) + 0.1em);
     border-radius: var(--border-radius-m);
     transition: background-color 0.2s ease, color 0.2s ease;
   }
@@ -159,7 +159,7 @@
     align-items: center;
     color: inherit;
     text-decoration: none;
-    padding: 0.3rem 0.5rem;
+    padding: 0.3em 0.5em;
     border-radius: var(--border-radius-s);
     opacity: 0.88;
     font-weight: 500;
@@ -227,7 +227,7 @@
     z-index: 20;
     width: max-content;
     min-width: 0;
-    max-width: min(28rem, calc(100vw - (var(--space) * 2)));
+    max-width: min(28em, calc(100vw - (var(--space) * 2)));
     border-radius: var(--border-radius-l);
     background-color: var(--color-background);
     box-shadow: 0 var(--space-xs) var(--space)
@@ -256,13 +256,13 @@
     width: fit-content;
     max-width: 100%;
     margin: 0;
-    padding: calc(var(--space-xs) + 0.2rem);
+    padding: calc(var(--space-xs) + 0.2em);
   }
 
   .navigation__groups--level-1 {
     width: fit-content;
     grid-template-columns: repeat(2, max-content);
-    gap: calc(var(--space-xxs) + 0.1rem) var(--space-xs);
+    gap: calc(var(--space-xxs) + 0.1em) var(--space-xs);
   }
 
   .navigation__groups--compact-column {
@@ -273,7 +273,7 @@
   .navigation__groups--level-3,
   .navigation__groups--level-4,
   .navigation__groups--level-5 {
-    gap: calc(var(--space-xxs) + 0.1rem);
+    gap: calc(var(--space-xxs) + 0.1em);
   }
 
   @media screen and (max-width: 720px) {
@@ -315,8 +315,8 @@
       position: absolute;
       top: calc(100% + var(--space-xs));
       right: 0;
-      width: min(24rem, calc(100vw - (var(--space) * 2)));
-      max-height: min(32rem, calc(100dvh - 6rem));
+      width: min(24em, calc(100vw - (var(--space) * 2)));
+      max-height: min(32em, calc(100dvh - 6em));
       overflow-y: auto;
       padding: var(--space-s) var(--space);
       border: var(--border-width-s) solid
@@ -341,7 +341,7 @@
     .navigation__entry {
       width: 100%;
       justify-content: space-between;
-      padding: var(--space-xs) calc(var(--space-s) + 0.1rem);
+      padding: var(--space-xs) calc(var(--space-s) + 0.1em);
     }
 
     .navigation__link {
@@ -404,7 +404,7 @@
     width: fit-content;
     display: inline-flex;
     align-items: center;
-    padding: 0.3rem 0.5rem;
+    padding: 0.3em 0.5em;
     border-radius: var(--border-radius-s);
     color: inherit;
     text-decoration: none;

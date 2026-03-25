@@ -1,6 +1,7 @@
 :root {
-  --spacing: clamp(0.95rem, 0.7rem + 0.9vw, 1.25rem);
-  --space: var(--spacing);
+  --font-size-base: 18px;
+  --spacing: clamp(2em, 6vw, 8em);
+  --space: 1em;
   --space-xxs: calc(var(--space) * 0.25);
   --space-xs: calc(var(--space) * 0.5);
   --space-s: calc(var(--space) * 0.75);
@@ -8,7 +9,7 @@
   --space-xl: calc(var(--space) * 2.5);
   --space-xxl: calc(var(--space) * 4);
 
-  --font-size: 1.0625rem;
+  --font-size: 1em;
   --font-size-xs: calc(var(--font-size) * 0.75);
   --font-size-s: calc(var(--font-size) * 0.875);
   --font-size-l: calc(var(--font-size) * 1.125);
@@ -17,7 +18,7 @@
   --font-size-xxxl: calc(var(--font-size) * 4.5);
   --font-size-lead: calc(var(--font-size) * 1.4);
 
-  --border-radius: 0.375rem;
+  --border-radius: 0.5em;
   --border-radius-s: calc(var(--border-radius) * 0.5);
   --border-radius-m: var(--border-radius);
   --border-radius-l: calc(var(--border-radius) * 2);
