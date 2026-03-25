@@ -210,10 +210,10 @@ These variables are defined on `:root` by default:
 
 ### Form control variables
 
-The default content form styles expose a dedicated variable contract on `.content`. Override these in your project stylesheet when you want to change native inputs without replacing the whole form layer.
+The default native form styles expose a dedicated variable contract on `:root`. The styling itself only targets classless native elements, so these defaults stay out of class-based UI components.
 
 ```css
-.content {
+:root {
   --form-accent-color: var(--color-primary);
   --form-width: min(100%, 42rem);
   --form-gap: var(--space);
@@ -339,7 +339,7 @@ The default content form styles expose a dedicated variable contract on `.conten
 Example override:
 
 ```css
-.content {
+:root {
   --form-control-radius: calc(var(--border-radius) * 1.5);
   --form-control-background: color-mix(in srgb, var(--color-background) 96%, var(--color-primary) 4%);
   --form-button-background: var(--color-secondary);

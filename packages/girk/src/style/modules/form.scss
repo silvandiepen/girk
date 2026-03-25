@@ -1,4 +1,4 @@
-.content {
+:root {
   --form-accent-color: var(--color-primary);
   --form-width: min(100%, 42rem);
   --form-gap: var(--space);
@@ -118,38 +118,39 @@
   --form-focus-ring-color: color-mix(in srgb, var(--color-primary) 22%, transparent);
   --form-placeholder-color: color-mix(in srgb, currentColor 42%, transparent);
   --form-disabled-opacity: 0.56;
+}
 
-  :where(button, input, select, textarea, progress, meter) {
-    accent-color: var(--form-accent-color);
+:where(button, input, select, textarea, progress, meter) {
+  accent-color: var(--form-accent-color);
+}
+
+:where(button, input, select, textarea, output) {
+  font: inherit;
+}
+
+form:not([class]) {
+  width: var(--form-width);
+  display: grid;
+  gap: var(--form-gap);
+
+  :where(p:not([class]), ul:not([class]), ol:not([class])) {
+    max-width: none;
   }
 
-  :where(button, input, select, textarea, output) {
-    font: inherit;
+  :where(small:not([class])) {
+    display: block;
+    font-size: var(--form-help-font-size);
+    opacity: var(--form-help-opacity);
   }
+}
 
-  form:not([class]) {
-    width: var(--form-width);
-    display: grid;
-    gap: var(--form-gap);
-
-    :where(p:not([class]), ul:not([class]), ol:not([class])) {
-      max-width: none;
-    }
-
-    :where(small:not([class])) {
-      display: block;
-      font-size: var(--form-help-font-size);
-      opacity: var(--form-help-opacity);
-    }
-  }
-
-  form:not([class]),
-  form:not([class]) :not([class]),
-  fieldset:not([class]),
-  legend:not([class]),
-  label:not([class]) {
-    margin-top: 0;
-  }
+form:not([class]),
+form:not([class]) :not([class]),
+fieldset:not([class]),
+legend:not([class]),
+label:not([class]) {
+  margin-top: 0;
+}
 
   fieldset:not([class]) {
     min-inline-size: 0;
@@ -438,13 +439,12 @@
     opacity: 1;
   }
 
-  :where(
-    button:not([class]),
-    input:not([class]),
-    select:not([class]),
-    textarea:not([class])
-  ):disabled {
-    cursor: not-allowed;
-    opacity: var(--form-disabled-opacity);
-  }
+:where(
+  button:not([class]),
+  input:not([class]),
+  select:not([class]),
+  textarea:not([class])
+):disabled {
+  cursor: not-allowed;
+  opacity: var(--form-disabled-opacity);
 }
