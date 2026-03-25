@@ -1,3 +1,15 @@
+# [1.18.0](https://github.com/silvandiepen/girk/compare/v1.17.1...v1.18.0) (2026-03-25)
+
+
+### Bug Fixes
+
+* **Release:** backfill 1.17.1 docs release notes ([6b08c4b](https://github.com/silvandiepen/girk/commit/6b08c4bfc00c2ed313426b101a369b498205cd29))
+
+
+### Features
+
+* **Release:** automate docs release notes in CI ([a050b67](https://github.com/silvandiepen/girk/commit/a050b67e348cdd2eec96c171e14ee0d316a8fd7b))
+
 ## [1.17.1](https://github.com/silvandiepen/girk/compare/v1.17.0...v1.17.1) (2026-03-25)
 
 
