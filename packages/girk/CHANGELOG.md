@@ -1,3 +1,10 @@
+## [1.19.3](https://github.com/silvandiepen/girk/compare/v1.19.2...v1.19.3) (2026-03-25)
+
+
+### Bug Fixes
+
+* **Head:** Add generator meta tag to generated pages ([eecbffa](https://github.com/silvandiepen/girk/commit/eecbffa3deb382b9bfbf3efefb4843cb23384f10))
+
 ## [1.19.2](https://github.com/silvandiepen/girk/compare/v1.19.1...v1.19.2) (2026-03-25)
 
 
