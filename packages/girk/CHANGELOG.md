@@ -1,3 +1,10 @@
+## [1.19.4](https://github.com/silvandiepen/girk/compare/v1.19.3...v1.19.4) (2026-03-25)
+
+
+### Bug Fixes
+
+* **Theme:** Apply native form controls globally ([5a5c136](https://github.com/silvandiepen/girk/commit/5a5c136ffbb155d8cadb7001fbbdfc383522fc0f))
+
 ## [1.19.3](https://github.com/silvandiepen/girk/compare/v1.19.2...v1.19.3) (2026-03-25)
 
 
