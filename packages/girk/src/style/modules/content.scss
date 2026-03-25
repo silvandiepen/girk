@@ -125,9 +125,11 @@
   }
 
   a {
-    text-decoration: none;
     color: inherit;
-    border-bottom: var(--border-width-s) solid currentColor;
+    text-decoration-line: underline;
+    text-decoration-color: color-mix(in srgb, currentColor 55%, transparent);
+    text-decoration-thickness: var(--border-width-s);
+    text-underline-offset: 0.16em;
   }
 
   p:first-of-type:has(+ p) {
