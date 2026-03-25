@@ -1,3 +1,16 @@
+# [1.20.0](https://github.com/silvandiepen/girk/compare/v1.19.5...v1.20.0) (2026-03-25)
+
+
+### Bug Fixes
+
+* **Navigation:** Keep sectioned child pages in menus ([3d1090d](https://github.com/silvandiepen/girk/commit/3d1090db447173b2b42dac55459a50578f462b36))
+
+
+### Features
+
+* **Docs:** Split the kitchen sink into sections ([72d33b2](https://github.com/silvandiepen/girk/commit/72d33b25a37c06a17e530a048c7f3fce8b2d058a))
+* **Theme:** Refine native content defaults ([61f6ed5](https://github.com/silvandiepen/girk/commit/61f6ed59ddc60ac62738f609392bea750289b40c))
+
 ## [1.19.5](https://github.com/silvandiepen/girk/compare/v1.19.4...v1.19.5) (2026-03-25)
 
 
