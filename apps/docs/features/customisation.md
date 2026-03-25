@@ -263,8 +263,8 @@ The default content form styles expose a dedicated variable contract on `.conten
     var(--color-background)
   );
   --form-textarea-min-height: 8rem;
-  --form-color-input-size: calc(var(--space-xl) + var(--space-xs));
-  --form-color-input-padding: 0.22rem;
+  --form-color-input-size: calc(var(--space-xl) * 0.5);
+  --form-color-input-padding: 0.16rem;
   --form-color-input-radius: var(--border-radius-round);
   --form-color-input-background: color-mix(
     in srgb,
