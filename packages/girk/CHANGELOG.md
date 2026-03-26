@@ -1,3 +1,16 @@
+# [1.22.0](https://github.com/silvandiepen/girk/compare/v1.21.0...v1.22.0) (2026-03-26)
+
+
+### Bug Fixes
+
+* **Archive:** Apply page color metadata to cards ([6ecd1da](https://github.com/silvandiepen/girk/commit/6ecd1dab2081658bff8716f9d7869055c871cf4f))
+* **Theme:** Truncate inline form labels ([5634bfb](https://github.com/silvandiepen/girk/commit/5634bfb98dd2b9fa98db29ce45fa7f53964d6ec4))
+
+
+### Features
+
+* **Docs:** Add Icons feature guide ([f7b0ffd](https://github.com/silvandiepen/girk/commit/f7b0ffd72b2982d2acc7f142bcf82fbc7031dd8b))
+
 # [1.21.0](https://github.com/silvandiepen/girk/compare/v1.20.1...v1.21.0) (2026-03-25)
 
 
