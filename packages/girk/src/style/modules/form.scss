@@ -214,7 +214,7 @@ label:not([class]):has(
   width: min(100%, var(--form-control-width));
   max-width: 100%;
   display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
+  grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
   align-items: center;
   gap: var(--form-label-inline-gap);
 }
@@ -228,6 +228,9 @@ label:not([class]):has(
     )
 ) > span:first-child {
   min-inline-size: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 label:not([class]):has(
@@ -285,7 +288,11 @@ label:not([class]):has(
         output:not([class])
       )
 ) > span:first-child {
-  flex: 0 0 auto;
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 label:not([class]):has(
