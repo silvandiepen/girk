@@ -31,7 +31,7 @@ Most of the time, you do not need a separate admin panel or route config. A few 
 
 ## Example
 
-`icon` accepts either a normal asset path or an Open Icon lookup. A bare uppercase value like `ADD` resolves to the matching medium UI icon when one exists.
+`icon` accepts either a normal asset path or an Open Icon lookup. For the full icon format, rendering behavior, and Open Icon usage, see [Icons](/features/icons/).
 
 ```markdown
 ---
