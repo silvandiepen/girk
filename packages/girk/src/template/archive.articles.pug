@@ -7,7 +7,7 @@ section.section.archive.archive--articles
                 h2.h4= archive.title
         ul.archive-grid
             each item in archive.children
-                li.archive-card
+                li.archive-card(style=`${item.meta.sectionStyle ? item.meta.sectionStyle : ""}`)
                     a.archive-card__link(href=`${item.redirect ? item.redirect : item.link}`)
                         if item.icon
                             +renderIcon(item.icon, "archive-card__media archive-card__media--icon", "archive-card__icon")

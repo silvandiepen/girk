@@ -38,14 +38,26 @@
 }
 
 .archive-card {
-  margin: 0;
-  border: none;
-  border-radius: var(--border-radius-m);
-  background-color: color-mix(
+  --archive-card-background-default: color-mix(
     in srgb,
     var(--color-background) 95%,
     var(--color-foreground) 5%
   );
+  --archive-card-text-color: var(--section-text-color, var(--color-foreground));
+  --archive-card-background: var(
+    --section-background-color,
+    var(--archive-card-background-default)
+  );
+  --archive-card-background-hover: color-mix(
+    in srgb,
+    var(--archive-card-background) 92%,
+    var(--archive-card-text-color) 8%
+  );
+  margin: 0;
+  border: none;
+  border-radius: var(--border-radius-m);
+  background-color: var(--archive-card-background);
+  color: var(--archive-card-text-color);
   overflow: hidden;
   box-shadow: 0 var(--space-xxs) var(--space-s)
     color-mix(in srgb, var(--color-foreground) 8%, transparent);
@@ -65,11 +77,7 @@
   }
 
   &:hover {
-    background-color: color-mix(
-      in srgb,
-      var(--color-background) 92%,
-      var(--color-foreground) 8%
-    );
+    background-color: var(--archive-card-background-hover);
     box-shadow: 0 var(--space-xs) calc(var(--space) * 1.1)
       color-mix(in srgb, var(--color-foreground) 12%, transparent);
     transform: translateY(calc(var(--space-xxs) * -1));
@@ -90,8 +98,8 @@
       border-radius: var(--border-radius-m);
       background-color: color-mix(
         in srgb,
-        var(--color-secondary) 18%,
-        transparent 82%
+        currentColor 12%,
+        transparent
       );
     }
 
@@ -138,7 +146,7 @@
   &__title {
     font-size: var(--font-size-l);
     line-height: 1.2;
-    color: var(--color-foreground);
+    color: inherit;
   }
 
   &__meta {
@@ -151,7 +159,7 @@
   &__excerpt {
     opacity: 0.84;
     max-width: var(--card-copy-width, 60ch);
-    color: color-mix(in srgb, var(--color-foreground), transparent 18%);
+    color: color-mix(in srgb, currentColor, transparent 18%);
   }
 
   &--blog {

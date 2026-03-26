@@ -94,7 +94,7 @@ describe("Page navigation state", () => {
       parent: "features",
       title: "Archives",
       html: "<p>Archive docs</p>",
-      meta: {},
+      meta: { color: "primary" },
       icon: {
         provider: "open-icon",
         svg: '<svg viewBox="0 0 16 16"><path d="M1 1h14v14H1z"/></svg>',
@@ -146,5 +146,8 @@ describe("Page navigation state", () => {
     expect(page.html.data).toContain("archive-card__icon");
     expect(page.html.data).toContain('<svg viewBox="0 0 16 16"><path d="M2 8h12"/></svg>');
     expect(page.html.data).toContain('<svg viewBox="0 0 16 16"><path d="M1 1h14v14H1z"/></svg>');
+    expect(page.html.data).toContain(
+      'style="--section-background-color: var(--color-primary); --section-text-color: var(--color-primary-contrast)"'
+    );
   });
 });

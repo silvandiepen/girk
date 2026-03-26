@@ -6,6 +6,7 @@ import {
   Payload,
   File,
   Page,
+  Meta,
   buildHtmlArgs,
   MenuItem,
   Project,
@@ -14,6 +15,7 @@ import {
 import { getLanguageMenu, getDefaultLanguage } from "../libs/language";
 import { makePath, buildHtml, getParentFile } from "./files";
 import { getExcerpt } from "./helpers";
+import { buildSectionStyle } from "./section-style";
 
 import { createDir } from "@/libs/utils";
 import kleur from "kleur";
@@ -73,11 +75,19 @@ const getRelatedPages = (file: File, files: File[]): File[] => {
         candidate.meta?.hide !== true &&
         candidate.meta?.hide !== "true"
     )
-    .map((candidate) => ({
-      ...candidate,
-      link: makePath(candidate),
-      excerpt: getExcerpt(candidate),
-    }))
+    .map((candidate): File => {
+      const meta: Meta = candidate.meta || {};
+
+      return {
+        ...candidate,
+        link: makePath(candidate),
+        excerpt: getExcerpt(candidate),
+        meta: {
+          ...meta,
+          sectionStyle: buildSectionStyle(meta),
+        },
+      };
+    })
     .sort((a, b) => (a.meta?.order || 999) - (b.meta?.order || 999));
 };
 
