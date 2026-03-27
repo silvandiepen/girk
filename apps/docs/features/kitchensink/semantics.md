@@ -58,3 +58,33 @@ H<sub>2</sub>O and E = mc<sup>2</sup> should also look sane out of the box.
   Meter
   <meter min="0" max="100" low="35" high="80" optimum="90" value="68">68</meter>
 </p>
+
+### Articles
+
+Semantic article markup should also inherit the default content styling.
+
+<article>
+  <h3>Raw HTML article</h3>
+  <p>
+    This uses a plain <code>article</code> tag inside Markdown content.
+  </p>
+  <p>
+    That keeps long-form pages semantic without needing custom CSS first.
+  </p>
+</article>
+
+You can also generate the same element directly from Markdown:
+
+```markdown
+:::article type="info" title="Note" subtitle="Authoring pattern" date="2026-03-27" description="Use article containers when a block needs a semantic wrapper and shared color styling."
+This article assumes basic Markdown knowledge.
+
+Add `color="warning"` when you want a direct palette token, or `class="editorial-note"` when you need an extra project hook.
+:::
+```
+
+:::article type="info" title="Note" subtitle="Authoring pattern" date="2026-03-27" description="Use article containers when a block needs a semantic wrapper and shared color styling."
+This article assumes basic Markdown knowledge.
+
+Add `color="warning"` when you want a direct palette token, or `class="editorial-note"` when you need an extra project hook.
+:::

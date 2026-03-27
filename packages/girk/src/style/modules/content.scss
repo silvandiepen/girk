@@ -12,6 +12,7 @@
     blockquote,
     figure,
     pre,
+    article,
     ul,
     ol,
     dl,
@@ -35,6 +36,7 @@
     blockquote,
     figure,
     pre,
+    article,
     ul,
     ol,
     dl,
@@ -54,6 +56,7 @@
     blockquote,
     figure,
     pre,
+    article,
     ul,
     ol,
     dl,
@@ -179,6 +182,83 @@
     margin-left: 0;
     padding-left: var(--space);
     border-left: var(--border-width-m) solid var(--color-foreground);
+  }
+
+  article {
+    padding: var(--space-l);
+    border: var(--border-width-s) solid
+      color-mix(in srgb, currentColor 12%, transparent);
+    border-radius: var(--border-radius-m);
+    background-color: color-mix(in srgb, currentColor 2%, transparent);
+
+    > :first-child {
+      margin-top: 0;
+    }
+  }
+
+  .article-block {
+    --article-background-default: color-mix(
+      in srgb,
+      currentColor 2%,
+      transparent
+    );
+    --article-text-default: inherit;
+    background-color: var(--article-color, var(--article-background-default));
+    color: var(--article-color-contrast, var(--article-text-default));
+    border-color: color-mix(in srgb, currentColor 12%, transparent);
+
+    a {
+      color: inherit;
+      text-decoration-color: color-mix(in srgb, currentColor 32%, transparent);
+    }
+  }
+
+  .article-block__header {
+    display: grid;
+    gap: var(--space-xs);
+    margin-bottom: var(--space);
+  }
+
+  .article-block__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-xs) var(--space-s);
+    font-size: var(--font-size-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.82;
+  }
+
+  .article-block__type,
+  .article-block__subtitle,
+  .article-block__date,
+  .article-block__description {
+    margin: 0;
+  }
+
+  .article-block__type {
+    padding: 0.3em 0.7em;
+    border-radius: 999px;
+    background-color: color-mix(in srgb, currentColor 14%, transparent);
+    font-weight: 700;
+    opacity: 1;
+  }
+
+  .article-block__title {
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .article-block__description {
+    max-width: var(--content-copy-width, 72ch);
+    opacity: 0.88;
+  }
+
+  .article-block__content {
+    > :first-child {
+      margin-top: 0;
+    }
   }
 
   details {

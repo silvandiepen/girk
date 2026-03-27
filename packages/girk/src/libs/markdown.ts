@@ -6,6 +6,7 @@ import tasks from "markdown-it-tasks";
 import alert from "markdown-it-alert";
 import defList from "markdown-it-deflist";
 
+import articleBlock from "@/libs/markdown-it-article";
 import svgImages from "@/libs/markdown-it-svg";
 import { extractMeta, removeMeta } from "@/libs/markdown-meta";
 import { MarkdownData } from "@/types";
@@ -28,6 +29,7 @@ md.use(anchor);
 md.use(tasks, { enabled: true, label: true, labelAfter: true });
 md.use(alert, { bem: true });
 md.use(defList);
+md.use(articleBlock);
 md.use(svgImages);
 
 export const unp = (input: string): string => {

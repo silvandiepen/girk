@@ -18,3 +18,37 @@ describe("Markdown code highlighting", () => {
     }
   );
 });
+
+describe("Markdown article blocks", () => {
+  it("renders article containers from markdown syntax", async () => {
+    const { document } = await toHtml(`:::article editorial-note
+## Editorial note
+This article comes from markdown.
+
+It keeps semantic grouping without raw HTML.
+:::`);
+
+    expect(document).toContain(
+      '<article class="article-block editorial-note">'
+    );
+    expect(document).toContain("<h2");
+    expect(document).toContain("<p>This article comes from markdown.</p>");
+    expect(document).toContain("</article>");
+  });
+
+  it("renders structured article metadata from markdown attributes", async () => {
+    const { document } = await toHtml(`:::article type="info" title="Note" subtitle="Heads up" date="2026-03-27" description="Start here."
+This article assumes basic Markdown knowledge.
+:::`);
+
+    expect(document).toContain('article-block--type-info');
+    expect(document).toContain("article-block__header");
+    expect(document).toContain(">Heads up<");
+    expect(document).toContain('datetime="2026-03-27"');
+    expect(document).toContain(">Note<");
+    expect(document).toContain(">Start here.<");
+    expect(document).toContain(
+      "<p>This article assumes basic Markdown knowledge.</p>"
+    );
+  });
+});

@@ -165,6 +165,39 @@ style: scroll-margin-top: calc(var(--space-xxl) * 2);
 ---
 ```
 
+### Article block colors
+
+Markdown article containers use the same generated color tokens.
+
+Use `type` when the block is semantic:
+
+```markdown
+:::article type="info" title="Note"
+This article assumes basic Markdown knowledge.
+:::
+```
+
+Use `color` when you want a direct palette or semantic token:
+
+```markdown
+:::article color="beige" title="Editorial note"
+This article uses the beige project token.
+:::
+```
+
+Supported metadata attributes:
+
+- `title`
+- `subtitle`
+- `description`
+- `date`
+- `type`
+- `color`
+- `class`
+- `style`
+
+`type` and `color` resolve to `--article-color` and `--article-color-contrast`, which are filled from the existing `--color-[token]` and `--color-[token]-contrast` variables. When both are present, `type` wins for the theme color while `color` still adds a modifier class for project-specific CSS.
+
 ## Default Style Variables
 
 The generated stylesheet is designed to be overridden with CSS variables first, before you reach for selector overrides.

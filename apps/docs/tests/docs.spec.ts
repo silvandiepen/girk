@@ -281,6 +281,40 @@ test.describe("generated docs", () => {
     await expect(main.getByRole("radio", { name: "RSS" })).toBeVisible();
   });
 
+  test("semantic article blocks render with default styling", async ({ page }) => {
+    await page.goto("/features/kitchensink/");
+
+    const articles = page.locator("#en-features-kitchensink-semantics article");
+
+    await expect(articles).toHaveCount(2);
+    await expect(articles.nth(0)).toContainText("Raw HTML article");
+    await expect(articles.nth(1)).toContainText("Note");
+    await expect(articles.nth(1)).toContainText("Authoring pattern");
+    await expect(articles.nth(1)).toContainText("2026-03-27");
+    await expect(articles.nth(1)).toContainText("This article assumes basic Markdown knowledge.");
+
+    const styles = await articles.nth(1).evaluate((element) => {
+      const computed = window.getComputedStyle(element);
+
+      return {
+        articleColor: element.getAttribute("style"),
+        backgroundColor: computed.backgroundColor,
+        borderTopWidth: computed.borderTopWidth,
+        borderRadius: computed.borderRadius,
+        color: computed.color,
+        paddingTop: computed.paddingTop,
+      };
+    });
+
+    expect(styles.articleColor).toContain("--article-color:");
+    expect(styles.articleColor).toContain("--article-color-contrast:");
+    expect(styles.backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
+    expect(styles.borderTopWidth).not.toBe("0px");
+    expect(styles.borderRadius).not.toBe("0px");
+    expect(styles.color).not.toBe("rgba(0, 0, 0, 0)");
+    expect(styles.paddingTop).not.toBe("0px");
+  });
+
   test("child pages expose related sibling pages below the content", async ({ page }) => {
     await page.goto("/features/archives/");
 
