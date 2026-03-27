@@ -1,3 +1,10 @@
+# [1.23.0](https://github.com/silvandiepen/girk/compare/v1.22.0...v1.23.0) (2026-03-27)
+
+
+### Features
+
+* **Content:** Add configurable markdown article blocks ([a6c2828](https://github.com/silvandiepen/girk/commit/a6c2828b841d1500479223e6d360f8fb52299014))
+
 # [1.22.0](https://github.com/silvandiepen/girk/compare/v1.21.0...v1.22.0) (2026-03-26)
 
 
