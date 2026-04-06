@@ -1,6 +1,7 @@
 import { blockLine, blockSettings, blockMid } from "cli-block";
 
 import { makePath } from "@/libs/files";
+import { isHidden } from "@/libs/helpers";
 import { isSectionsArchiveParent } from "@/libs/archives";
 import { Payload, MenuItem } from "@/types";
 
@@ -13,8 +14,8 @@ const filterHomePage = (payload: Payload, item: MenuItem) => {
 export const generateMenu = async (payload: Payload): Promise<Payload> => {
   let menu: MenuItem[] = payload.files
     .map((file) => {
-      const isHidden = file.meta.hide === true || file.meta.hide === "true";
-      let active = !isHidden;
+      const hidden = isHidden(file.meta);
+      let active = !hidden;
 
       const relativePath = file.path.replace(process.cwd(), "");
       const pathGroup = relativePath.split("/");
@@ -24,7 +25,7 @@ export const generateMenu = async (payload: Payload): Promise<Payload> => {
       if (depth > 0) active = false;
 
       // Index in first depth can also be in menu
-      if (depth === 1 && file.home) active = !isHidden;
+      if (depth === 1 && file.home) active = !hidden;
 
       let link = makePath(file);
 
@@ -59,11 +60,12 @@ export const generateMenu = async (payload: Payload): Promise<Payload> => {
           id: c.id,
           name: c.title,
           link: makePath(c),
-          active: c.meta.hide !== true && c.meta.hide !== "true",
+          active: !isHidden(c.meta),
           language: c.language,
           icon: c.icon,
           order: c.meta.order || 999,
         }))
+        .filter((child) => child.active)
         .sort((a, b) => a.order - b.order);
 
       item.children = children;

@@ -30,6 +30,7 @@ import { createPage } from "@/libs/page";
 import { processPartials } from "@/libs/partials";
 import { getConfig, getProjectData } from "@/libs/project";
 import { createRobots } from "@/libs/robots";
+import { generateSearchIndex } from "@/libs/search";
 import { createTagPages, generateTags } from "@/libs/tags";
 import { asyncForEach, hello } from "@/libs/utils";
 import { generateSocials } from "./libs/socials";
@@ -226,6 +227,7 @@ hello()
   .then(generateMenu)
   .then(generateStyles)
   .then(generateFavicon)
+  .then(generateSearchIndex)
   .then(contentPages)
   .then(createTagPages)
   .then(createRobots)

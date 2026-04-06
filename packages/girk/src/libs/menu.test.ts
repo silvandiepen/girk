@@ -35,6 +35,45 @@ describe("Menu generation", () => {
     expect(payload.menu.map((item) => item.name)).toEqual(["Visible"]);
   });
 
+  it("keeps hidden archive children out of generated submenus", async () => {
+    const payload = await generateMenu({
+      files: [
+        {
+          id: "features",
+          title: "Features",
+          name: "features",
+          path: `${process.cwd()}/features/README.md`,
+          home: true,
+          language: "en",
+          meta: { archive: "articles", menuChildren: true, order: 1 },
+        },
+        {
+          id: "frontmatter",
+          title: "Page Frontmatter",
+          name: "frontmatter",
+          path: `${process.cwd()}/features/frontmatter.md`,
+          parent: "features",
+          language: "en",
+          meta: { order: 1 },
+        },
+        {
+          id: "legacy",
+          title: "Use Page Settings",
+          name: "legacy",
+          path: `${process.cwd()}/features/page-settings.md`,
+          parent: "features",
+          language: "en",
+          meta: { hide: true, order: 2 },
+        },
+      ],
+      languages: ["en"],
+    } as any);
+
+    expect(payload.menu[0].children?.map((item) => item.name)).toEqual([
+      "Page Frontmatter",
+    ]);
+  });
+
   it("includes first-level section home pages without archive metadata", async () => {
     const payload = await generateMenu({
       files: [

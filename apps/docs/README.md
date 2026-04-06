@@ -2,6 +2,7 @@
 projectTitle: Girk
 projectDescription: Generate pragmatic static sites from Markdown, files, and a small set of settings.
 projectGroupTags: true
+projectSearch: true
 hide: true
 ---
 
@@ -80,6 +81,7 @@ That becomes:
 - multilingual support
 - theme variables and styling hooks
 - route and menu control through frontmatter
+- optional static search with local query shards
 
 ## Good Fit If
 

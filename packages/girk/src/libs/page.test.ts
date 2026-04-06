@@ -57,6 +57,163 @@ describe("Page navigation state", () => {
     expect(page.html.data).toContain('<meta name="generator" content="Girk 9.9.9-test">');
   });
 
+  it("includes the built-in search client when project search is enabled", async () => {
+    const file: File = {
+      id: "page-home",
+      name: "index",
+      fileName: "README",
+      path: "/tmp/project/README.md",
+      created: new Date("2026-03-25T00:00:00.000Z"),
+      language: "en",
+      home: true,
+      title: "Example",
+      html: "<p>Hello world</p>",
+      meta: {},
+    };
+
+    const payload: Payload = {
+      files: [file],
+      media: [],
+      socials: [],
+      languages: ["en"],
+      settings: {
+        output: "/tmp/project/public",
+        languages: ["en"],
+        args: {},
+        config: {},
+      },
+      output: "/tmp/project/public",
+      args: {},
+      config: {},
+      project: {
+        title: "Example Project",
+        search: true,
+      },
+      style: {
+        path: "/style/app.css",
+      },
+      generator: {
+        name: "Girk",
+        version: "9.9.9-test",
+      },
+    };
+
+    const page = await buildPage(payload, file);
+
+    expect(page.html.data).toContain('<script src="/assets/search/client.js"></script>');
+  });
+
+  it("includes the built-in search client when a page enables search directly", async () => {
+    const file: File = {
+      id: "search-page",
+      name: "search",
+      fileName: "search",
+      path: "/tmp/project/features/search.md",
+      created: new Date("2026-03-25T00:00:00.000Z"),
+      language: "en",
+      parent: "features",
+      title: "Search",
+      html: "<p>Hello world</p>",
+      meta: {
+        search: true,
+      },
+    };
+
+    const payload: Payload = {
+      files: [file],
+      media: [],
+      socials: [],
+      languages: ["en"],
+      settings: {
+        output: "/tmp/project/public",
+        languages: ["en"],
+        args: {},
+        config: {},
+      },
+      output: "/tmp/project/public",
+      args: {},
+      config: {},
+      project: {
+        title: "Example Project",
+        search: false,
+      },
+      style: {
+        path: "/style/app.css",
+      },
+      generator: {
+        name: "Girk",
+        version: "9.9.9-test",
+      },
+    };
+
+    const page = await buildPage(payload, file);
+
+    expect(page.html.data).toContain('aria-label="Open search"');
+    expect(page.html.data).toContain('<script src="/assets/search/client.js"></script>');
+  });
+
+  it("includes the built-in search client on archive children when archiveSearch is enabled", async () => {
+    const archiveHome: File = {
+      id: "guide-home",
+      name: "guide",
+      fileName: "README",
+      path: "/tmp/project/guide/README.md",
+      created: new Date("2026-03-25T00:00:00.000Z"),
+      language: "en",
+      home: true,
+      title: "Guide",
+      html: "<p>Guide overview</p>",
+      meta: {
+        archiveSearch: true,
+      },
+    };
+
+    const file: File = {
+      id: "guide-install",
+      name: "install",
+      fileName: "install",
+      path: "/tmp/project/guide/install.md",
+      created: new Date("2026-03-25T00:00:00.000Z"),
+      language: "en",
+      parent: "guide",
+      title: "Install",
+      html: "<p>Install guide</p>",
+      meta: {},
+    };
+
+    const payload: Payload = {
+      files: [archiveHome, file],
+      media: [],
+      socials: [],
+      languages: ["en"],
+      settings: {
+        output: "/tmp/project/public",
+        languages: ["en"],
+        args: {},
+        config: {},
+      },
+      output: "/tmp/project/public",
+      args: {},
+      config: {},
+      project: {
+        title: "Example Project",
+        search: false,
+      },
+      style: {
+        path: "/style/app.css",
+      },
+      generator: {
+        name: "Girk",
+        version: "9.9.9-test",
+      },
+    };
+
+    const page = await buildPage(payload, file);
+
+    expect(page.html.data).toContain('aria-label="Open search"');
+    expect(page.html.data).toContain('<script src="/assets/search/client.js"></script>');
+  });
+
   it("renders resolved icons in navigation and related page cards", async () => {
     const home: File = {
       id: "features-home",

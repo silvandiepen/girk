@@ -35,6 +35,7 @@ Girk keeps the content model simple:
 - frontmatter handles page behavior without extra tooling
 - `girk.config.json` keeps shared project defaults in one place
 - build-time data sources can repeat content or fan one template out into many pages
+- optional build-time search stays fully static
 - the output is static HTML, CSS, and assets
 
 Use it for:
@@ -78,6 +79,7 @@ Useful project hooks:
 - `projectStyleOverrule` replaces the generated stylesheet
 - `projectScript` adds classic scripts before `</body>`
 - `projectScriptModule` adds `type="module"` scripts before `</body>`
+- `projectSearch` enables the built-in static search index and client
 
 Example:
 
@@ -91,6 +93,45 @@ Example:
   }
 }
 ```
+
+## Static Search
+
+Turn search on once:
+
+```json
+{
+  "projectSearch": true
+}
+```
+
+Girk then generates static search assets in `public/assets/search/` and injects the built-in client into the generated pages.
+
+You can also enable it more narrowly in frontmatter:
+
+```markdown
+---
+search: true
+---
+```
+
+That enables the header search UI on one page.
+
+```markdown
+---
+archive: sections
+archiveSearch: true
+---
+```
+
+That enables the same UI on an archive landing page and its archive children.
+
+The default UI is a small search icon button in the header. Clicking it opens a centered search overlay with a focused input and live result links.
+
+Optional tuning:
+
+- `projectSearchSharding`: `auto`, `language`, or `section`
+- `projectSearchBodyLimit`: cap the body text that is indexed per page
+- `projectSearchScope`: optional default scope override, `project` by default
 
 ## Customisation
 

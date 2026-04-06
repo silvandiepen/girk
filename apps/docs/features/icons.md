@@ -114,5 +114,5 @@ Use an asset path when:
 
 ## Related Features
 
-- [Page Metadata](/features/metadata/index.html)
+- [Page Frontmatter](/features/metadata/index.html)
 - [Media and Assets](/features/media/index.html)

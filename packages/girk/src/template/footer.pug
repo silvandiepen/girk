@@ -78,6 +78,9 @@ footer.footer
                                 a.socials__link(href=`${social.link}`,aria-label=`${social.title}`,title=`${social.title}`)
                                     span.socials__text=social.title
 
+if has.search
+    script(src="/assets/search/client.js")
+
 if project.script
     each script in project.script
         script(lang="text/javascript", src=script.src, type=script.type)

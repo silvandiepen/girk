@@ -89,4 +89,43 @@ describe("archives helpers", () => {
       "--section-background-color: var(--color-blue); --section-text-color: var(--color-blue-contrast)"
     );
   });
+
+  it("keeps hidden children out of generated archives", async () => {
+    const parent = createFile({
+      id: "guide",
+      name: "guide",
+      fileName: "README",
+      path: "/tmp/guide/README.md",
+      home: true,
+      meta: { archive: ArchiveType.ARTICLES },
+    });
+
+    const visibleChild = createFile({
+      id: "install",
+      name: "install",
+      fileName: "install",
+      path: "/tmp/guide/install.md",
+      parent: "guide",
+      title: "Install",
+    });
+
+    const hiddenChild = createFile({
+      id: "legacy",
+      name: "legacy",
+      fileName: "legacy",
+      path: "/tmp/guide/legacy.md",
+      parent: "guide",
+      title: "Legacy",
+      meta: { hide: true },
+    });
+
+    const payload = {
+      files: [parent, visibleChild, hiddenChild],
+      tags: [],
+    } as unknown as Payload;
+
+    const result = await generateArchives(payload);
+
+    expect(result.files[0].archives?.[0]?.children?.map((item) => item.title)).toEqual(["Install"]);
+  });
 });

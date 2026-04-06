@@ -2,7 +2,7 @@ import { parentPath } from "@/libs/utils";
 
 import { makePath } from "@/libs/files";
 import { ArchiveType, Payload, File } from "@/types";
-import { getExcerpt } from "@/libs/helpers";
+import { getExcerpt, isHidden } from "@/libs/helpers";
 import { buildSectionStyle } from "@/libs/section-style";
 /*
  *  Archives
@@ -51,7 +51,7 @@ export const generateArchives = async (payload: Payload): Promise<Payload> => {
       if (file.home && !!archiveType) {
         children = payload.files
 
-          .filter((item) => isParent(item, file) && !item.home)
+          .filter((item) => isParent(item, file) && !item.home && !isHidden(item.meta))
 
           //  Enrich each child with meta information, a link and the excerpt
           .map((item) => ({

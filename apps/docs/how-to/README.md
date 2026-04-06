@@ -12,7 +12,7 @@ If you want to build a site with Girk, the practical path is:
 
 1. create a small file tree
 2. run the generator
-3. add metadata where you need behavior
+3. add page frontmatter where you need behavior
 4. add config or styling only when the project needs it
 
 If you are looking for upgrade notes or recent changes instead of setup guidance, go straight to [Release Notes](/release-notes/index.html).
@@ -22,7 +22,7 @@ If you are looking for upgrade notes or recent changes instead of setup guidance
 - [Getting Started](/how-to/getting-started/index.html)
 - [Structure a Project](/how-to/structure/index.html)
 - [Configure a Project](/how-to/configuration/index.html)
-- [Use Page Settings](/how-to/page-settings/index.html)
+- [Page Frontmatter](/features/metadata/index.html)
 - [Use Data Sources](/how-to/data-sources/index.html)
 - [AI Reference](/how-to/ai/index.html)
 

@@ -1,4 +1,4 @@
-import { File } from "../types";
+import { File, Meta } from "../types";
 import { camelCase } from "@sil/case";
 import { join } from "path";
 import { getStringFromTag, removeTag } from "@/libs/utils";
@@ -13,6 +13,9 @@ export const fileTitle = (file: File): string =>
 
 export const getExcerpt = (file: File): string =>
   getStringFromTag(file.html ? file.html : "", "p");
+
+export const isHidden = (meta?: Meta): boolean =>
+  meta?.hide === true || meta?.hide === "true";
 
 export const flattenObject = (
   obj: Record<string, unknown>,

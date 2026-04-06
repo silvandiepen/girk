@@ -15,6 +15,8 @@ import {
 import { getLanguageMenu, getDefaultLanguage } from "../libs/language";
 import { makePath, buildHtml, getParentFile } from "./files";
 import { getExcerpt } from "./helpers";
+import { isHidden } from "./helpers";
+import { getSearchContext, hasSearchEnabled } from "./search";
 import { buildSectionStyle } from "./section-style";
 
 import { createDir } from "@/libs/utils";
@@ -72,8 +74,7 @@ const getRelatedPages = (file: File, files: File[]): File[] => {
         candidate.id !== file.id &&
         !candidate.home &&
         candidate.language === file.language &&
-        candidate.meta?.hide !== true &&
-        candidate.meta?.hide !== "true"
+        !isHidden(candidate.meta)
     )
     .map((candidate): File => {
       const meta: Meta = candidate.meta || {};
@@ -179,6 +180,7 @@ export const buildPage = async (
     socials: payload.socials,
     parentPage,
     relatedPages,
+    searchContext: getSearchContext(file, payload),
     config: payload.settings.config,
     has: {
       table: hasTable(file),
@@ -186,6 +188,7 @@ export const buildPage = async (
       urlToken: hasUrlToken(file),
       colors: hasColors(file),
       languages: hasLanguages(payload.languages),
+      search: hasSearchEnabled(file, payload),
     },
   };
   const html = await buildHtml(file, data);

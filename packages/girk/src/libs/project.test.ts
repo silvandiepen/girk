@@ -77,4 +77,26 @@ describe("Project settings", () => {
 
     await rm(root, { recursive: true, force: true });
   });
+
+  it("normalizes search settings from project config", async () => {
+    const root = await mkdtemp(join(tmpdir(), "girk-project-search-"));
+    process.chdir(root);
+
+    await writeFile(
+      join(root, "girk.config.json"),
+      JSON.stringify({
+        projectSearch: "true",
+        projectSearchSharding: "section",
+        projectSearchBodyLimit: "1400",
+      })
+    );
+
+    const project = await getProjectData([]);
+
+    expect(project.search).toBe(true);
+    expect(project.searchSharding).toBe("section");
+    expect(project.searchBodyLimit).toBe("1400");
+
+    await rm(root, { recursive: true, force: true });
+  });
 });

@@ -1,4 +1,5 @@
 import { asyncForEach } from "@/libs/utils";
+import { isHidden } from "@/libs/helpers";
 
 import { Payload, File, FileType, Tag, Language, ArchiveType } from "../types";
 import { createPage } from "./page";
@@ -14,7 +15,7 @@ export const generateTags = async (payload: Payload): Promise<Payload> => {
   const tags: Tag[] = [];
 
   await asyncForEach(payload.files, (file: File) => {
-    if (file.meta && file.meta?.tags) {
+    if (!isHidden(file.meta) && file.meta && file.meta?.tags) {
       if (typeof file.meta?.tags === "string")
         file.meta.tags = [file.meta.tags];
 
@@ -58,9 +59,13 @@ export const createTagPages = async (payload: Payload): Promise<Payload> => {
     const archive = payload.project.groupTags
       ? payload.files.filter(
           (file) =>
-            file.meta?.tags?.includes(tag.name) && file.parent == tag.parent
+            !isHidden(file.meta) &&
+            file.meta?.tags?.includes(tag.name) &&
+            file.parent == tag.parent
         )
-      : payload.files.filter((file) => file.meta?.tags?.includes(tag.name));
+      : payload.files.filter(
+          (file) => !isHidden(file.meta) && file.meta?.tags?.includes(tag.name)
+        );
 
     const file: File = {
       id: fileId(path),

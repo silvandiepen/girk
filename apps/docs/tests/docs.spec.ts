@@ -29,8 +29,8 @@ const routes: RouteExpectation[] = [
   },
   {
     path: "/features/metadata/",
-    heading: /^Page Metadata$/,
-    text: "Page frontmatter is how you shape navigation",
+    heading: /^Page Frontmatter$/,
+    text: "Page frontmatter is the single place where you control",
   },
   {
     path: "/features/customisation/",
@@ -48,6 +48,11 @@ const routes: RouteExpectation[] = [
     text: "supports multilingual content with filename suffixes",
   },
   {
+    path: "/features/search/",
+    heading: /^Search$/,
+    text: "fully static search index at build time",
+  },
+  {
     path: "/examples/",
     heading: /^Examples$/,
     text: "These are complete Girk projects you can inspect",
@@ -60,7 +65,7 @@ const routes: RouteExpectation[] = [
   {
     path: "/release-notes/",
     heading: /^Release Notes$/,
-    text: "tracks what changed in Girk",
+    text: "tracks what changed in each released version of Girk",
   },
   {
     path: "/how-to/getting-started/",
@@ -90,7 +95,7 @@ const routes: RouteExpectation[] = [
   {
     path: "/how-to/page-settings/",
     heading: /^Use Page Settings$/,
-    text: "Page frontmatter is where you control titles",
+    text: "single canonical page",
   },
   {
     path: "/how-to/ai/",
@@ -248,7 +253,56 @@ test.describe("generated docs", () => {
     await expect(main.getByRole("link", { name: "Customisation", exact: true }).first()).toBeVisible();
     await expect(main.getByRole("link", { name: "Kitchen Sink", exact: true }).first()).toBeVisible();
     await expect(main.getByRole("link", { name: "Multilingual Content", exact: true }).first()).toBeVisible();
-    await expect(main.getByRole("link", { name: "Page Metadata", exact: true }).first()).toBeVisible();
+    await expect(main.getByRole("link", { name: "Page Frontmatter", exact: true }).first()).toBeVisible();
+  });
+
+  test("header search stays hidden until the icon button is opened, then shows live results", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    const banner = page.getByRole("banner");
+    const openButton = banner.getByRole("button", { name: "Open search" });
+    const dialog = page.getByRole("dialog", { name: "Search" });
+    const input = page.locator("#site-search-input");
+
+    await expect(openButton).toBeVisible();
+    await expect(input).toBeHidden();
+
+    await openButton.click();
+
+    await expect(dialog).toBeVisible();
+    await expect(input).toBeVisible();
+    await expect(input).toBeFocused();
+
+    await input.fill("archives");
+
+    await expect(dialog.getByRole("link", { name: "Archives" }).first()).toBeVisible();
+    await dialog.getByRole("link", { name: "Archives" }).first().click();
+
+    await expect(page).toHaveURL(/\/features\/archives(?:\/|\/index\.html)?$/);
+    await expect(page.getByRole("heading", { level: 1, name: "Archives" })).toBeVisible();
+  });
+
+  test("header search opens and works on mobile", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/");
+
+    const openButton = page.getByRole("banner").getByRole("button", { name: "Open search" });
+
+    await openButton.click();
+
+    const dialog = page.getByRole("dialog", { name: "Search" });
+    const input = page.locator("#site-search-input");
+
+    await expect(dialog).toBeVisible();
+    await expect(input).toBeFocused();
+
+    await input.fill("multilingual");
+
+    await expect(
+      dialog.getByRole("link", { name: "Multilingual Content" }).first()
+    ).toBeVisible();
   });
 
   test("kitchen sink exposes native form controls", async ({ page }) => {

@@ -21,6 +21,9 @@ export interface ProjectScriptEntry {
   type: ProjectScriptType;
 }
 
+export type ProjectSearchSharding = "auto" | "language" | "section";
+export type SearchScope = "project" | "archive" | "page";
+
 export interface Project {
   logo?: string;
   title?: string;
@@ -33,6 +36,10 @@ export interface Project {
   scriptModule?: string | string[];
   groupTags?: boolean;
   copyFiles?: string | string[];
+  search?: boolean;
+  searchSharding?: ProjectSearchSharding;
+  searchBodyLimit?: number | string;
+  searchScope?: SearchScope;
 }
 
 export interface Style {
@@ -46,6 +53,36 @@ export interface Style {
 export interface GeneratorInfo {
   name: string;
   version: string;
+}
+
+export interface SearchDocument {
+  id: string;
+  title: string;
+  link: string;
+  excerpt: string;
+  section: string;
+  branch: string;
+  language: Language;
+}
+
+export interface SearchContext {
+  scope: SearchScope;
+  pageId: string;
+  branch: string;
+}
+
+export interface SearchManifestShard {
+  id: string;
+  language: Language;
+  section: string;
+  documents: number;
+  path: string;
+}
+
+export interface SearchManifest {
+  version: string;
+  languages: Language[];
+  shards: SearchManifestShard[];
 }
 
 export interface ResolvedIcon {
@@ -176,6 +213,7 @@ export interface buildHtmlArgs {
   socials: Social[];
   relatedPages?: File[];
   parentPage?: File;
+  searchContext?: SearchContext;
   config: Payload["settings"]["config"];
   has: {
     table: boolean;
@@ -183,6 +221,7 @@ export interface buildHtmlArgs {
     urlToken: boolean;
     colors: boolean;
     languages: boolean;
+    search: boolean;
   };
 }
 interface PageCss {

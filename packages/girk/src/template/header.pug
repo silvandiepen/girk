@@ -6,3 +6,18 @@ header.header
             - const navigationVariant = "header"
             - const navigationIdPrefix = "header-navigation"
             include navigation.pug
+
+        if has.search
+            .header__actions
+                button.search-toggle(
+                    type="button"
+                    aria-label="Open search"
+                    aria-haspopup="dialog"
+                    aria-controls="site-search"
+                    aria-expanded="false"
+                    data-search-open
+                )
+                    span.search-toggle__icon(aria-hidden="true")
+                        svg.search-toggle__icon-asset(viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round")
+                            circle(cx="11" cy="11" r="6.5")
+                            line(x1="16" y1="16" x2="21" y2="21")
