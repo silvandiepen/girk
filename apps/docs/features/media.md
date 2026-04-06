@@ -1,6 +1,7 @@
 ---
 title: Media and Assets
 icon: media/image
+color: orange
 tags: documentation
 ---
 

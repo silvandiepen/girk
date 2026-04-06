@@ -1,6 +1,7 @@
 ---
 title: Kitchen Sink
 icon: misc/kitchen-utensils
+color: beige
 tags: documentation
 archive: sections
 ---

@@ -1,6 +1,7 @@
 ---
 title: Archives
 icon: ui/file-archive
+color: blue
 tags: documentation
 ---
 

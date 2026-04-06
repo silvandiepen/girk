@@ -1,6 +1,7 @@
 ---
 title: Page Metadata
 icon: ADD
+color: magenta
 tags: documentation
 ---
 

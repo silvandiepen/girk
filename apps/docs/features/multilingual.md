@@ -1,6 +1,7 @@
 ---
 title: Multilingual Content
 icon: ui/globe
+color: lime
 tags: documentation
 ---
 

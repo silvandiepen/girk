@@ -128,11 +128,20 @@
   }
 
   a {
-    color: inherit;
+    color: var(--color-secondary);
     text-decoration-line: underline;
-    text-decoration-color: color-mix(in srgb, currentColor 55%, transparent);
-    text-decoration-thickness: var(--border-width-s);
+    text-decoration-color: color-mix(in srgb, currentColor 25%, transparent);
+    text-decoration-thickness: 2px;
     text-underline-offset: 0.16em;
+  }
+
+  a code {
+    color: var(--color-foreground);
+    text-decoration: none;
+  }
+
+  a:has(> code) {
+    text-decoration: none;
   }
 
   p:first-of-type:has(+ p) {

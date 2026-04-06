@@ -1,6 +1,7 @@
 ---
 title: Data Sources
 icon: ui/file-graphs
+color: green
 tags: documentation
 ---
 

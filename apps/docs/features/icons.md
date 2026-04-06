@@ -1,6 +1,7 @@
 ---
 title: Icons
 icon: ui/file-star
+color: yellow
 tags: documentation
 ---
 

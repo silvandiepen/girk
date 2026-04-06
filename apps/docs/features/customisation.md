@@ -1,6 +1,7 @@
 ---
 title: Customisation
 icon: ui/paint-brush
+color: purple
 tags: documentation
 ---
 
