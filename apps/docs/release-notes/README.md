@@ -7,7 +7,7 @@ order: 5
 
 # Release Notes
 
-This section tracks what changed in each released version of Girk and, when local `main` is ahead, the next queued version as well.
+This section tracks what changed in each released version of Girk.
 
 These pages are generated during the publish workflow from the conventional commits that were included in that release.
 

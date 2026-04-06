@@ -1,3 +1,11 @@
+# [1.24.0](https://github.com/silvandiepen/girk/compare/v1.23.0...v1.24.0) (2026-04-06)
+
+
+### Features
+
+* **Search:** Add built-in static site search ([b4bf159](https://github.com/silvandiepen/girk/commit/b4bf159c66fff40ea0097f5e81f2d943211a75c8))
+* **Theme:** Add accent colors to feature docs ([32ff57f](https://github.com/silvandiepen/girk/commit/32ff57f53e37e14fc69e3925a9e5cf4195c43426))
+
 # [1.23.0](https://github.com/silvandiepen/girk/compare/v1.22.0...v1.23.0) (2026-03-27)
 
 
