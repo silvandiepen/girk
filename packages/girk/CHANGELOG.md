@@ -1,3 +1,10 @@
+## [1.25.2](https://github.com/silvandiepen/girk/compare/v1.25.1...v1.25.2) (2026-04-16)
+
+
+### Bug Fixes
+
+* **Imports:** Keep .md link paths relative, only convert the extension ([a57c21b](https://github.com/silvandiepen/girk/commit/a57c21bb393d2b3e77a606e381b902e54c57bc90))
+
 ## [1.25.1](https://github.com/silvandiepen/girk/compare/v1.25.0...v1.25.1) (2026-04-16)
 
 
