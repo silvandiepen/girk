@@ -6,7 +6,7 @@ import tasks from "markdown-it-tasks";
 import alert from "markdown-it-alert";
 import defList from "markdown-it-deflist";
 import { readFile } from "node:fs/promises";
-import { resolve, dirname, relative } from "path";
+import { resolve, dirname } from "path";
 
 import articleBlock from "@/libs/markdown-it-article";
 import svgImages from "@/libs/markdown-it-svg";
@@ -67,28 +67,23 @@ const fetchLocalFile = async (absolutePath: string): Promise<string> => {
 };
 
 /**
- * Rewrite .md links in imported markdown content so they work from the destination
- * page's location rather than the source file's location.
+ * Rewrite .md file links in markdown content to girk's URL format.
  *
- * Two transformations are applied to every relative markdown link that ends in .md:
- *   1. Rebase — the path is resolved from `sourceDir` then made relative to `destDir`,
- *      so that a link like `./convert.md` in a file imported from `src/libs/` correctly
- *      points to `../../src/libs/convert/` from the destination doc page.
- *   2. Extension — `.md` is converted to girk's URL format: `README.md` / `index.md`
- *      become a trailing-slash directory URL; other files become `name/`.
+ * Only the file extension is converted — relative paths are left exactly as written.
+ * Rebasing paths to account for the importer's location would require knowing the full
+ * URL structure of the published site, which girk cannot assume. Keeping links relative
+ * also means the site works on any domain or path prefix.
  *
- * Absolute URLs, root-relative paths, and anchor-only hrefs are left unchanged.
- * Anchor fragments (`#section`) are preserved on rewritten links.
+ * Transformations applied to relative links ending in .md:
+ *   - README.md / index.md → trailing-slash directory URL  (e.g. `./api/`)
+ *   - Other .md files       → name/ directory URL          (e.g. `./convert/`)
  *
- * @param content   - Markdown body to process.
- * @param sourceDir - Absolute directory of the imported file (used for path resolution).
- * @param destDir   - Absolute directory of the destination page (used for rebasing).
+ * Absolute URLs (http/https), root-relative paths (/), and anchor-only hrefs (#)
+ * are left unchanged. Anchor fragments on rewritten links are preserved.
+ *
+ * @param content - Markdown body to process.
  */
-export const rewriteImportedLinks = (
-  content: string,
-  sourceDir: string,
-  destDir: string
-): string => {
+export const rewriteImportedLinks = (content: string): string => {
   return content.replace(
     /(\[[^\]]*\])\(([^)]+)\)/g,
     (match, label, href) => {
@@ -101,60 +96,44 @@ export const rewriteImportedLinks = (
 
       if (!pathPart.endsWith(".md")) return match;
 
-      // Resolve link from source, then make it relative to destination
-      const absolute = resolve(sourceDir, pathPart);
-      const rebased = relative(destDir, absolute);
-      const normalized = rebased.startsWith(".") ? rebased : `./${rebased}`;
-
-      // Convert to girk URL: README/index → trailing-slash dir, others → name/
-      const fileName = absolute.split("/").pop()!.toLowerCase();
+      // README/index → trailing-slash directory URL
+      const fileName = pathPart.split("/").pop()!.toLowerCase();
       if (fileName === "readme.md" || fileName === "index.md") {
-        const dir = normalized.includes("/")
-          ? `${normalized.slice(0, normalized.lastIndexOf("/"))}/`
+        const dir = pathPart.includes("/")
+          ? `${pathPart.slice(0, pathPart.lastIndexOf("/"))}/`
           : "./";
         return `${label}(${dir}${anchor})`;
       }
 
-      return `${label}(${normalized.replace(/\.md$/, "/")}${anchor})`;
+      // Other .md files → name/ directory URL
+      return `${label}(${pathPart.replace(/\.md$/, "/")}${anchor})`;
     }
   );
 };
 
 /**
  * Load a single import source (relative path or http/https URL), strip its frontmatter,
- * and rewrite any .md links so they resolve correctly from the destination page.
- *
- * For local file imports, links are rebased from the source file's directory to the
- * destination page's directory — so `./convert.md` in an imported component README
- * becomes the right relative path from the docs page that imports it.
- *
- * For URL imports, rebasing is not possible; only the .md-to-URL extension rewrite
- * is applied (relative paths are left pointing relative to the destination page).
+ * and rewrite any .md links to girk's URL format.
  *
  * Imports are intentionally non-recursive: the loaded content is used as-is so that
  * component README files stay clean — they need no girk-specific metadata of their own.
  * The wrapper doc page supplies all girk metadata and controls where the imported body lands.
  *
  * @param importPath - Relative file path or absolute URL to import.
- * @param basePath   - Absolute path of the file that contains the import directive.
+ * @param basePath   - Absolute path of the file that contains the import directive,
+ *                     used to resolve relative paths.
  */
 export const loadImport = async (importPath: string, basePath: string): Promise<string> => {
-  const destDir = dirname(basePath);
   let raw = "";
-  let sourceDir: string;
 
   if (importPath.startsWith("http://") || importPath.startsWith("https://")) {
     raw = await fetchUrl(importPath);
-    // URL imports: no rebasing possible, treat links as relative to the destination
-    sourceDir = destDir;
   } else {
-    const absolutePath = resolve(destDir, importPath);
-    raw = await fetchLocalFile(absolutePath);
-    sourceDir = dirname(absolutePath);
+    raw = await fetchLocalFile(resolve(dirname(basePath), importPath));
   }
 
   const stripped = await removeMeta(raw);
-  return rewriteImportedLinks(stripped, sourceDir, destDir);
+  return rewriteImportedLinks(stripped);
 };
 
 /**
