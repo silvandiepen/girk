@@ -1,3 +1,10 @@
+## [1.25.1](https://github.com/silvandiepen/girk/compare/v1.25.0...v1.25.1) (2026-04-16)
+
+
+### Bug Fixes
+
+* **Imports:** Rewrite .md links in imported files to girk URL format ([428237c](https://github.com/silvandiepen/girk/commit/428237c9a67cc02d995945a0943b203cac1753cd))
+
 # [1.25.0](https://github.com/silvandiepen/girk/compare/v1.24.0...v1.25.0) (2026-04-16)
 
 
