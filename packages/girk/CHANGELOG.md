@@ -1,3 +1,10 @@
+## [1.25.3](https://github.com/silvandiepen/girk/compare/v1.25.2...v1.25.3) (2026-04-16)
+
+
+### Bug Fixes
+
+* **Navigation:** Anchor active pill to entry element, not the link ([73503dd](https://github.com/silvandiepen/girk/commit/73503dd403067e1abf13c6c3595a94cbb309299d))
+
 ## [1.25.2](https://github.com/silvandiepen/girk/compare/v1.25.1...v1.25.2) (2026-04-16)
 
 
