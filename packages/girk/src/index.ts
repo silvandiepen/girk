@@ -60,7 +60,7 @@ export const files = async (payload: Payload): Promise<Payload> => {
    * Generate all files into html and extract metadata
    */
   await asyncForEach(files, async (file: File, index: number) => {
-    const rendered = await toHtml(file.data).then((r) => r);
+    const rendered = await toHtml(file.data, file.path).then((r) => r);
 
     files[index] = {
       ...file,
