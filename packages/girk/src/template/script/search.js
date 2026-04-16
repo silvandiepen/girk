@@ -4,6 +4,7 @@
   var state = {
     shell: null,
     dialog: null,
+    form: null,
     input: null,
     results: null,
     openButtons: [],
@@ -175,7 +176,7 @@
     };
   }
 
-  function renderResults(query, results) {
+  function renderResults(query, results, error) {
     if (!state.results) return;
 
     if (!normalize(query)) {
@@ -185,6 +186,12 @@
     }
 
     state.results.hidden = false;
+
+    if (error) {
+      state.results.innerHTML =
+        '<p class="search-results__empty">Search is unavailable right now.</p>';
+      return;
+    }
 
     if (!results.length) {
       state.results.innerHTML =
@@ -277,20 +284,24 @@
       return;
     }
 
-    var manifest = await getManifest();
-    var shards = await Promise.all(
-      getLanguageShards(manifest).map(function (descriptor) {
-        return getShard(descriptor);
-      })
-    );
-    var allowDocument = getScopePredicate();
+    try {
+      var manifest = await getManifest();
+      var shards = await Promise.all(
+        getLanguageShards(manifest).map(function (descriptor) {
+          return getShard(descriptor);
+        })
+      );
+      var allowDocument = getScopePredicate();
 
-    renderResults(
-      query,
-      rankResults(query, shards, 24)
-        .filter(allowDocument)
-        .slice(0, 8)
-    );
+      renderResults(
+        query,
+        rankResults(query, shards, 24)
+          .filter(allowDocument)
+          .slice(0, 8)
+      );
+    } catch (_) {
+      renderResults(query, [], true);
+    }
   }
 
   function bindEvents() {
@@ -315,6 +326,13 @@
     state.dialog.addEventListener("click", function (event) {
       event.stopPropagation();
     });
+
+    if (state.form) {
+      state.form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        search(state.input.value || "");
+      });
+    }
 
     state.input.addEventListener("input", handleInput);
     state.input.addEventListener("search", function () {
@@ -346,6 +364,7 @@
   function initSearch() {
     state.shell = document.querySelector("[data-search-shell]");
     state.dialog = document.querySelector("[data-search-dialog]");
+    state.form = document.querySelector("[data-search-form]");
     state.input = document.querySelector("[data-search-input]");
     state.results = document.querySelector("[data-search-results]");
     state.openButtons = Array.prototype.slice.call(
