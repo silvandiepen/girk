@@ -1,3 +1,12 @@
+# [1.25.0](https://github.com/silvandiepen/girk/compare/v1.24.0...v1.25.0) (2026-04-16)
+
+
+### Features
+
+* **Imports:** Add file import support via metadata and inline syntax ([8b4a481](https://github.com/silvandiepen/girk/commit/8b4a481ce4eef2b096f14790bca04c543b1b0cdc))
+* **Navigation:** Add CSS View Transitions and anchor-positioned nav pill ([a836ae6](https://github.com/silvandiepen/girk/commit/a836ae60b84d8bc199b34839a5874ab64f944897))
+* **Search:** Add searchExclude support for pages and whole sections ([78e481f](https://github.com/silvandiepen/girk/commit/78e481fd7b03c47770da2a02d90ea84ccc5e12d9))
+
 # [1.24.0](https://github.com/silvandiepen/girk/compare/v1.23.0...v1.24.0) (2026-04-06)
 
 
