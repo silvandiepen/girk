@@ -2,6 +2,7 @@
   position: sticky;
   top: 0;
   z-index: 30;
+  view-transition-name: site-header;
   background-color: var(--color-background);
   border-bottom: var(--border-width-s) solid
     color-mix(in srgb, var(--color-foreground) 12%, transparent);
@@ -19,7 +20,7 @@
     color: var(--color-foreground);
     gap: var(--header-gap, var(--space-l));
 
-    @media screen and (max-width: 720px) {
+    @media screen and (max-width: 960px) {
       gap: var(--space-s);
     }
   }

@@ -123,6 +123,50 @@ test.describe("generated docs", () => {
     await expect(page).toHaveTitle(/^Release Notes \| Girk$/);
   });
 
+  test("main layout exposes view-transition and anchor-positioning hooks", async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(browserName !== "chromium");
+
+    await page.goto("/features/");
+
+    await expect(
+      page.locator('meta[name="view-transition"][content="same-origin"]')
+    ).toHaveCount(1);
+
+    const styles = await page.evaluate(() => {
+      const header = document.querySelector(".header");
+      const main = document.querySelector(".main");
+      const footer = document.querySelector(".footer");
+      const navList = document.querySelector(".navigation--header .navigation__list");
+      const activeLink = document.querySelector(
+        ".navigation--header .navigation__item--current > .navigation__entry > .navigation__link, .navigation--header .navigation__item--parent > .navigation__entry > .navigation__link"
+      );
+      const activePill = document.querySelector(".navigation--header .navigation__active-pill");
+
+      return {
+        supportsAnchors: CSS.supports("position-anchor: --anchor"),
+        headerTransition: header ? getComputedStyle(header).viewTransitionName : "",
+        mainTransition: main ? getComputedStyle(main).viewTransitionName : "",
+        footerTransition: footer ? getComputedStyle(footer).viewTransitionName : "",
+        navTransition: navList ? getComputedStyle(navList).viewTransitionName : "",
+        activeAnchor: activeLink ? getComputedStyle(activeLink).anchorName : "",
+        pillTransition: activePill ? getComputedStyle(activePill).viewTransitionName : "",
+      };
+    });
+
+    expect(styles.headerTransition).toBe("site-header");
+    expect(styles.mainTransition).toBe("site-main");
+    expect(styles.footerTransition).toBe("site-footer");
+    expect(styles.navTransition).toBe("navigation-links");
+
+    if (styles.supportsAnchors) {
+      expect(styles.activeAnchor).toContain("--navigation-active");
+      expect(styles.pillTransition).toBe("navigation-pill");
+    }
+  });
+
   for (const route of routes) {
     test(`renders ${route.path}`, async ({ page }) => {
       const response = await page.goto(route.path);
@@ -220,6 +264,21 @@ test.describe("generated docs", () => {
     expect(panelRight).toBeLessThanOrEqual(viewportWidth - 16);
   });
 
+  test("header navigation switches to the mobile menu at tablet widths", async ({ page }) => {
+    await page.setViewportSize({ width: 900, height: 900 });
+    await page.goto("/");
+
+    const toggle = page
+      .getByRole("banner")
+      .getByRole("button", { name: "Toggle navigation menu" });
+
+    await expect(toggle).toBeVisible();
+    await toggle.click();
+
+    await expect(page.getByRole("banner").getByRole("link", { name: "Features" })).toBeVisible();
+    await expect(page.getByRole("banner").getByRole("link", { name: "How to Use" })).toBeVisible();
+  });
+
   test("footer exposes the main navigation links", async ({ page }) => {
     await page.goto("/features/");
 
@@ -303,6 +362,22 @@ test.describe("generated docs", () => {
     await expect(
       dialog.getByRole("link", { name: "Multilingual Content" }).first()
     ).toBeVisible();
+  });
+
+  test("excluded sections do not appear in live search results", async ({ page }) => {
+    await page.goto("/");
+
+    await page.getByRole("banner").getByRole("button", { name: "Open search" }).click();
+
+    const dialog = page.getByRole("dialog", { name: "Search" });
+    const input = page.locator("#site-search-input");
+
+    await input.fill("generator meta tag");
+
+    await expect(dialog.locator(".search-results__list")).toBeVisible();
+    await expect(dialog.getByRole("link", { name: "Page Frontmatter" }).first()).toBeVisible();
+    await expect(dialog.getByRole("link", { name: "Release Notes" })).toHaveCount(0);
+    await expect(dialog.getByRole("link", { name: "1.19.3" })).toHaveCount(0);
   });
 
   test("kitchen sink exposes native form controls", async ({ page }) => {

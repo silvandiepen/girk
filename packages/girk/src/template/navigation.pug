@@ -19,13 +19,15 @@ mixin renderPanelGroups(items, level)
                     +renderPanelGroups(item.children, level + 1)
 
 mixin renderHeaderNavigation(items)
+    span.navigation__active-pill(aria-hidden="true")
     ul.navigation__list(id=`${navigationRoot}-list`)
         each item, index in items
             - const hasChildren = !!(item.children && item.children.length)
             - const isOpen = false
             - const panelId = `${navigationRoot}-panel-${index}`
+            - const panelAnchor = `--${navigationRoot}-panel-anchor-${index}`
             li.navigation__item(class=`${item.current ? ' navigation__item--current' : ''}${item.isParent && !item.current ? ' navigation__item--parent' : ''}${hasChildren ? ' navigation__item--has-children' : ''}${isOpen ? ' navigation__item--open' : ''}`)
-                .navigation__entry
+                .navigation__entry(style=hasChildren ? `anchor-name: ${panelAnchor};` : undefined)
                     a.navigation__link(href=item.link)
                         +renderIcon(item.icon, "navigation__icon", "navigation__icon-asset")
                         span.navigation__text= item.name
@@ -38,7 +40,7 @@ mixin renderHeaderNavigation(items)
                             aria-label=`Toggle ${item.name} submenu`
                         )
                 if hasChildren
-                    .navigation__panel(id=panelId, hidden=!isOpen)
+                    .navigation__panel(id=panelId, hidden=!isOpen, style=`position-anchor: ${panelAnchor};`)
                         .navigation__panel-inner
                             +renderPanelGroups(item.children, 1)
 
@@ -69,6 +71,7 @@ else
                 aria-expanded="false"
                 aria-controls=`${navigationRoot}-list`
                 aria-label="Toggle navigation menu"
+                style=`anchor-name: --${navigationRoot}-mobile-toggle;`
             )
                 span.navigation__mobile-toggle-icon(aria-hidden="true")
                 span.navigation__mobile-toggle-label Menu

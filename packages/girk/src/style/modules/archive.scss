@@ -72,7 +72,7 @@
     height: 100%;
     padding: var(--card-padding, var(--space));
     text-decoration: none;
-    color: var(--color-foreground);
+    color: var(--section-text-color);
     transition: background-color 0.2s ease, opacity 0.2s ease;
   }
 

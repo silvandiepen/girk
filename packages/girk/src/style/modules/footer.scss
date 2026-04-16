@@ -1,6 +1,7 @@
 .footer {
+  view-transition-name: site-footer;
   border-top: var(--border-width-s) solid
-    color-mix(in srgb, var(--color-foreground) 12%, transparent);
+      color-mix(in srgb, var(--color-foreground) 12%, transparent);
   background-color: color-mix(in srgb, var(--color-background) 94%, var(--color-foreground) 6%);
 
   &__container {

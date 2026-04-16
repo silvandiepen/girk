@@ -4,7 +4,7 @@ const getNavigationItems = (navigation) =>
   );
 
 const PANEL_TRANSITION_MS = 180;
-const DESKTOP_NAVIGATION_MEDIA = "(min-width: 721px)";
+const DESKTOP_NAVIGATION_MEDIA = "(min-width: 961px)";
 
 const clearPanelHideTimer = (submenu) => {
   if (!submenu || typeof submenu.__hideTimer !== "number") return;
@@ -186,7 +186,7 @@ const initMobileNavigation = (navigation) => {
     toggle.focus();
   });
 
-  const media = window.matchMedia("(min-width: 721px)");
+  const media = window.matchMedia(DESKTOP_NAVIGATION_MEDIA);
   media.addEventListener("change", (event) => {
     if (event.matches) setMobileNavigationOpen(navigation, false);
   });
