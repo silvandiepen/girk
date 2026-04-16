@@ -1,3 +1,10 @@
+## [1.25.4](https://github.com/silvandiepen/girk/compare/v1.25.3...v1.25.4) (2026-04-16)
+
+
+### Bug Fixes
+
+* **Search:** Prevent form submission on Enter and handle fetch errors ([dd78530](https://github.com/silvandiepen/girk/commit/dd78530c8c191a09c5ca6d7202afe3ceec831492))
+
 ## [1.25.3](https://github.com/silvandiepen/girk/compare/v1.25.2...v1.25.3) (2026-04-16)
 
 
