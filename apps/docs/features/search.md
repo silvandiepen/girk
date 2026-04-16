@@ -99,6 +99,16 @@ searchExcerpt: Build a local search index for a static Girk site.
 ---
 ```
 
+Set `searchExclude: true` when a page should stay out of the generated index entirely:
+
+```markdown
+---
+searchExclude: true
+---
+```
+
+When that is set on a folder landing page such as `README.md` or `index.md`, Girk excludes that whole section from search. That is the right fit for sections like release notes that should stay browsable but do not need to appear in live search results.
+
 ## Query Scope
 
 By default, the built-in client searches the current page language across the whole project.

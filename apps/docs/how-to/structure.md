@@ -39,6 +39,8 @@ This becomes:
 
 If you want one long page made from child files, use `archive: sections` on the folder landing page. Those child files render into the parent page and do not generate standalone routes. Use files starting with `-` when you want source material that should stay out of routing entirely.
 
+The folder landing page is also where section-level behavior belongs. If a whole section should opt into or out of a feature, set that frontmatter on the folder `README.md` or `index.md`.
+
 ## Language Variants
 
 Use suffixes such as `:nl` for translated versions:

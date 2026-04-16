@@ -3,7 +3,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 import { getArchiveParent, isSectionsArchiveChild } from "@/libs/archives";
-import { makePath } from "@/libs/files";
+import { getParentFile, makePath } from "@/libs/files";
 import { getExcerpt } from "@/libs/helpers";
 import { createDir } from "@/libs/utils";
 import {
@@ -175,6 +175,8 @@ const addWeightedTokens = (
 };
 
 const isSearchableFile = (file: File, files: File[]): boolean => {
+  const parentPage = getParentFile(file, files);
+
   if (file.type && file.type !== FileType.CONTENT) return false;
   if (!file.html) return false;
   if (file.name.startsWith("-")) return false;
@@ -182,6 +184,8 @@ const isSearchableFile = (file: File, files: File[]): boolean => {
   if (isTrue(file.meta?.hide)) return false;
   if (file.meta?.redirect) return false;
   if (isFalse(file.meta?.search)) return false;
+  if (isTrue(file.meta?.searchExclude)) return false;
+  if (isTrue(parentPage?.meta?.searchExclude)) return false;
 
   return true;
 };

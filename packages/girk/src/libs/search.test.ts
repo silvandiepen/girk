@@ -255,6 +255,59 @@ describe("Search index generation", () => {
 
     await rm(root, { recursive: true, force: true });
   });
+
+  it("excludes a whole branch when the section home sets searchExclude", async () => {
+    const root = await mkdtemp(join(tmpdir(), "girk-search-exclude-"));
+    process.chdir(root);
+
+    const payload = createPayload(root, [
+      createFile(root, {
+        id: "home",
+        name: "index",
+        fileName: "README",
+        path: "README.md",
+        home: true,
+        title: "Home",
+      }),
+      createFile(root, {
+        id: "release-notes-home",
+        name: "release-notes",
+        fileName: "README",
+        path: "release-notes/README.md",
+        home: true,
+        title: "Release Notes",
+        meta: {
+          searchExclude: true,
+        },
+      }),
+      createFile(root, {
+        id: "release-note-entry",
+        name: "v1-24-0",
+        path: "release-notes/v1-24-0.md",
+        parent: "release-notes",
+        title: "1.24.0",
+        html: "<p>Generator meta tag update</p>",
+      }),
+      createFile(root, {
+        id: "search-page",
+        name: "search",
+        path: "features/search.md",
+        parent: "features",
+        title: "Search",
+      }),
+    ]);
+
+    await generateSearchIndex(payload);
+
+    const shard = JSON.parse(
+      await readFile(join(root, "public", "assets", "search", "en.json"), "utf8")
+    );
+
+    expect(Object.keys(shard.docs)).toEqual(["home", "search-page"]);
+    expect(Object.keys(shard.terms)).not.toContain("generator");
+
+    await rm(root, { recursive: true, force: true });
+  });
 });
 
 describe("Search enablement", () => {

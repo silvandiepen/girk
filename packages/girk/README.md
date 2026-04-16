@@ -131,7 +131,11 @@ Optional tuning:
 
 - `projectSearchSharding`: `auto`, `language`, or `section`
 - `projectSearchBodyLimit`: cap the body text that is indexed per page
-- `projectSearchScope`: optional default scope override, `project` by default
+- `searchScope`: optional default scope override, `project` by default
+
+Use `searchExclude: true` on a page to keep it out of the generated index.
+
+If that page is a folder landing page such as `README.md` or `index.md`, Girk excludes that whole section from search.
 
 ## Customisation
 
