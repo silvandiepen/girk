@@ -6,7 +6,7 @@ import tasks from "markdown-it-tasks";
 import alert from "markdown-it-alert";
 import defList from "markdown-it-deflist";
 import { readFile } from "node:fs/promises";
-import { resolve, dirname } from "path";
+import { resolve, dirname, relative } from "path";
 
 import articleBlock from "@/libs/markdown-it-article";
 import svgImages from "@/libs/markdown-it-svg";
@@ -67,26 +67,94 @@ const fetchLocalFile = async (absolutePath: string): Promise<string> => {
 };
 
 /**
- * Load a single import source (relative path or http/https URL) and strip its frontmatter.
+ * Rewrite .md links in imported markdown content so they work from the destination
+ * page's location rather than the source file's location.
+ *
+ * Two transformations are applied to every relative markdown link that ends in .md:
+ *   1. Rebase — the path is resolved from `sourceDir` then made relative to `destDir`,
+ *      so that a link like `./convert.md` in a file imported from `src/libs/` correctly
+ *      points to `../../src/libs/convert/` from the destination doc page.
+ *   2. Extension — `.md` is converted to girk's URL format: `README.md` / `index.md`
+ *      become a trailing-slash directory URL; other files become `name/`.
+ *
+ * Absolute URLs, root-relative paths, and anchor-only hrefs are left unchanged.
+ * Anchor fragments (`#section`) are preserved on rewritten links.
+ *
+ * @param content   - Markdown body to process.
+ * @param sourceDir - Absolute directory of the imported file (used for path resolution).
+ * @param destDir   - Absolute directory of the destination page (used for rebasing).
+ */
+export const rewriteImportedLinks = (
+  content: string,
+  sourceDir: string,
+  destDir: string
+): string => {
+  return content.replace(
+    /(\[[^\]]*\])\(([^)]+)\)/g,
+    (match, label, href) => {
+      // Leave absolute URLs, root-relative paths, and anchor-only hrefs alone
+      if (/^(https?:\/\/|\/|#|mailto:)/.test(href)) return match;
+
+      const hashIndex = href.indexOf("#");
+      const pathPart = hashIndex >= 0 ? href.slice(0, hashIndex) : href;
+      const anchor = hashIndex >= 0 ? href.slice(hashIndex) : "";
+
+      if (!pathPart.endsWith(".md")) return match;
+
+      // Resolve link from source, then make it relative to destination
+      const absolute = resolve(sourceDir, pathPart);
+      const rebased = relative(destDir, absolute);
+      const normalized = rebased.startsWith(".") ? rebased : `./${rebased}`;
+
+      // Convert to girk URL: README/index → trailing-slash dir, others → name/
+      const fileName = absolute.split("/").pop()!.toLowerCase();
+      if (fileName === "readme.md" || fileName === "index.md") {
+        const dir = normalized.includes("/")
+          ? `${normalized.slice(0, normalized.lastIndexOf("/"))}/`
+          : "./";
+        return `${label}(${dir}${anchor})`;
+      }
+
+      return `${label}(${normalized.replace(/\.md$/, "/")}${anchor})`;
+    }
+  );
+};
+
+/**
+ * Load a single import source (relative path or http/https URL), strip its frontmatter,
+ * and rewrite any .md links so they resolve correctly from the destination page.
+ *
+ * For local file imports, links are rebased from the source file's directory to the
+ * destination page's directory — so `./convert.md` in an imported component README
+ * becomes the right relative path from the docs page that imports it.
+ *
+ * For URL imports, rebasing is not possible; only the .md-to-URL extension rewrite
+ * is applied (relative paths are left pointing relative to the destination page).
  *
  * Imports are intentionally non-recursive: the loaded content is used as-is so that
  * component README files stay clean — they need no girk-specific metadata of their own.
  * The wrapper doc page supplies all girk metadata and controls where the imported body lands.
  *
  * @param importPath - Relative file path or absolute URL to import.
- * @param basePath   - Absolute path of the file that contains the import directive,
- *                     used to resolve relative paths.
+ * @param basePath   - Absolute path of the file that contains the import directive.
  */
 export const loadImport = async (importPath: string, basePath: string): Promise<string> => {
+  const destDir = dirname(basePath);
   let raw = "";
+  let sourceDir: string;
 
   if (importPath.startsWith("http://") || importPath.startsWith("https://")) {
     raw = await fetchUrl(importPath);
+    // URL imports: no rebasing possible, treat links as relative to the destination
+    sourceDir = destDir;
   } else {
-    raw = await fetchLocalFile(resolve(dirname(basePath), importPath));
+    const absolutePath = resolve(destDir, importPath);
+    raw = await fetchLocalFile(absolutePath);
+    sourceDir = dirname(absolutePath);
   }
 
-  return removeMeta(raw);
+  const stripped = await removeMeta(raw);
+  return rewriteImportedLinks(stripped, sourceDir, destDir);
 };
 
 /**

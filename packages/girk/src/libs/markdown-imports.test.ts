@@ -2,13 +2,106 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import fetch from "node-fetch";
 import { readFile } from "node:fs/promises";
 
-import { loadImport, resolveImports, toHtml } from "@/libs/markdown";
+import { loadImport, resolveImports, rewriteImportedLinks, toHtml } from "@/libs/markdown";
 
 vi.mock("node-fetch", () => ({ default: vi.fn() }));
 vi.mock("node:fs/promises", () => ({ readFile: vi.fn() }));
 
 const fetchMock = vi.mocked(fetch);
 const readFileMock = vi.mocked(readFile);
+
+// ---------------------------------------------------------------------------
+// rewriteImportedLinks
+// ---------------------------------------------------------------------------
+
+describe("rewriteImportedLinks", () => {
+  it("converts a .md link to a directory URL", () => {
+    const result = rewriteImportedLinks(
+      "[Convert](./convert.md)",
+      "/src/libs",
+      "/src/libs"
+    );
+    expect(result).toBe("[Convert](./convert/)");
+  });
+
+  it("converts README.md to a trailing-slash directory URL", () => {
+    const result = rewriteImportedLinks(
+      "[API](./README.md)",
+      "/src/libs",
+      "/src/libs"
+    );
+    expect(result).toBe("[API](./)");
+  });
+
+  it("converts index.md to a trailing-slash directory URL", () => {
+    const result = rewriteImportedLinks(
+      "[Home](./index.md)",
+      "/src/libs",
+      "/src/libs"
+    );
+    expect(result).toBe("[Home](./)");
+  });
+
+  it("preserves anchor fragments on rewritten links", () => {
+    const result = rewriteImportedLinks(
+      "[API](./api.md#usage)",
+      "/src/libs",
+      "/src/libs"
+    );
+    expect(result).toBe("[API](./api/#usage)");
+  });
+
+  it("rebases a link when source and destination directories differ", () => {
+    // File in /src/libs/README.md has [Convert](./convert.md)
+    // Imported into /docs/api.md — link must be rebased to ../../src/libs/convert/
+    const result = rewriteImportedLinks(
+      "[Convert](./convert.md)",
+      "/src/libs",
+      "/docs"
+    );
+    expect(result).toBe("[Convert](../src/libs/convert/)");
+  });
+
+  it("rebases a link pointing to a parent directory", () => {
+    const result = rewriteImportedLinks(
+      "[Utils](../utils.md)",
+      "/src/libs/color",
+      "/docs"
+    );
+    expect(result).toBe("[Utils](../src/libs/utils/)");
+  });
+
+  it("does not rewrite external URLs", () => {
+    const input = "[Docs](https://example.com/api.md)";
+    expect(rewriteImportedLinks(input, "/src", "/docs")).toBe(input);
+  });
+
+  it("does not rewrite root-relative paths", () => {
+    const input = "[Page](/other/page.md)";
+    expect(rewriteImportedLinks(input, "/src", "/docs")).toBe(input);
+  });
+
+  it("does not rewrite anchor-only hrefs", () => {
+    const input = "[Section](#section)";
+    expect(rewriteImportedLinks(input, "/src", "/docs")).toBe(input);
+  });
+
+  it("leaves non-.md links unchanged", () => {
+    const input = "[Site](https://example.com)  [Local](./page.html)";
+    expect(rewriteImportedLinks(input, "/src", "/docs")).toBe(input);
+  });
+
+  it("rewrites multiple links in one pass", () => {
+    const result = rewriteImportedLinks(
+      "- [Convert](./convert.md)\n- [Palette](./palette.md)\n- [API](./README.md)",
+      "/src/libs",
+      "/src/libs"
+    );
+    expect(result).toBe(
+      "- [Convert](./convert/)\n- [Palette](./palette/)\n- [API](./)"
+    );
+  });
+});
 
 // ---------------------------------------------------------------------------
 // loadImport — local files
@@ -35,6 +128,22 @@ describe("loadImport — local file", () => {
     expect(result).not.toContain("---");
     expect(result).not.toContain("title: Internal");
     expect(result.trim()).toBe("# Component\n\nBody only.");
+  });
+
+  it("rewrites .md links and rebases them to the destination page location", async () => {
+    // Simulates importing /src/libs/README.md into /docs/api.md
+    // The source file has links to sibling files in /src/libs/
+    readFileMock.mockResolvedValue(
+      "- [Convert](./convert.md)\n- [Palette](./palette.md)" as any
+    );
+
+    // importPath is relative to basePath: "../../src/libs/README.md" relative to "/docs/api.md"
+    // resolves sourceDir to /src/libs, destDir to /docs
+    const result = await loadImport("../../src/libs/README.md", "/docs/api.md");
+
+    expect(result).toContain("[Convert](../src/libs/convert/)");
+    expect(result).toContain("[Palette](../src/libs/palette/)");
+    expect(result).not.toContain(".md)");
   });
 
   it("returns an empty string and warns when the file is missing", async () => {
