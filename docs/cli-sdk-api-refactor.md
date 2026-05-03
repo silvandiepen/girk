@@ -2,9 +2,11 @@
 
 ## Goal
 
-Girk should keep working exactly as it does today as a CLI, while gaining SDK and API modes that can build sites from in-memory data.
+Girk should keep working exactly as it does today as a CLI, while gaining an SDK mode that can build sites from in-memory data.
 
-This is required for future products such as Paggi, where uploaded documents are converted into Markdown and then passed to Girk for site generation.
+This is required for future products such as Paggi, where uploaded documents (e.g. PDFs) are converted into Markdown and images, then passed to Girk for site generation.
+
+The API is nice-to-have. The SDK is the priority.
 
 ## Current repository context
 
@@ -37,10 +39,6 @@ npx girky
 ```
 
 ```bash
-girky
-```
-
-```bash
 girk
 ```
 
@@ -48,13 +46,13 @@ girk
 gieter
 ```
 
-Where a binary is currently published or intentionally supported, it must remain supported.
-
 Existing docs, examples, release flow and Cloudflare deployment must keep working.
+
+Note: `girky` as a direct binary (`girky` command) is not currently published in `bin`. It works via `npx girky` which resolves the package name. We may add a `girky` binary intentionally later, but it is not a breaking requirement.
 
 ## Current build pipeline
 
-The current entrypoint is `packages/girk/src/index.ts` and immediately runs the CLI build flow.
+The current entrypoint is `packages/girk/src/index.ts` and immediately runs the CLI build flow on import.
 
 Current high-level pipeline:
 
@@ -110,107 +108,156 @@ Examples:
 - `buildHtml` renders templates from files using `pug.renderFile`.
 - `prepareDataFiles` can read local JSON data sources or remote HTTP data sources.
 
-These are valid for the CLI, but they should be moved behind adapters for SDK/API use.
+These are valid for the CLI, but they should be moved behind adapters for SDK use.
 
 ## Target shape
 
-Girk should have three core surfaces and one optional UI package:
-
 ```txt
 CLI  → filesystem adapter → SDK → filesystem output
-API  → request adapter    → SDK → JSON/ZIP/R2 output
-UI   → web component      → API → SDK
+API  → request adapter    → SDK → JSON/ZIP/R2 output     (nice-to-have)
 SDK  → pure build engine  → generated output files
 ```
 
-The SDK becomes the single source of truth.
+The SDK is the single source of truth. The CLI wraps the SDK with filesystem adapters.
 
 ## SDK mode
 
-SDK mode should accept virtual files/assets/config and return generated output files.
+### SDK input
 
-Example:
+The SDK receives files (markdown), media (images), config, and optional languages. It does not read from disk or fetch from the network.
 
 ```ts
-import { buildGirk } from "girky/sdk";
+import { build } from "girky";
 
-const result = await buildGirk({
+const result = await build({
   files: [
-    {
-      path: "/index.md",
-      content: "# Hello world",
-    },
-    {
-      path: "/about.md",
-      content: "# About",
-    },
+    { path: "/index.md", content: "# Hello world" },
+    { path: "/about.md", content: "# About" },
+    { path: "/features/kitchensink.md", content: "# Kitchen Sink" },
+  ],
+  media: [
+    { path: "/media/photo.jpg", content: imageBuffer, contentType: "image/jpeg" },
+    { path: "/media/diagram.svg", content: "<svg>...</svg>", contentType: "image/svg+xml" },
   ],
   assets: [
-    {
-      path: "/assets/logo.svg",
-      content: "<svg></svg>",
-      contentType: "image/svg+xml",
-    },
+    { path: "/assets/logo.svg", content: "<svg></svg>", contentType: "image/svg+xml" },
   ],
   config: {
     projectTitle: "My site",
   },
+  languages: ["en"],            // explicit languages, skip filename detection
+  dataSources: {
+    "recipes.json": [...],      // pre-resolved data, no fetching
+  },
 });
 ```
 
-Expected result shape:
+### Languages
+
+If `languages` is provided in the input, use it directly. If not, detect languages from filename suffixes (e.g. `page:nl.md`) as the CLI does now.
+
+### Media and images
+
+Media is passed as part of the input. The SDK treats media as pass-through:
+
+1. Includes media files in the output at the correct path.
+2. References them in HTML where markdown links to them.
+3. SVG thumbnails work as-is (already just strings).
+4. Logo detection works on filename/path, same as now.
+
+No `sharp` in the SDK. No image resizing. No thumbnails generation. The templates handle image sizing with CSS (`object-fit: cover`, fixed dimensions). The "thumbnail" is just a URL reference to the original image.
+
+This is important for the Paggi use case: PDF stripping produces markdown + images. Both get passed to the SDK. No filesystem needed.
+
+### Data sources
+
+The SDK does NOT fetch URLs. Data must be pre-resolved by the caller and injected via `dataSources`.
+
+The CLI will continue to resolve data sources (local files, remote URLs) before passing them to the SDK.
+
+### SDK output
 
 ```ts
 {
   files: [
-    {
-      path: "/index.html",
-      content: "<!doctype html>...",
-      contentType: "text/html; charset=utf-8",
-    },
-    {
-      path: "/style/app.css",
-      content: "...",
-      contentType: "text/css; charset=utf-8",
-    },
-    {
-      path: "/assets/search/manifest.json",
-      content: "...",
-      contentType: "application/json; charset=utf-8",
-    },
+    { path: "/index.html", content: "<!doctype html>...", contentType: "text/html; charset=utf-8" },
+    { path: "/about/index.html", content: "...", contentType: "text/html; charset=utf-8" },
+    { path: "/style/app.css", content: "...", contentType: "text/css; charset=utf-8" },
+    { path: "/media/photo.jpg", content: imageBuffer, contentType: "image/jpeg" },
+    { path: "/assets/search/manifest.json", content: "...", contentType: "application/json; charset=utf-8" },
+    { path: "/robots.txt", content: "...", contentType: "text/plain; charset=utf-8" },
   ],
-  pages: [],
+  pages: [
+    { title: "Hello world", path: "/index.html", language: "en" },
+    { title: "About", path: "/about/index.html", language: "en" },
+  ],
   project: {},
-  languages: [],
+  languages: ["en"],
   warnings: [],
 }
 ```
 
-The SDK should not:
+### What the SDK does NOT do
 
-- scan `process.cwd()`
-- write to `public/`
-- read project config files directly
-- copy folders from disk
-- write search files directly
-- use Cloudflare bindings
-- run CLI logging by default
+- Scan `process.cwd()` or read files from disk
+- Write to `public/` or anywhere on disk
+- Read project config files directly
+- Copy folders from disk
+- Use `sharp` for image processing
+- Fetch remote data sources
+- Use Cloudflare bindings
+- Run CLI logging (`cli-block`) by default
+- Generate resized thumbnails
+
+### What the SDK DOES do
+
+- Markdown → HTML (`toHtml`)
+- Route generation from file paths
+- Language detection from filenames (when not explicit)
+- Project data extraction from metadata
+- Menu, tags, archives, socials generation
+- Page rendering (Pug templates)
+- CSS generation (SASS in-memory compilation)
+- Favicon generation (inline SVG, no sharp)
+- Search index generation (in-memory JSON)
+- Robots.txt generation
+- Tag pages, archive pages, content pages
+
+### Individual function exports
+
+The SDK also exposes individual functions for reuse without running the full build:
+
+```ts
+import { toHtml, generateSearchIndex, generateMenu } from "girky";
+```
 
 ## CLI mode
 
-CLI mode keeps current behaviour by using filesystem adapters around the SDK.
+CLI mode keeps current behaviour by wrapping the SDK with filesystem adapters.
 
 ```ts
+// 1. Read from filesystem
 const input = await readGirkInputFromFileSystem(process.cwd());
-const result = await buildGirk(input);
+
+// 2. Build via SDK
+const result = await build(input);
+
+// 3. Write to filesystem
 await writeGirkOutputToFileSystem(result, "public");
 ```
 
-The CLI may keep terminal output, `cli-block`, local config discovery, media folder copying, local data-source loading and thumbnail generation.
+The CLI keeps:
 
-## API mode
+- Terminal output and `cli-block` logging
+- Local config discovery (`girk.config.json`, `gieter.config.json`)
+- Media folder scanning and copying
+- Local data-source loading and remote fetching via `prepareDataFiles`
+- Thumbnail generation via `sharp` (optional, CLI-specific)
+- `process.cwd()` as the project root
 
-API mode should expose the SDK over HTTP.
+## API mode (nice-to-have)
+
+API mode exposes the SDK over HTTP. This is a lower priority.
 
 Initial endpoints:
 
@@ -231,84 +278,41 @@ virtual Markdown/assets → build → storage adapter
 
 The API should not duplicate build logic.
 
-## UI web components
-
-The first UI layer should be web components that can be loaded into the Girk-generated docs.
-
-The docs should still be built by Girk.
-
-```txt
-Markdown docs page
-  ↓
-Girk build
-  ↓
-Generated docs HTML
-  ↓
-Loads <girk-playground>
-  ↓
-Component calls Girk API
-```
-
-Recommended first package:
-
-```txt
-packages/girk-ui
-```
-
-Recommended first component:
-
-```html
-<girk-playground api-url="https://api.girk.dev"></girk-playground>
-```
-
-This component should be a thin layer over the API. It should not contain Girk build logic.
-
-## Current features that must be preserved
-
-The SDK/API refactor must preserve these existing features:
-
-- route generation from file tree
-- `README.md` and `index.md` home-page behaviour
-- language suffixes such as `page:nl.md`
-- project config from `girk.config.json`
-- backwards compatibility with `gieter.config.json`
-- project script hooks, including module scripts
-- project style hooks and style overrides
-- media and assets support
-- logo detection
-- SVG thumbnail support
-- icon resolution
-- data-source generated pages via `dataSource`, `dataItems` and `dataSlug`
-- partial processing
-- socials generation
-- tags
-- archives, including section archive child filtering
-- menu generation
-- favicon generation
-- search index generation and search client output
-- content pages
-- tag pages
-- robots generation
-- docs and all example builds
-- `workers/sites` static asset routing for docs and examples
-
 ## Special migration notes
+
+### Templates
+
+`buildHtml` currently uses `pug.renderFile`.
+
+For SDK mode, use `pug.compile()` with in-memory template strings. The templates ship with the package in `src/template/`. At runtime, read them from `__dirname` relative paths (works in Node). For Workers, bundle as strings.
+
+Start with `__dirname` approach. Precompilation can be an optimization later.
+
+### CSS
+
+The SASS compilation currently runs as a separate build step (`sass src/style/app.scss dist/style/app.css`).
+
+For SDK mode, use `sass.compileString()` at runtime. The SCSS source and its imports (`@sil/colorset`, etc.) ship with the package.
+
+### `sharp` dependency
+
+`sharp` is used only for `createThumbnails` in the CLI. It uses native bindings and does not work in Cloudflare Workers.
+
+Strategy:
+- CLI mode: keep `sharp` for thumbnail generation as it works today.
+- SDK mode: no `sharp`. No image resizing. CSS handles sizing.
+- API mode (future): use Cloudflare Image Resizing bindings if needed.
 
 ### Data-source pages
 
 `prepareDataFiles` currently supports local and remote data sources.
 
-For SDK mode, data source handling should support injected data as well as remote URLs. Local file reads should live in the filesystem adapter.
-
-Suggested SDK input:
+For SDK mode, the caller provides pre-resolved data via `dataSources`. The SDK does not fetch.
 
 ```ts
 {
-  files,
-  assets,
-  config,
   dataSources: {
-    "recipes.json": [...]
+    "recipes.json": [{ title: "Pasta", ... }, { title: "Salad", ... }]
   }
 }
 ```
@@ -317,7 +321,7 @@ Suggested SDK input:
 
 `generateSearchIndex` currently writes search shards and `client.js` to disk.
 
-SDK mode should return these files as output files instead:
+SDK mode returns these as output files:
 
 ```txt
 /assets/search/manifest.json
@@ -329,41 +333,45 @@ SDK mode should return these files as output files instead:
 
 `buildPage` already returns page data before `createPage` writes it.
 
-The SDK should reuse the build-data part and move writing to an output adapter.
+The SDK reuses the build-data part. `createPage` (disk write) stays in CLI mode only.
 
 ### Media
 
-Media should be split by runtime.
-
 CLI:
+- scan `assets` and `media` folders
+- copy folders to output
+- use `sharp` for thumbnails
 
-- scan `assets` and `media`
-- copy folders
-- use `sharp` for thumbnails if current behaviour needs it
+SDK:
+- accept media as input (`GirkInputAsset[]`)
+- include media as output at the correct paths
+- no image processing
 
-SDK/API:
+### Payload type
 
-- accept assets as input
-- return assets as output
-- avoid Node-native image processing in the core
+The current `Payload` interface is the shared mutable state that flows through the entire pipeline. Every function takes `Payload` and returns `Payload`.
 
-### Templates
+The SDK will use `Payload` internally as intermediate build state. The public SDK surface uses `GirkBuildInput` → `GirkBuildResult`. Internally, the SDK converts input to `Payload`, runs the pipeline, then converts `Payload` to `GirkBuildResult`.
 
-`buildHtml` currently uses `pug.renderFile`.
+### Caching
 
-For SDK/API use, templates should be made runtime-safe:
+`createThumbnails` writes to `.cache`. This is CLI-only. The SDK does not cache to disk.
 
-1. bundle template source as a string, or
-2. precompile templates during package build, or
-3. keep file-based template loading only in CLI mode.
+### Capacity
+
+The SDK is pure in-memory transforms. Rough estimates:
+
+- 1 page ≈ 10-50KB markdown, produces ~20-100KB HTML
+- 1,000 pages ≈ 50MB input, ~100MB output, ~5-15 seconds
+- Node.js handles this fine, memory is the limit
+- Cloudflare Worker: 128MB memory limit, 30s CPU limit → ~200-500 pages max
+- Paggi use case (documents → markdown → site): typically well within range
 
 ### Worker deployment
 
 The repo already has `workers/sites`, which serves docs and examples from Worker static assets using host-to-site mapping.
 
-The new API/publish work should not break this worker.
-
-Long-term, a separate API Worker can be added for SDK-backed builds and publishing.
+The SDK refactor must not break this worker.
 
 ## Proposed package layout
 
@@ -371,52 +379,27 @@ Long-term, a separate API Worker can be added for SDK-backed builds and publishi
 packages/girk/
   src/
     sdk/
-      index.ts
-      buildGirk.ts
-      types.ts
-      normalizeInput.ts
-      renderOutput.ts
+      index.ts          # exports build, types, individual functions
+      build.ts          # main build() function
+      types.ts          # GirkBuildInput, GirkBuildResult, etc.
 
     cli/
-      index.ts
-      readFromFileSystem.ts
-      writeToFileSystem.ts
+      index.ts          # CLI entrypoint (bin target), auto-runs
+      readInput.ts      # readGirkInputFromFileSystem()
+      writeOutput.ts    # writeGirkOutputToFileSystem()
 
-    api/
-      index.ts
-      routes/
-        build.ts
-        zip.ts
-        publish.ts
-        preview.ts
-
-    adapters/
-      filesystem/
-        readInput.ts
-        writeOutput.ts
-      memory/
-        collectOutput.ts
-      cloudflare/
-        writeToR2.ts
-        serveFromR2.ts
-
-packages/girk-ui/
-  src/
-    girk-playground.ts
+    libs/               # existing build modules (kept, gradually adapted)
+      ...
 ```
 
 ## Public exports
-
-The package should expose stable entrypoints without breaking the existing package name.
 
 ```json
 {
   "name": "girky",
   "exports": {
-    ".": "./dist/index.js",
-    "./sdk": "./dist/sdk/index.js",
-    "./api": "./dist/api/index.js",
-    "./cli": "./dist/cli/index.js"
+    ".": "./dist/sdk/index.js",
+    "./sdk": "./dist/sdk/index.js"
   },
   "bin": {
     "girk": "dist/cli/index.js",
@@ -425,11 +408,11 @@ The package should expose stable entrypoints without breaking the existing packa
 }
 ```
 
-If the package should also publish a `girky` binary, add it intentionally and test it.
+- `import { build } from "girky"` → SDK
+- `import { build } from "girky/sdk"` → same SDK (explicit path)
+- `npx girky`, `girk`, `gieter` → CLI (auto-runs, current behaviour)
 
 ## Types
-
-Suggested SDK types:
 
 ```ts
 export interface GirkInputFile {
@@ -446,9 +429,11 @@ export interface GirkInputAsset {
 
 export interface GirkBuildInput {
   files: GirkInputFile[];
+  media?: GirkInputAsset[];
   assets?: GirkInputAsset[];
   config?: Record<string, unknown>;
   args?: Record<string, unknown>;
+  languages?: string[];
   dataSources?: Record<string, unknown>;
 }
 
@@ -473,70 +458,138 @@ export interface GirkOutputPage {
 }
 ```
 
+## Test plan
+
+### Current test coverage
+
+Existing tests (all must keep passing):
+
+- 17 unit test files in `packages/girk/src/libs/` (vitest) — individual function tests
+- `markdown-imports.integration.test.ts` — real network fetch
+- `search.test.ts` — writes to real tmpdir
+- `apps/docs/tests/docs.spec.ts` (Playwright) — comprehensive docs e2e, ~20 routes, navigation, search, mobile
+- `apps/example-basic/tests/example-basic.spec.ts` (Playwright) — custom elements, Vue mounting
+- `workers/sites/src/host.test.ts` — host-to-site mapping
+
+### Phase 1: CLI e2e tests (before refactoring)
+
+Add fixture-based e2e tests that exercise the full build pipeline as it works today.
+
+Location: `packages/girk/tests/e2e/`
+
+Fixture projects:
+
+```txt
+tests/e2e/fixtures/
+  basic/              -- index.md + about.md
+  multilang/          -- index.md + index:nl.md + about.md + about:nl.md
+  config/             -- with girk.config.json (title, style, scripts)
+  media/              -- with assets/ and media/ folders, images
+  search/             -- with search: true in config
+  tags/               -- files with tags in frontmatter
+  datasource/         -- with JSON data source + template pages
+  archives/           -- with archive-type sections
+  gieter/             -- with gieter.config.json
+```
+
+Tests:
+
+```txt
+tests/e2e/cli/
+  build.test.ts           -- runs build on each fixture, checks output exists
+  config.test.ts          -- config loading, girk vs gieter
+  pages.test.ts           -- page generation, routes, titles
+  media.test.ts           -- media/assets copying
+  search.test.ts          -- search index output structure
+  tags.test.ts            -- tag page generation
+  archives.test.ts        -- archive page generation
+  multilang.test.ts       -- language handling, suffixes, output structure
+```
+
+Each test:
+
+1. Creates a tmpdir from a fixture
+2. Runs the build pipeline (function call, not spawning a process)
+3. Asserts output files exist and have correct content
+
+Additionally, add a snapshot test that captures current output for regression detection:
+
+```ts
+test("basic fixture output is stable", async () => {
+  const result = await buildFromFixture("basic");
+  expect(result.files.map(f => f.path)).toMatchSnapshot();
+});
+```
+
+### Phase 2: Build pipeline tests (during refactoring)
+
+Test the full pipeline as a function call, bridging CLI and SDK:
+
+```txt
+tests/e2e/pipeline/
+  basic-build.test.ts     -- markdown in → HTML out
+  multilang.test.ts       -- language suffix handling
+  tags.test.ts            -- tag page generation
+  archives.test.ts        -- archive page generation
+  search-index.test.ts    -- search output structure
+  menu.test.ts            -- menu generation from file tree
+```
+
+### Phase 3: SDK tests (after SDK exists)
+
+```txt
+tests/e2e/sdk/
+  build.test.ts                -- build() with in-memory files
+  build-with-media.test.ts     -- build() with media assets (images from PDF)
+  build-with-config.test.ts    -- build() with config object
+  build-languages.test.ts      -- explicit languages vs detection
+  build-output.test.ts         -- verify GirkBuildResult shape
+  build-capacity.test.ts       -- capacity: 100, 500, 1000 pages
+  build-no-filesystem.test.ts  -- verify no fs calls in SDK path
+  individual-exports.test.ts   -- toHtml, generateMenu, etc. work standalone
+```
+
 ## Refactor steps
 
-### Step 1: Add tests around current CLI behaviour
+### Step 1: Add e2e tests for current CLI behaviour
 
-Before changing internals, protect current behaviour.
-
-Test:
-
-- docs build
-- example builds
-- basic CLI fixture
-- search output if enabled
-- data-source generated pages
-- media/assets copying
-- scripts/styles config
-- `girk` and `gieter` binaries
-- `npx girky` documented usage where practical
+Before changing internals, protect current behaviour with the tests described in Phase 1 above.
 
 ### Step 2: Extract build pipeline into a function
 
-Move the current chain from `index.ts` into an explicit function.
+Move the current chain from `index.ts` into an explicit `build()` function.
 
 ```ts
-export async function buildGirkFromPayload(payload): Promise<GirkBuildResult>
+export async function build(input: GirkBuildInput): Promise<GirkBuildResult>
 ```
 
-At this stage it can still use current internals, but importing the module must not automatically run the CLI.
+Internally this converts `GirkBuildInput` to the existing `Payload`, runs the pipeline, then converts back to `GirkBuildResult`.
+
+Importing the module must NOT automatically run the CLI.
 
 ### Step 3: Split CLI entrypoint
 
-Create a true CLI entrypoint that calls the build function.
+Create `src/cli/index.ts` that:
 
-```txt
-src/cli/index.ts
-```
+1. Reads from filesystem (config, files, media, data sources)
+2. Calls `build()`
+3. Writes result to filesystem
+4. Shows terminal output
 
-The package `bin` should point to the CLI output.
+The package `bin` points to this file.
 
-### Step 4: Add filesystem input/output adapters
+### Step 4: Convert write-heavy generators
 
-Move `process.cwd()`, config loading, file scanning and disk writes into filesystem adapters.
+Functions like `createPage`, `generateSearchIndex`, `generateStyles`, `generateFavicon`, `createTagPages`, `createRobots` should return output file records instead of writing directly.
 
-### Step 5: Add memory input/output adapters
+The CLI adapter handles the actual writing.
 
-Add support for virtual files and virtual assets.
+### Step 5: Verify all tests pass
 
-### Step 6: Convert write-heavy generators
-
-Functions like `createPage`, `generateSearchIndex`, `generateStyles`, `generateFavicon`, `createTagPages` and `createRobots` should either:
-
-- return output file records, or
-- write through an injected output adapter.
-
-### Step 7: Add ZIP helper
-
-Add a helper that creates a ZIP from `GirkOutputFile[]`.
-
-### Step 8: Add API handlers
-
-Add optional HTTP handlers that use the SDK.
-
-### Step 9: Add docs playground web component
-
-Add `packages/girk-ui` and load the component inside Girk-generated docs.
+- All existing unit tests pass
+- All new e2e tests pass
+- Playwright docs/example tests pass
+- `npx girky` still builds the docs and examples
 
 ## Definition of done
 
@@ -546,13 +599,16 @@ The migration is done when:
 - docs and examples still build
 - `workers/sites` still deploys docs/examples
 - the package can be imported without running the CLI
-- SDK can build from in-memory Markdown input
+- `import { build } from "girky"` works
+- SDK can build from in-memory Markdown + media input
 - SDK returns generated files in memory
+- SDK makes no filesystem calls
 - search output is included in SDK output when enabled
-- data-source pages work in SDK mode
-- ZIP output can be generated from SDK output
-- API handlers can call the SDK without filesystem access
-- Girk-generated docs can load a web component playground
+- data-source pages work in SDK mode (with pre-resolved data)
+- media/images are passed through correctly
+- languages can be explicit or detected from filenames
+- all e2e tests pass (CLI + SDK)
+- Playwright tests pass unchanged
 
 ## Summary
 
@@ -563,6 +619,5 @@ The migration should not make Girk a product dashboard. It should make Girk reus
 ```txt
 Filesystem project → CLI → SDK → filesystem output
 Virtual files      → SDK → output files
-HTTP request       → API → SDK → JSON/ZIP/storage
-Docs page          → web component → API → SDK
+HTTP request       → API → SDK → JSON/ZIP/storage    (nice-to-have)
 ```
