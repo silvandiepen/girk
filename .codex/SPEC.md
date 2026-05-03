@@ -1,221 +1,291 @@
-# E2E Tests for Current Girk CLI Build Pipeline
+# SDK/CLI Split Implementation
 
 ## Goal
 
-Add comprehensive end-to-end tests that exercise the full Girk build pipeline BEFORE any refactoring. These tests protect current behaviour and will be the safety net for the upcoming SDK/CLI split.
+Split the Girk build pipeline into a reusable SDK (`build()` function) and a CLI that wraps it. The CLI must keep working exactly as before. The SDK must work with in-memory data (no filesystem).
 
 ## Repository
 
 - Location: `~/Repositories/_libs/girk` (branch: `docs/cli-sdk-api-refactor`)
 - Package: `packages/girk/`
 - Package name: `girky`
-- Test runner: vitest
-- Config: `packages/girk/vite.config.mts` (alias `@` → `src`)
+- Current entrypoint: `packages/girk/src/index.ts` (auto-runs on import)
+- Test runner: vitest, config: `packages/girk/vite.config.mts`
 
-## Current Architecture
+## Architecture After This Change
 
-The build pipeline is in `packages/girk/src/index.ts`. It runs automatically on import:
+```txt
+src/
+  sdk/
+    index.ts          # re-exports build + types
+    build.ts          # main build() function (in-memory, no fs)
+    types.ts          # GirkBuildInput, GirkBuildResult, GirkOutputFile, etc.
+    normalize.ts      # converts GirkBuildInput to internal Payload
+    render.ts         # converts internal Payload to GirkBuildResult
+  
+  cli/
+    index.ts          # CLI entrypoint (#!/usr/bin/env node, auto-runs)
+    readInput.ts      # readGirkInputFromFileSystem(cwd) → GirkBuildInput
+    writeOutput.ts    # writeGirkOutputToFileSystem(result, outputDir) → void
 
-```
-hello → settingsAndConfig → files → removeUrlParts → processPartials → media → generateSocials → generateTags → generateArchives → generateMenu → generateStyles → generateFavicon → generateSearchIndex → contentPages → createTagPages → createRobots
-```
-
-Each step takes a `Payload` object (defined in `src/types.ts`) and returns an updated `Payload`.
-
-Key types: `Payload`, `File`, `Project`, `Settings`, `Page`, `Tag`, `MenuItem`, `Archive`
-
-## What To Build
-
-### 1. Test Fixtures
-
-Create fixture directories under `packages/girk/tests/e2e/fixtures/`. Each fixture is a minimal Girk project (markdown files + optional config).
-
-#### `fixtures/basic/`
-```
-README.md          → # Hello World\n\nThis is the homepage.
-about.md           → # About\n\nAbout this site.
+  libs/               # existing modules (adapted to not write directly)
+    ...
 ```
 
-#### `fixtures/multilang/`
-```
-README.md          → # Home\n\nWelcome.
-README:nl.md       → # Home\n\nWelkom.
-about.md           → # About\n\nAbout this site.
-about:nl.md        → # Over\n\nOver deze site.
-```
+## Step-by-Step
 
-#### `fixtures/config/`
-```
-girk.config.json   → { "projectTitle": "Config Test", "projectStyle": "body { color: red; }" }
-README.md          → # Config Site\n\nTesting config.
-page.md            → # A Page\n\nContent here.
-```
+### Step 1: Create SDK types
 
-#### `fixtures/tags/`
-```
-README.md          → # Tags Demo\n\nHome
-coding.md          → ---\ntags: [javascript, typescript]\n---\n# Coding\n\nCode stuff.
-design.md          → ---\ntags: [typescript, design]\n---\n# Design\n\nDesign stuff.
-```
-
-#### `fixtures/archives/`
-```
-blog/README.md     → ---\narchive: blog\n---\n# Blog\n\nBlog home
-blog/post-one.md   → # Post One\n\nFirst post.
-blog/post-two.md   → # Post Two\n\nSecond post.
-```
-
-#### `fixtures/search/`
-```
-girk.config.json   → { "projectSearch": true }
-README.md          → # Search Demo\n\nHome page.
-page1.md           → # Page One\n\nContent for search.
-page2.md           → # Page Two\n\nMore content for search.
-```
-
-#### `fixtures/gieter/`
-```
-gieter.config.json → { "projectTitle": "Gieter compat" }
-README.md          → # Gieter Site\n\nGieter compat test.
-```
-
-### 2. Test Helper
-
-Create `packages/girk/tests/e2e/helpers.ts` with:
+Create `src/sdk/types.ts` with the types from the migration plan doc:
 
 ```ts
-import { mkdtemp, cp, readFile, stat, readdir } from "node:fs/promises";
-import { join } from "node:path";
-import { tmpdir } from "node:os";
+export interface GirkInputFile {
+  path: string;
+  content: string;
+  created?: Date;
+}
 
-// Copy a fixture to a temp dir and return the path
-export async function setupFixture(name: string): Promise<string>;
+export interface GirkInputAsset {
+  path: string;
+  content: string | Uint8Array | ArrayBuffer;
+  contentType?: string;
+}
 
-// Recursively list all files in a directory
-export async function listFiles(dir: string, prefix = ""): Promise<string[]>;
+export interface GirkBuildInput {
+  files: GirkInputFile[];
+  media?: GirkInputAsset[];
+  assets?: GirkInputAsset[];
+  config?: Record<string, unknown>;
+  args?: Record<string, unknown>;
+  languages?: string[];
+  dataSources?: Record<string, unknown>;
+}
 
-// Read a file from the output dir
-export async function readOutput(outputDir: string, filePath: string): Promise<string>;
+export interface GirkOutputFile {
+  path: string;
+  content: string | Uint8Array | ArrayBuffer;
+  contentType: string;
+}
 
-// Check if a file exists
-export async function fileExists(path: string): Promise<boolean>;
+export interface GirkBuildResult {
+  files: GirkOutputFile[];
+  pages: GirkOutputPage[];
+  project: Record<string, unknown>;
+  languages: string[];
+  warnings: string[];
+}
+
+export interface GirkOutputPage {
+  title: string;
+  path: string;
+  language: string;
+}
 ```
 
-### 3. Test: Build Runner
+### Step 2: Create SDK normalize
 
-Create `packages/girk/tests/e2e/build-runner.ts` that:
+Create `src/sdk/normalize.ts` that converts `GirkBuildInput` to the internal `Payload` object.
 
-1. Takes a fixture directory path
-2. Changes `process.cwd()` to the fixture dir (save and restore original)
-3. Sets up the settings (output to a temp dir)
-4. Runs the pipeline functions in the correct order (same as index.ts)
-5. Returns the output directory path and the final Payload
+This needs to:
+- Convert `GirkInputFile[]` to `File[]` (the internal type from `src/types.ts`)
+- Set up `Payload` with the correct settings
+- Handle `config` (map to the internal `Project` type)
+- Handle `languages` (either from input or detect from filenames)
+- NOT read from filesystem
+- NOT call `getConfig()` or `getFiles()`
 
-This is the core test utility. It should NOT spawn a child process or run `index.ts` directly (since that auto-runs). Instead it should import and call each pipeline function individually:
+Key mapping from GirkInputFile to internal File:
+```ts
+// GirkInputFile { path: "/index.md", content: "# Hello", created?: Date }
+// → File { id, name, fileName, path, created, language, data, ext, ... }
+```
+
+The `path` in GirkInputFile is a virtual path like `/index.md`. The internal File needs:
+- `id`: derived from path (like `fileId()` in files.ts)
+- `name`: directory name or file name (like `isHomePath` checks)
+- `fileName`: the filename without extension or language suffix
+- `path`: the full path (can be the virtual path)
+- `relativePath`: same as path for SDK mode
+- `created`: from input or `new Date()`
+- `language`: detected from filename (`getLangFromFilename`) or from explicit languages
+- `data`: the markdown content
+- `ext`: `.md`
+- `parent`: derived from path (directory name)
+
+For markdown rendering, each file needs to be processed through `toHtml()` to get HTML and metadata.
+
+For project data, `getProjectData()` needs to be called on the files to extract project config from frontmatter. But it currently calls `getConfig()` which reads from disk. For SDK mode, we need to inject the config instead.
+
+### Step 3: Create SDK build function
+
+Create `src/sdk/build.ts`:
 
 ```ts
-import { settingsAndConfig, files, contentPages, media } from "@/index";
-import { processPartials } from "@/libs/partials";
-import { generateSocials } from "@/libs/socials";
-import { generateTags, createTagPages } from "@/libs/tags";
-import { generateArchives } from "@/libs/archives";
-import { generateMenu } from "@/libs/menu";
-import { generateStyles } from "@/libs/buildStyle/style";
-import { generateFavicon } from "@/libs/favicon";
-import { generateSearchIndex } from "@/libs/search";
-import { createRobots } from "@/libs/robots";
+import { GirkBuildInput, GirkBuildResult } from "./types";
+
+export async function build(input: GirkBuildInput): Promise<GirkBuildResult> {
+  // 1. Normalize input to Payload
+  // 2. Run the pipeline (files processing, rendering, etc.)
+  // 3. Collect output (pages, CSS, search, robots, etc.)
+  // 4. Return GirkBuildResult
+}
 ```
 
-Note: `hello()` is just a greeting function and can be skipped. `settingsAndConfig` reads config and sets output dir. The `removeUrlParts` function is defined in index.ts but is simple (replaces `/src/` in paths).
+The build function should:
+- NOT write to disk
+- NOT use cli-block logging
+- NOT use process.cwd()
+- NOT read from filesystem
+- Collect all output as GirkOutputFile[]
 
-### 4. Test Files
+For generators that currently write to disk (createPage, generateSearchIndex, createRobots, generateStyles, generateFavicon), they need to be adapted to either:
+a) Return their output as data (preferred), or
+b) Write to a buffer/collector that's passed in
 
-Create these test files under `packages/girk/tests/e2e/`:
+The cleanest approach: create wrapper functions in the SDK that call the existing `buildPage` (returns Page data) instead of `createPage` (writes to disk). For search index, call the shard-building logic but collect the output instead of writing.
 
-#### `cli-build.test.ts` — Basic build output
+### Step 4: Create SDK render/output collector
 
-For each basic fixture:
-- Run the build pipeline
-- Verify `public/` directory was created
-- Verify `index.html` exists (for README.md home pages)
-- Verify HTML contains `<!doctype html>` or `<!DOCTYPE html>`
-- Verify HTML contains the page title
-- Verify `style/app.css` exists
-- Verify `robots.txt` exists with `User-agent: *`
+Create `src/sdk/render.ts` that takes the final Payload and converts it to GirkBuildResult:
 
-#### `cli-pages.test.ts` — Page generation
+- Extract all generated Page objects → GirkOutputFile[] entries
+- Extract search index files → GirkOutputFile[] entries
+- Extract robots.txt → GirkOutputFile[] entry
+- Extract CSS → GirkOutputFile[] entry
+- Extract favicon → GirkOutputFile[] entry
+- Build pages list (title, path, language)
+- Include media/assets from input as pass-through
 
-- Build `basic` fixture
-- Verify `/about/index.html` exists
-- Verify about page contains "About" in the HTML
-- Build `config` fixture
-- Verify config pages are generated
+### Step 5: Create CLI readInput adapter
 
-#### `cli-multilang.test.ts` — Language handling
-
-- Build `multilang` fixture
-- Verify English and Dutch pages exist
-- Verify file structure has language-specific paths or pages
-
-#### `cli-tags.test.ts` — Tag pages
-
-- Build `tags` fixture
-- Verify tag pages are generated under `/tag/`
-- Verify tag page lists files that have that tag
-
-#### `cli-archives.test.ts` — Archive pages
-
-- Build `archives` fixture
-- Verify blog archive page exists
-- Verify archive lists child posts
-
-#### `cli-search.test.ts` — Search index
-
-- Build `search` fixture
-- Verify `assets/search/manifest.json` exists
-- Verify manifest contains shard entries
-- Verify search shard JSON exists with document entries
-
-#### `cli-config.test.ts` — Config loading
-
-- Build `config` fixture
-- Verify project title appears in the HTML
-- Build `gieter` fixture
-- Verify gieter.config.json is picked up (title in HTML)
-
-### 5. Vitest Config Update
-
-Update `packages/girk/vite.config.mts` to include the new test directory:
+Create `src/cli/readInput.ts`:
 
 ```ts
-test: {
-  environment: "node",
-  globals: false,
-  include: ["src/**/*.test.ts", "tests/**/*.test.ts"],
-  exclude: ["dist/**", "node_modules/**"],
-  testTimeout: 30000,
-},
+export async function readGirkInputFromFileSystem(cwd: string): Promise<GirkBuildInput> {
+  // 1. getFiles(cwd, ".md") → GirkInputFile[]
+  // 2. getConfig() → config
+  // 3. getMedia() → media/assets
+  // 4. prepareDataFiles() → data sources
+  // 5. Return GirkBuildInput
+}
 ```
 
-## Important Notes
+### Step 6: Create CLI writeOutput adapter
 
-- The current `index.ts` auto-runs on import. Do NOT import `index.ts` directly in tests — import individual pipeline functions instead.
-- `settingsAndConfig` calls `getConfig()` which reads config files from `process.cwd()`. Tests must `process.chdir()` to the fixture dir.
-- `settingsAndConfig` also calls `getArgs()` which parses CLI args. In test context this may return empty args — that's fine.
-- `files()` calls `getFiles(process.cwd(), ".md")` — this is why we need the fixture on disk.
-- The `media()` function calls `getMedia()` which tries to read `assets/` and `media/` dirs — it should not crash if these don't exist.
-- `generateStyles` compiles SASS — it reads from `src/style/app.scss` relative to the package, not the fixture.
-- `generateFavicon` generates inline SVG — no file deps.
-- `createPage` writes HTML to `payload.settings.output` — which `settingsAndConfig` sets to `join(process.cwd(), "public")`.
-- After each test, restore `process.cwd()` and clean up temp dirs.
-- Use `afterEach` to restore cwd. Save original cwd before each test.
-- The package uses `@/` path alias which maps to `src/`. The vitest config already handles this.
+Create `src/cli/writeOutput.ts`:
+
+```ts
+export async function writeGirkOutputToFileSystem(result: GirkBuildResult, outputDir: string): Promise<void> {
+  // For each GirkOutputFile, write to disk at join(outputDir, file.path)
+}
+```
+
+### Step 7: Create CLI entrypoint
+
+Create `src/cli/index.ts`:
+
+```ts
+#!/usr/bin/env node
+"use strict";
+
+import { readGirkInputFromFileSystem } from "./readInput";
+import { writeGirkOutputToFileSystem } from "./writeOutput";
+import { build } from "../sdk/build";
+import { blockHeader, blockFooter, blockSettings } from "cli-block";
+// ... CLI logging, hello(), version display, etc.
+
+async function main() {
+  hello(); // greeting
+  // ... blockHeader, display version, args, config
+  const input = await readGirkInputFromFileSystem(process.cwd());
+  const result = await build(input);
+  await writeGirkOutputToFileSystem(result, join(process.cwd(), "public"));
+  // ... blockFooter
+}
+
+main();
+```
+
+### Step 8: Update package.json
+
+```json
+{
+  "exports": {
+    ".": "./dist/sdk/index.js",
+    "./sdk": "./dist/sdk/index.js"
+  },
+  "bin": {
+    "girk": "dist/cli/index.js",
+    "gieter": "dist/cli/index.js"
+  }
+}
+```
+
+### Step 9: Keep backward compatibility
+
+The old `src/index.ts` currently auto-runs and is the bin target. After the split:
+- `src/index.ts` should be replaced with a re-export from SDK for `import { build } from "girky"` to work
+- The bin targets point to `src/cli/index.ts` which auto-runs
+
+IMPORTANT: The current `src/index.ts` must NOT auto-run when imported. The auto-run logic moves to `src/cli/index.ts` only.
+
+## Key Implementation Details
+
+### Markdown processing
+
+In SDK mode, files come as `{ path: "/index.md", content: "# Hello" }`. The normalize step needs to:
+1. Parse the path to extract filename, language suffix, parent directory
+2. Run `toHtml(content, path)` to get HTML and metadata
+3. Build the full File object with all required fields
+
+### Project config
+
+In SDK mode, config comes as a plain object. The normalize step needs to:
+1. NOT call `getConfig()` (reads from disk)
+2. Use the provided config directly
+3. Still call `getProjectData()` on files to extract per-file project overrides from frontmatter
+4. But `getProjectData()` currently calls `getConfig()` internally — this needs to be bypassed for SDK mode
+
+Solution: Create a `getProjectDataFromConfig(files, config)` variant that takes config as parameter instead of reading it.
+
+### Page rendering
+
+`buildPage()` already returns a Page object with HTML and CSS data. The SDK calls `buildPage()` and collects the output. `createPage()` (which writes to disk) is only used in CLI mode.
+
+### Templates
+
+`buildHtml()` in `files.ts` currently uses `pug.renderFile`. For SDK mode, this needs to work from `__dirname` (templates ship with the package). This should already work since the templates are in `src/template/` and the compiled JS is in `dist/`. The `pug.renderFile` paths use `join(__dirname, ...)` which resolves relative to the compiled output. This should work for SDK mode too.
+
+### Search index
+
+`generateSearchIndex()` currently writes to disk. For SDK mode, create a variant that returns the data:
+- manifest JSON
+- shard JSON files
+- client.js source
+
+These become GirkOutputFile entries.
+
+### Styles
+
+`generateStyles()` currently writes CSS to disk. For SDK mode, return the CSS data as a GirkOutputFile.
+
+### Favicon
+
+`generateFavicon()` currently writes to disk. For SDK mode, return the favicon data as GirkOutputFile(s).
+
+### Robots
+
+`createRobots()` currently writes to disk. For SDK mode, return robots.txt content as a GirkOutputFile.
+
+### Media
+
+In SDK mode, media comes as GirkInputAsset[] in the input. The build function passes them through as GirkOutputFile entries in the output.
 
 ## Constraints
 
-- Use vitest only (already configured)
-- No Playwright — these are build-time tests, not browser tests
-- Tests must work with the current code structure (pre-refactor)
-- Each test file should be independent (setup/teardown per test)
-- Keep fixture content minimal but realistic
-- Don't test implementation details — test observable output (files on disk, their content)
+- All existing tests must pass (120 unit + 9 e2e)
+- CLI behaviour unchanged (npx girky, girk, gieter all work)
+- The package is CommonJS (type: "commonjs")
+- Uses @/ path alias mapped to src/
+- Do NOT modify the existing libs unless necessary — prefer wrapping
+- Keep the changes minimal and incremental
