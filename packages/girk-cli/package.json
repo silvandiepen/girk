@@ -1,0 +1,45 @@
+{
+  "name": "girk-cli",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Girk CLI — build static sites from markdown files",
+  "main": "dist/index.js",
+  "bin": {
+    "girk": "dist/index.js",
+    "gieter": "dist/index.js"
+  },
+  "type": "commonjs",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0 <26"
+  },
+  "scripts": {
+    "build": "tsc && tsc-alias",
+    "lint": "oxlint src --tsconfig tsconfig.json",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "dependencies": {
+    "girk-sdk": "workspace:*",
+    "@sil/args": "^0.0.6",
+    "cli-block": "^1.4.1",
+    "express": "^4.18.2",
+    "fs-extra": "^11.1.0",
+    "iconator": "^0.3.2",
+    "kleur": "^4.1.5",
+    "sharp": "^0.31.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@types/sharp": "^0.31.1",
+    "oxfmt": "^0.41.0",
+    "oxlint": "^1.56.0",
+    "tsc-alias": "^1.8.2",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.1",
+    "vitest": "^4.1.0"
+  }
+}

@@ -1,54 +1,52 @@
-# SDK/CLI Split Implementation
+# Girk SDK/CLI Split — 3-Package Workspace Refactor
 
-## Goal
+## Repository Layout
 
-Split the Girk build pipeline into a reusable SDK (`build()` function) and a CLI that wraps it. The CLI must keep working exactly as before. The SDK must work with in-memory data (no filesystem).
-
-## Repository
-
-- Location: `~/Repositories/_libs/girk` (branch: `docs/cli-sdk-api-refactor`)
-- Package: `packages/girk/`
-- Package name: `girky`
-- Current entrypoint: `packages/girk/src/index.ts` (auto-runs on import)
-- Test runner: vitest, config: `packages/girk/vite.config.mts`
-
-## Architecture After This Change
-
-```txt
-src/
-  sdk/
-    index.ts          # re-exports build + types
-    build.ts          # main build() function (in-memory, no fs)
-    types.ts          # GirkBuildInput, GirkBuildResult, GirkOutputFile, etc.
-    normalize.ts      # converts GirkBuildInput to internal Payload
-    render.ts         # converts internal Payload to GirkBuildResult
-  
-  cli/
-    index.ts          # CLI entrypoint (#!/usr/bin/env node, auto-runs)
-    readInput.ts      # readGirkInputFromFileSystem(cwd) → GirkBuildInput
-    writeOutput.ts    # writeGirkOutputToFileSystem(result, outputDir) → void
-
-  libs/               # existing modules (adapted to not write directly)
-    ...
+```
+packages/
+  girk-sdk/       ← NEW: Pure build logic, zero CLI deps, zero filesystem
+  girk-cli/       ← NEW: CLI layer, filesystem adapters, sharp, logging
+  girk/           ← EXISTING: Becomes umbrella package, re-exports girk-sdk + girk-cli
+  utils/          ← EXISTING: Unchanged
 ```
 
-## Step-by-Step
+## What Each Package Does
 
-### Step 1: Create SDK types
+### girk-sdk (new, `packages/girk-sdk/`)
+- Pure build pipeline — takes in-memory input, returns in-memory output
+- **NO** filesystem access (no readFile, writeFile, process.cwd, existsSync)
+- **NO** CLI deps (no cli-block, @sil/args, express, sharp, iconator, fs-extra)
+- Dependencies: pug, sass, markdown-it (+ plugins), date-fns, svgo, purgecss, @sil/case, node-fetch
+- Templates ship with the package (src/template/ copied over)
+- Exports `build(input: GirkBuildInput): Promise<GirkBuildResult>`
 
-Create `src/sdk/types.ts` with the types from the migration plan doc:
+### girk-cli (new, `packages/girk-cli/`)
+- Reads from filesystem → calls SDK → writes to filesystem
+- Has the CLI entrypoint with #!/usr/bin/env node
+- Dependencies: girk-sdk, sharp, cli-block, @sil/args, express, iconator, fs-extra
+- Re-exports `build()` from girk-sdk for convenience
+- Bin: `girk`, `gieter`
+
+### girk (existing, becomes umbrella)
+- package name stays `girky` on npm
+- Re-exports everything from girk-sdk and girk-cli
+- `import { build } from "girky"` → girk-sdk
+- `npx girky` → girk-cli bin
+- This preserves backward compatibility
+
+## GirkBuildInput (SDK types)
 
 ```ts
 export interface GirkInputFile {
-  path: string;
-  content: string;
-  created?: Date;
+  path: string;           // virtual path like "/index.md" or "/blog/post.md"
+  content: string;        // raw markdown content
+  created?: Date;         // file creation date (defaults to now)
 }
 
 export interface GirkInputAsset {
-  path: string;
-  content: string | Uint8Array | ArrayBuffer;
-  contentType?: string;
+  path: string;           // virtual path like "/assets/logo.svg"
+  content: string | Buffer;
+  contentType?: string;   // e.g. "image/svg+xml"
 }
 
 export interface GirkBuildInput {
@@ -56,15 +54,23 @@ export interface GirkBuildInput {
   media?: GirkInputAsset[];
   assets?: GirkInputAsset[];
   config?: Record<string, unknown>;
-  args?: Record<string, unknown>;
-  languages?: string[];
-  dataSources?: Record<string, unknown>;
+  languages?: string[];   // explicit language list; omit to auto-detect from filenames
+}
+```
+
+## GirkBuildResult (SDK output)
+
+```ts
+export interface GirkOutputFile {
+  path: string;           // virtual output path like "/index.html" or "/style/app.css"
+  content: string | Buffer;
+  contentType: string;    // "text/html", "text/css", "application/json", etc.
 }
 
-export interface GirkOutputFile {
-  path: string;
-  content: string | Uint8Array | ArrayBuffer;
-  contentType: string;
+export interface GirkOutputPage {
+  title: string;
+  path: string;           // URL path like "/" or "/blog/post/"
+  language: string;
 }
 
 export interface GirkBuildResult {
@@ -72,220 +78,207 @@ export interface GirkBuildResult {
   pages: GirkOutputPage[];
   project: Record<string, unknown>;
   languages: string[];
-  warnings: string[];
-}
-
-export interface GirkOutputPage {
-  title: string;
-  path: string;
-  language: string;
 }
 ```
 
-### Step 2: Create SDK normalize
+## File Mapping: What Goes Where
 
-Create `src/sdk/normalize.ts` that converts `GirkBuildInput` to the internal `Payload` object.
-
-This needs to:
-- Convert `GirkInputFile[]` to `File[]` (the internal type from `src/types.ts`)
-- Set up `Payload` with the correct settings
-- Handle `config` (map to the internal `Project` type)
-- Handle `languages` (either from input or detect from filenames)
-- NOT read from filesystem
-- NOT call `getConfig()` or `getFiles()`
-
-Key mapping from GirkInputFile to internal File:
-```ts
-// GirkInputFile { path: "/index.md", content: "# Hello", created?: Date }
-// → File { id, name, fileName, path, created, language, data, ext, ... }
+### girk-sdk gets (from packages/girk/src/):
+```
+libs/archives.ts           — pure data transform (remove cli-block imports)
+libs/buildStyle/compile.ts — color/CSS logic (change readFile to accept content param)
+libs/buildStyle/style.ts   — split: SDK version returns CSS string, CLI version writes
+libs/data.ts               — data interpolation logic (filesystem parts become CLI concern)
+libs/download.ts           — gist fetching (uses node-fetch, no fs)
+libs/files.ts              — split: fileId, isHomePath, buildHtml, makePath, makeLink go to SDK
+                              getFileTree, getFiles stay CLI-only
+libs/helpers.ts            — pure helpers
+libs/icon.ts               — split: resolveFileIcons core logic to SDK, filesystem parts to CLI
+libs/language.ts           — pure data
+libs/markdown-imports.test.ts — test
+libs/markdown-it-article/  — markdown-it plugin
+libs/markdown-it-svg/      — markdown-it plugin
+libs/markdown.ts           — toHtml, resolveImports, etc (remove local file reading, make it accept content)
+libs/markdown-meta.ts      — pure frontmatter parsing
+libs/media.ts              — split: getThumbnail, getSvgThumbnail to SDK; getMedia, createThumbnails, copyToAssets to CLI
+libs/menu.ts               — split: core menu generation to SDK (remove cli-block), CLI wraps with logging
+libs/page.ts               — split: buildPage to SDK (remove fs writes); createPage to CLI
+libs/partials.ts           — pass-through, goes to SDK
+libs/project.ts            — split: getProjectData logic to SDK (accept config param); getConfig to CLI
+libs/robots.ts             — split: content generation to SDK; file writing to CLI
+libs/search.ts             — split: shard/index building to SDK; file writing to CLI
+libs/section-style.ts      — pure helper
+libs/socials.ts            — split: getSocials to SDK; logging to CLI
+libs/tags.ts               — split: generateTags to SDK; createTagPages to SDK (using buildPage); CLI wraps with logging
+libs/utils.ts              — split: asyncForEach, nthIndex, renamePath, removeTag, getStringFromTag to SDK; createDir, getFileData, fileExists to CLI
+template/                  — ALL pug templates and scripts (ships with girk-sdk package)
+data/                      — language data etc.
+types.ts                   — shared types (File, Payload, Project, etc.) — goes to SDK, re-exported by CLI
 ```
 
-The `path` in GirkInputFile is a virtual path like `/index.md`. The internal File needs:
-- `id`: derived from path (like `fileId()` in files.ts)
-- `name`: directory name or file name (like `isHomePath` checks)
-- `fileName`: the filename without extension or language suffix
-- `path`: the full path (can be the virtual path)
-- `relativePath`: same as path for SDK mode
-- `created`: from input or `new Date()`
-- `language`: detected from filename (`getLangFromFilename`) or from explicit languages
-- `data`: the markdown content
-- `ext`: `.md`
-- `parent`: derived from path (directory name)
-
-For markdown rendering, each file needs to be processed through `toHtml()` to get HTML and metadata.
-
-For project data, `getProjectData()` needs to be called on the files to extract project config from frontmatter. But it currently calls `getConfig()` which reads from disk. For SDK mode, we need to inject the config instead.
-
-### Step 3: Create SDK build function
-
-Create `src/sdk/build.ts`:
-
-```ts
-import { GirkBuildInput, GirkBuildResult } from "./types";
-
-export async function build(input: GirkBuildInput): Promise<GirkBuildResult> {
-  // 1. Normalize input to Payload
-  // 2. Run the pipeline (files processing, rendering, etc.)
-  // 3. Collect output (pages, CSS, search, robots, etc.)
-  // 4. Return GirkBuildResult
-}
+### girk-cli gets:
+```
+index.ts                   — CLI entrypoint (#!/usr/bin/env node, auto-runs)
+libs/filesystem.ts         — getFileTree, getFiles (from files.ts)
+libs/config.ts             — getConfig (from project.ts)
+libs/media-fs.ts           — getMedia, createThumbnails, copyToAssets (from media.ts)
+libs/write.ts              — createPage wrapper, writeSearchIndex, writeRobots, writeStyles
+libs/utils.ts              — createDir, getFileData, fileExists, hello
 ```
 
-The build function should:
-- NOT write to disk
-- NOT use cli-block logging
-- NOT use process.cwd()
-- NOT read from filesystem
-- Collect all output as GirkOutputFile[]
-
-For generators that currently write to disk (createPage, generateSearchIndex, createRobots, generateStyles, generateFavicon), they need to be adapted to either:
-a) Return their output as data (preferred), or
-b) Write to a buffer/collector that's passed in
-
-The cleanest approach: create wrapper functions in the SDK that call the existing `buildPage` (returns Page data) instead of `createPage` (writes to disk). For search index, call the shard-building logic but collect the output instead of writing.
-
-### Step 4: Create SDK render/output collector
-
-Create `src/sdk/render.ts` that takes the final Payload and converts it to GirkBuildResult:
-
-- Extract all generated Page objects → GirkOutputFile[] entries
-- Extract search index files → GirkOutputFile[] entries
-- Extract robots.txt → GirkOutputFile[] entry
-- Extract CSS → GirkOutputFile[] entry
-- Extract favicon → GirkOutputFile[] entry
-- Build pages list (title, path, language)
-- Include media/assets from input as pass-through
-
-### Step 5: Create CLI readInput adapter
-
-Create `src/cli/readInput.ts`:
-
-```ts
-export async function readGirkInputFromFileSystem(cwd: string): Promise<GirkBuildInput> {
-  // 1. getFiles(cwd, ".md") → GirkInputFile[]
-  // 2. getConfig() → config
-  // 3. getMedia() → media/assets
-  // 4. prepareDataFiles() → data sources
-  // 5. Return GirkBuildInput
-}
+### girk (umbrella) gets:
+```
+index.js                   — re-exports from girk-sdk
+package.json               — depends on girk-sdk + girk-cli
 ```
 
-### Step 6: Create CLI writeOutput adapter
+## Implementation Strategy
 
-Create `src/cli/writeOutput.ts`:
+**Phase 1: Create package structure**
+1. Create `packages/girk-sdk/` with package.json, tsconfig.json, vite.config.mts
+2. Create `packages/girk-cli/` with package.json, tsconfig.json
+3. Update `packages/girk/package.json` to become umbrella
+
+**Phase 2: Move shared code to girk-sdk**
+1. Copy `src/types.ts` → `packages/girk-sdk/src/types.ts` (also export SDK types)
+2. Copy all template files → `packages/girk-sdk/src/template/`
+3. Copy pure data transform libs (no fs, no cli-block)
+4. For libs that have mixed concerns, create SDK versions that:
+   - Accept data as parameters instead of reading from filesystem
+   - Return data instead of writing to filesystem
+   - Accept a `virtualRoot` string instead of using `process.cwd()`
+
+**Phase 3: Create girk-cli**
+1. CLI imports `build()` from girk-sdk
+2. CLI reads filesystem → constructs GirkBuildInput → calls build() → writes GirkBuildResult to disk
+3. CLI handles logging (cli-block), thumbnails (sharp), favicon generation (iconator)
+4. CLI bin entrypoint with auto-run
+
+**Phase 4: Update girk umbrella**
+1. Re-exports from girk-sdk
+2. Bins point to girk-cli
+3. Existing tests stay in girk package (they test the full pipeline)
+
+## Key Refactoring Patterns
+
+### Pattern 1: Function split (build vs create)
+Already exists in page.ts — `buildPage()` returns data, `createPage()` writes to disk.
+Apply same pattern everywhere:
 
 ```ts
-export async function writeGirkOutputToFileSystem(result: GirkBuildResult, outputDir: string): Promise<void> {
-  // For each GirkOutputFile, write to disk at join(outputDir, file.path)
-}
+// girk-sdk: returns string
+export const buildRobots = (config: Record<string, unknown>): string | null => {
+  if (config.noRobots) return null;
+  return `User-agent: *\nAllow: /`;
+};
+
+// girk-cli: writes to disk
+export const writeRobots = async (payload: Payload): Promise<Payload> => {
+  const content = buildRobots(payload.settings.config);
+  if (content) await writeFile(join(payload.settings.output, "robots.txt"), content);
+  return payload;
+};
 ```
 
-### Step 7: Create CLI entrypoint
-
-Create `src/cli/index.ts`:
-
+### Pattern 2: Inject dependencies instead of process.cwd()
 ```ts
-#!/usr/bin/env node
-"use strict";
+// SDK version: accepts virtualRoot
+export const makeLink = (path: string, virtualRoot: string = ""): string => {
+  const uri = fixLangInPath(
+    path.replace(virtualRoot, "").toLowerCase()...
+  );
+};
 
-import { readGirkInputFromFileSystem } from "./readInput";
-import { writeGirkOutputToFileSystem } from "./writeOutput";
-import { build } from "../sdk/build";
-import { blockHeader, blockFooter, blockSettings } from "cli-block";
-// ... CLI logging, hello(), version display, etc.
-
-async function main() {
-  hello(); // greeting
-  // ... blockHeader, display version, args, config
-  const input = await readGirkInputFromFileSystem(process.cwd());
-  const result = await build(input);
-  await writeGirkOutputToFileSystem(result, join(process.cwd(), "public"));
-  // ... blockFooter
-}
-
-main();
+// CLI version: uses process.cwd()
+export const makeLinkFs = (path: string): string => makeLink(path, process.cwd());
 ```
 
-### Step 8: Update package.json
+### Pattern 3: Template reading
+Templates are in `src/template/` and compiled to `dist/template/`. In SDK:
+```ts
+const templatePath = join(__dirname, "../template/page.pug");
+const html = pug.renderFile(templatePath, options);
+```
+This works because templates ship with the npm package (already in `files` array).
 
-```json
-{
-  "exports": {
-    ".": "./dist/sdk/index.js",
-    "./sdk": "./dist/sdk/index.js"
-  },
-  "bin": {
-    "girk": "dist/cli/index.js",
-    "gieter": "dist/cli/index.js"
-  }
-}
+### Pattern 4: CSS compilation
+```ts
+// girk-sdk: buildCss accepts the CSS content string instead of reading file
+export const buildCss = async (baseCss: string, colors: ColorConfig | null): Promise<string> => {
+  const lightMode = buildModeColorVariables(colors, "light");
+  const darkMode = buildModeColorVariables(colors, "dark");
+  return baseCss
+    .replaceAll("content: \"[DARKMODE]\";", `${darkMode}`)
+    .replaceAll("content: \"[LIGHTMODE]\";", `${lightMode}`)
+    .replaceAll("content:\"[DARKMODE]\"", `${darkMode}`)
+    .replaceAll("content:\"[LIGHTMODE]\"", `${lightMode}`);
+};
 ```
 
-### Step 9: Keep backward compatibility
+## Important Constraints
 
-The old `src/index.ts` currently auto-runs and is the bin target. After the split:
-- `src/index.ts` should be replaced with a re-export from SDK for `import { build } from "girky"` to work
-- The bin targets point to `src/cli/index.ts` which auto-runs
+1. **All 120 existing unit tests + 9 e2e tests must pass** after refactor
+2. **CLI behaviour is unchanged** — `npx girky`, `girk`, `gieter` all work identically
+3. **Backward compatible** — `import { build } from "girky"` works (via umbrella re-export)
+4. **CommonJS** — all packages are `"type": "commonjs"`
+5. **Node engines** — `"^20.19.0 || >=22.12.0 <26"`
+6. **Workspace** — all three packages in the monorepo workspace
+7. **Tests stay in packages/girk** for now — they test the full pipeline via the umbrella
+8. **The e2e tests use the filesystem-based pipeline** — they should keep working via girk-cli
+9. **SDK tests will be new** — they test the in-memory build path
 
-IMPORTANT: The current `src/index.ts` must NOT auto-run when imported. The auto-run logic moves to `src/cli/index.ts` only.
+## What NOT to do
 
-## Key Implementation Details
+- Don't change the existing unit test files' import paths yet (they'll import from the umbrella)
+- Don't remove the existing `packages/girk/src/` until everything works
+- Don't change the published package name (`girky`) or bin names (`girk`, `gieter`)
+- Don't break `import { build } from "girky"` — the umbrella must re-export it
 
-### Markdown processing
+## Step-by-step for Codex
 
-In SDK mode, files come as `{ path: "/index.md", content: "# Hello" }`. The normalize step needs to:
-1. Parse the path to extract filename, language suffix, parent directory
-2. Run `toHtml(content, path)` to get HTML and metadata
-3. Build the full File object with all required fields
+### Step 1: Create packages/girk-sdk/
+Create the directory structure:
+```
+packages/girk-sdk/
+  package.json
+  tsconfig.json
+  vite.config.mts
+  src/
+    index.ts
+    types.ts
+    sdk-types.ts    (GirkBuildInput, GirkBuildResult, etc.)
+    build.ts        (main build() function)
+    normalize.ts    (convert GirkBuildInput → internal Payload)
+    render.ts       (convert Payload → GirkBuildResult)
+    template/       (copy from packages/girk/src/template/)
+    libs/           (copy and adapt from packages/girk/src/libs/)
+    data/           (copy from packages/girk/src/data/)
+```
 
-### Project config
+### Step 2: Create packages/girk-cli/
+```
+packages/girk-cli/
+  package.json
+  tsconfig.json
+  src/
+    index.ts        (#!/usr/bin/env node, auto-run CLI)
+    read-input.ts   (filesystem → GirkBuildInput)
+    write-output.ts (GirkBuildResult → filesystem)
+    libs/
+      files.ts      (getFileTree, getFiles from original)
+      config.ts     (getConfig from original)
+      media-fs.ts   (getMedia, createThumbnails, copyToAssets)
+      utils.ts      (createDir, getFileData, fileExists, hello)
+```
 
-In SDK mode, config comes as a plain object. The normalize step needs to:
-1. NOT call `getConfig()` (reads from disk)
-2. Use the provided config directly
-3. Still call `getProjectData()` on files to extract per-file project overrides from frontmatter
-4. But `getProjectData()` currently calls `getConfig()` internally — this needs to be bypassed for SDK mode
+### Step 3: Update packages/girk/
+- Update package.json to be umbrella
+- Keep existing tests
+- Remove old src/ (or repoint to new packages)
+- Update vite.config.mts to resolve imports to the new packages
 
-Solution: Create a `getProjectDataFromConfig(files, config)` variant that takes config as parameter instead of reading it.
-
-### Page rendering
-
-`buildPage()` already returns a Page object with HTML and CSS data. The SDK calls `buildPage()` and collects the output. `createPage()` (which writes to disk) is only used in CLI mode.
-
-### Templates
-
-`buildHtml()` in `files.ts` currently uses `pug.renderFile`. For SDK mode, this needs to work from `__dirname` (templates ship with the package). This should already work since the templates are in `src/template/` and the compiled JS is in `dist/`. The `pug.renderFile` paths use `join(__dirname, ...)` which resolves relative to the compiled output. This should work for SDK mode too.
-
-### Search index
-
-`generateSearchIndex()` currently writes to disk. For SDK mode, create a variant that returns the data:
-- manifest JSON
-- shard JSON files
-- client.js source
-
-These become GirkOutputFile entries.
-
-### Styles
-
-`generateStyles()` currently writes CSS to disk. For SDK mode, return the CSS data as a GirkOutputFile.
-
-### Favicon
-
-`generateFavicon()` currently writes to disk. For SDK mode, return the favicon data as GirkOutputFile(s).
-
-### Robots
-
-`createRobots()` currently writes to disk. For SDK mode, return robots.txt content as a GirkOutputFile.
-
-### Media
-
-In SDK mode, media comes as GirkInputAsset[] in the input. The build function passes them through as GirkOutputFile entries in the output.
-
-## Constraints
-
-- All existing tests must pass (120 unit + 9 e2e)
-- CLI behaviour unchanged (npx girky, girk, gieter all work)
-- The package is CommonJS (type: "commonjs")
-- Uses @/ path alias mapped to src/
-- Do NOT modify the existing libs unless necessary — prefer wrapping
-- Keep the changes minimal and incremental
+### Step 4: Run tests
+- `npm run build` in all packages
+- Run existing unit tests
+- Run e2e tests
+- Fix any broken imports
