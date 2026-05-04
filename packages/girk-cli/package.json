@@ -1,6 +1,6 @@
 {
   "name": "girk-cli",
-  "version": "0.1.0-alpha.0",
+  "version": "1.25.4",
   "description": "Girk CLI — build static sites from markdown files",
   "main": "dist/index.js",
   "bin": {
@@ -45,7 +45,7 @@
     "provenance": true
   },
   "dependencies": {
-    "girk-sdk": "^0.1.0",
+    "girk-sdk": "^1.25.4",
     "@sil/args": "^0.0.6",
     "cli-block": "^1.4.1",
     "express": "^4.18.2",
