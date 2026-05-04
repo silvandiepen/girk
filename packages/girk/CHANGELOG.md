@@ -1,3 +1,10 @@
+## [1.27.2](https://github.com/silvandiepen/girk/compare/v1.27.1...v1.27.2) (2026-05-04)
+
+
+### Bug Fixes
+
+* mobile nav panel fullscreen fixed position, remove anchor positioning ([736c980](https://github.com/silvandiepen/girk/commit/736c980d72e1c713d6fc7032574ee0eb1e266078))
+
 ## [1.27.1](https://github.com/silvandiepen/girk/compare/v1.27.0...v1.27.1) (2026-05-04)
 
 
