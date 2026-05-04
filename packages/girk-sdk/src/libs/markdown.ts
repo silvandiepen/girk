@@ -1,62 +1,125 @@
-import MarkdownIt from "markdown-it";
-import emoji from "markdown-it-emoji";
-import prism from "markdown-it-prism";
-import anchor from "markdown-it-anchor";
-import tasks from "markdown-it-tasks";
-import alert from "markdown-it-alert";
-import defList from "markdown-it-deflist";
-import { dirname, resolve } from "@/libs/path-utils";
+import { useNizel } from "nizel";
+import { alertPlugin } from "nizel-plugin-alert";
+import { deflistPlugin } from "nizel-plugin-deflist";
+import { emojiPlugin } from "nizel-plugin-emoji";
+import { shikiPlugin } from "nizel-plugin-shiki";
 
-import articleBlock from "@/libs/markdown-it-article";
-import svgImages from "@/libs/markdown-it-svg";
+import {
+  parseArticleOptions,
+  buildArticleClassName,
+  buildArticleStyle,
+} from "@/libs/article";
 import { extractMeta, removeMeta } from "@/libs/markdown-meta";
 import { MarkdownData } from "@/types";
+import type { NizelBlockNode, NizelRenderContext } from "nizel";
 import { getGist } from "@/libs/download";
 import { asyncForEach } from "@/libs/utils";
 import { getFetch } from "./fetch";
+import { dirname, resolve } from "@/libs/path-utils";
 
-const md = new MarkdownIt({
-  html: true,
-  linkify: true,
-  typographer: true,
-  breaks: true,
+/**
+ * Nizel processor configured with all girk plugins.
+ */
+const processor = useNizel({
+  anchors: true,
+  autolinks: { enabled: true, target: "_blank", rel: "noopener" },
+  safe: true,
+  elements: {
+    img: {
+      class: "image",
+    },
+  },
+  blocks: {
+    article: {
+      name: "article",
+      parse({ args }) {
+        return { rawOptions: args.join(" ") };
+      },
+      formats: {
+        html(node: NizelBlockNode, ctx: NizelRenderContext) {
+          const customNode = node as { value?: { rawOptions: string }; children?: NizelBlockNode[] };
+          const rawOptions = customNode.value?.rawOptions ?? "";
+          const options = parseArticleOptions(rawOptions);
+          const className = buildArticleClassName(options);
+          const style = buildArticleStyle(options);
+          const styleAttr = style ? ` style="${ctx.escape(style)}"` : "";
+          const header = renderArticleHeader(options, ctx.escape);
+          const contentHtml = ctx.render(customNode.children ?? []);
+          const body = contentHtml
+            ? `<div class="article-block__content">\n${contentHtml}\n</div>`
+            : "";
+          return `<article class="${ctx.escape(className)}"${styleAttr}>\n${header}${body}\n</article>\n`;
+        },
+      },
+    },
+  },
+  plugins: [
+    alertPlugin(),
+    deflistPlugin(),
+    emojiPlugin(),
+    shikiPlugin(),
+  ],
 });
 
-md.use(prism, {
-  highlightInlineCode: true,
-  plugins: ["autolinker"]
-});
-md.use(emoji);
-md.use(anchor);
-md.use(tasks, { enabled: true, label: true, labelAfter: true });
-md.use(alert, { bem: true });
-md.use(defList);
-md.use(articleBlock);
-md.use(svgImages);
+/**
+ * Renders the article block header with type, subtitle, date, title, and description.
+ */
+const renderArticleHeader = (
+  options: ReturnType<typeof parseArticleOptions>,
+  escape: (v: unknown) => string
+): string => {
+  const metaItems: string[] = [];
+
+  if (options.type) {
+    const humanized = options.type
+      .split("-")
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ");
+    metaItems.push(`<p class="article-block__type">${escape(humanized)}</p>`);
+  }
+
+  if (options.subtitle) {
+    metaItems.push(`<p class="article-block__subtitle">${escape(options.subtitle)}</p>`);
+  }
+
+  if (options.date) {
+    metaItems.push(`<time class="article-block__date" datetime="${escape(options.date)}">${escape(options.date)}</time>`);
+  }
+
+  const headerContent: string[] = [];
+
+  if (metaItems.length) {
+    headerContent.push(`<div class="article-block__meta">${metaItems.join("")}</div>`);
+  }
+
+  if (options.title) {
+    headerContent.push(`<h3 class="article-block__title">${escape(options.title)}</h3>`);
+  }
+
+  if (options.description) {
+    headerContent.push(`<p class="article-block__description">${escape(options.description)}</p>`);
+  }
+
+  if (!headerContent.length) return "";
+
+  return `<header class="article-block__header">${headerContent.join("")}</header>`;
+};
 
 /**
  * Fetch the raw text of a URL. Returns an empty string on failure.
  */
 const fetchUrl = async (url: string): Promise<string> => {
+  const fetch = getFetch();
   try {
-    const response = await getFetch()(url);
-    if (!response.ok) {
-      console.warn(`[girk-sdk] Failed to import URL ${url}: ${response.status}`);
-      return "";
-    }
+    const response = await fetch(url);
+    if (!response.ok) return "";
     return await response.text();
-  } catch (error) {
-    const reason = error instanceof Error ? error.message : "unknown error";
-    console.warn(`[girk-sdk] Failed to import URL ${url}: ${reason}`);
+  } catch {
     return "";
   }
 };
 
-/**
- * In-memory content resolver for local imports in SDK mode.
- * When an importFileMap is provided, local imports are resolved from it.
- * Otherwise, local file imports return an empty string.
- */
 const fetchFromMap = async (
   importPath: string,
   basePath: string,
@@ -125,7 +188,7 @@ export const resolveImports = async (
   importFileMap?: Map<string, string>
 ): Promise<string> => {
   const importPattern = /\[import:(.*?)\]/g;
-  const matches = [...content.matchAll(importPattern)];
+  const matches = Array.from(content.matchAll(importPattern));
   if (!matches.length) return content;
 
   const cache = new Map<string, string>();
@@ -159,8 +222,7 @@ export const replaceData = async (input: string): Promise<string> => {
 /**
  * Convert a markdown string to HTML with full import and data resolution.
  *
- * In SDK mode, local file imports require an optional importFileMap.
- * If no importFileMap is provided, local imports will be empty strings.
+ * Uses Nizel as the markdown engine with alert, deflist, emoji, and shiki plugins.
  *
  * @param input    - Raw markdown source including optional frontmatter.
  * @param filePath - Virtual path of the source file; used for relative import resolution.
@@ -175,7 +237,6 @@ export const toHtml = async (
   let strippedData = await removeMeta(input);
 
   if (filePath) {
-    // Metadata-level import: load referenced file(s) and prepend their body content.
     if (metaData.import) {
       const importPaths: string[] = Array.isArray(metaData.import)
         ? (metaData.import as string[])
@@ -188,15 +249,14 @@ export const toHtml = async (
         : importedBody;
     }
 
-    // Inline import: replace [import:path] markers in the body.
     strippedData = await resolveImports(strippedData, filePath, importFileMap);
   }
 
   const replacedData = await replaceData(strippedData);
-  const renderedDocument = md.render(replacedData);
+  const result = await processor(replacedData);
 
   return {
-    document: unp(renderedDocument),
+    document: result.html,
     meta: metaData,
   };
 };

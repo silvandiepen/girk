@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "module": "CommonJS",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
-    "target": "ES2021",
-    "moduleResolution": "node",
+    "target": "ES2022",
     "resolveJsonModule": true,
     "sourceMap": true,
     "rootDir": "src",
@@ -12,10 +12,10 @@
     "skipLibCheck": true,
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["./*"]
     }
   },
-  "lib": ["es2015"],
+  "lib": ["es2022"],
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "src/**/*.test.ts", "vite.config.mts"]
 }
