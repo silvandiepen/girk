@@ -1,3 +1,18 @@
+# [1.26.0](https://github.com/silvandiepen/girk/compare/v1.25.4...v1.26.0) (2026-05-04)
+
+
+### Bug Fixes
+
+* **ci:** add build:style step to publish workflow ([9eb6201](https://github.com/silvandiepen/girk/commit/9eb620101fe89fef6065ee195d774c9e4cf9248f))
+* **ci:** build style assets before running tests ([c383605](https://github.com/silvandiepen/girk/commit/c3836050cb75baf973bbf159029d55f6ce12b2b5))
+* **ci:** update lockfile for girk-runner rename ([795d33d](https://github.com/silvandiepen/girk/commit/795d33df61ca1fab3d2c4775dd31718de9717be1))
+
+
+### Features
+
+* add girk-sdk package with in-memory build pipeline ([36a1a7c](https://github.com/silvandiepen/girk/commit/36a1a7c31653ccb963be70227c987efa75dae067))
+* rename girk-cli to girk-runner, fix SDK types, add multi-package release ([cd13a9b](https://github.com/silvandiepen/girk/commit/cd13a9b812b6f0637d96f9739be1f91e2f9519fb))
+
 ## [1.25.4](https://github.com/silvandiepen/girk/compare/v1.25.3...v1.25.4) (2026-04-16)
 
 
