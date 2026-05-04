@@ -6,6 +6,7 @@
     "lib": ["ES2022", "WebWorker"],
     "types": ["node"],
     "strict": true,
+    "skipLibCheck": true,
     "noEmit": true
   },
   "include": ["src/**/*.ts", "wrangler.jsonc"],
