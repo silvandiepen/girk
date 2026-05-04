@@ -1,0 +1,15 @@
+<%
+  var logoVariant = typeof logoVariant !== 'undefined' ? logoVariant : '';
+  const variant = logoVariant ? ' logo--' + logoVariant : '';
+%>
+<% if (project) { %>
+  <% if (logo) { %>
+    <% if (logo.data) { %>
+      <a class="logo<%= variant %> logo--image-only" href="<%= homeLink %>" aria-label="<%= project.title %>"><%- logo.data %></a>
+    <% } else if (logo.relativePath) { %>
+      <a class="logo<%= variant %>" href="<%= homeLink %>" aria-label="<%= project.title %>"><img src="<%= logo.relativePath %>"></a>
+    <% } %>
+  <% } else if (project.title) { %>
+    <a class="logo logo--title<%= variant %>" href="<%= homeLink %>"><span class="logo__text"><%= project.title %></span></a>
+  <% } %>
+<% } %>

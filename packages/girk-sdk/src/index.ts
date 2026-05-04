@@ -2,6 +2,8 @@
 // Zero filesystem access. Pure functions.
 
 export { build } from "./build";
+export { setFetchImpl } from "./libs/fetch";
+export type { FetchFn } from "./libs/fetch";
 export type {
   GirkBuildInput,
   GirkBuildResult,

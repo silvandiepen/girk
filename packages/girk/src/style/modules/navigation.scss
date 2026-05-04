@@ -308,6 +308,10 @@
     grid-template-columns: max-content;
   }
 
+  .navigation__groups--level-1 .navigation__group-link:not(.navigation__group-link--heading) {
+    font-size: var(--font-size-s);
+  }
+
   .navigation__groups--level-2,
   .navigation__groups--level-3,
   .navigation__groups--level-4,

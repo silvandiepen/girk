@@ -1,4 +1,4 @@
-import fetch from "node-fetch";
+import { getFetch } from "./fetch";
 
 const GITHUB_HEADERS = {
   Accept: "application/vnd.github+json",
@@ -18,7 +18,7 @@ export const getGist = async (id: string): Promise<string> => {
   const url = `https://api.github.com/gists/${id}`;
 
   try {
-    const response: DownloadResponse = await fetch(url, {
+    const response: DownloadResponse = await getFetch()(url, {
       headers: GITHUB_HEADERS,
     });
     const res =
@@ -48,7 +48,7 @@ export const getGist = async (id: string): Promise<string> => {
       return "";
     }
 
-    const rawResponse: DownloadResponse = await fetch(file.raw_url, {
+    const rawResponse: DownloadResponse = await getFetch()(file.raw_url, {
       headers: GITHUB_HEADERS,
     });
 

@@ -1,0 +1,11 @@
+<section class="section tags">
+    <ul class="tag__list">
+        <% tags.forEach(function(tag) { %>
+            <li class="tag__item">
+                <a class="tag__link" href="<%= tag.link %>">
+                    <span class="tag__text"><%= tag.name %></span>
+                </a>
+            </li>
+        <% }) %>
+    </ul>
+</section>

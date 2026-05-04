@@ -1,0 +1,98 @@
+<%
+  var navigationRoot = typeof navigationIdPrefix !== 'undefined' ? navigationIdPrefix : 'navigation';
+  var variant = typeof navigationVariant !== 'undefined' ? navigationVariant : 'header';
+
+  function renderPanelGroups(items, level) {
+    const compactColumnClass = level === 1 && items.length <= 5 ? ' navigation__groups--compact-column' : '';
+    let out = '<ul class="navigation__groups navigation__groups--level-' + level + compactColumnClass + '">';
+    items.forEach(function(item) {
+      const hasChildren = !!(item.children && item.children.length);
+      out += '<li class="navigation__group' +
+        (hasChildren ? ' navigation__group--branch' : ' navigation__group--leaf') +
+        (item.current ? ' navigation__group--current' : '') +
+        (item.isParent ? ' navigation__group--parent' : '') + '">';
+      out += '<a class="navigation__group-link' + (hasChildren ? ' navigation__group-link--heading' : '') + '" href="' + item.link + '">';
+      out += renderIcon(item.icon, 'navigation__icon', 'navigation__icon-asset');
+      out += '<span class="navigation__text">' + item.name + '</span></a>';
+      if (hasChildren) {
+        out += renderPanelGroups(item.children, level + 1);
+      }
+      out += '</li>';
+    });
+    out += '</ul>';
+    return out;
+  }
+
+  function renderHeaderNavigation(items) {
+    let out = '<span class="navigation__active-pill" aria-hidden="true"></span>';
+    out += '<ul class="navigation__list" id="' + navigationRoot + '-list">';
+    items.forEach(function(item, index) {
+      const hasChildren = !!(item.children && item.children.length);
+      const isOpen = false;
+      const panelId = navigationRoot + '-panel-' + index;
+      const panelAnchor = '--' + navigationRoot + '-panel-anchor-' + index;
+      out += '<li class="navigation__item' +
+        (item.current ? ' navigation__item--current' : '') +
+        (item.isParent && !item.current ? ' navigation__item--parent' : '') +
+        (hasChildren ? ' navigation__item--has-children' : '') +
+        (isOpen ? ' navigation__item--open' : '') + '">';
+      out += '<div class="navigation__entry"' + (hasChildren ? ' style="anchor-name: ' + panelAnchor + ';"' : '') + '>';
+      out += '<a class="navigation__link" href="' + item.link + '">';
+      out += renderIcon(item.icon, 'navigation__icon', 'navigation__icon-asset');
+      out += '<span class="navigation__text">' + item.name + '</span></a>';
+      if (hasChildren) {
+        out += '<button class="navigation__toggle" type="button" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="' + panelId + '" aria-haspopup="true" aria-label="Toggle ' + item.name + ' submenu"></button>';
+      }
+      out += '</div>';
+      if (hasChildren) {
+        out += '<div class="navigation__panel" id="' + panelId + '"' + (!isOpen ? ' hidden' : '') + ' style="position-anchor: ' + panelAnchor + ';">';
+        out += '<div class="navigation__panel-inner">';
+        out += renderPanelGroups(item.children, 1);
+        out += '</div></div>';
+      }
+      out += '</li>';
+    });
+    out += '</ul>';
+    return out;
+  }
+
+  function renderFooterTree(items, level) {
+    let out = '<ul class="navigation__footer-list navigation__footer-list--level-' + level + '">';
+    items.forEach(function(item) {
+      const hasChildren = !!(item.children && item.children.length);
+      out += '<li class="navigation__footer-item' +
+        (item.current ? ' navigation__footer-item--current' : '') +
+        (item.isParent ? ' navigation__footer-item--parent' : '') +
+        (hasChildren ? ' navigation__footer-item--branch' : '') + '">';
+      out += '<a class="navigation__footer-link' + (level === 0 ? ' navigation__footer-link--heading' : '') + '" href="' + item.link + '">';
+      out += renderIcon(item.icon, 'navigation__icon', 'navigation__icon-asset');
+      out += '<span class="navigation__text">' + item.name + '</span></a>';
+      if (hasChildren) {
+        out += renderFooterTree(item.children, level + 1);
+      }
+      out += '</li>';
+    });
+    out += '</ul>';
+    return out;
+  }
+%>
+<% if (variant === 'footer') { %>
+  <nav class="navigation navigation--footer">
+    <%- renderFooterTree(menu, 0) %>
+  </nav>
+<% } else { %>
+  <%
+    const hasNestedChildren = menu.some(function(item) { return item.children && item.children.length; });
+    const useMobilePanel = menu.length > 2 || hasNestedChildren;
+    const mobileMode = useMobilePanel ? 'panel' : 'inline';
+  %>
+  <nav class="navigation navigation--header<%= useMobilePanel ? ' navigation--mobile-panel' : ' navigation--mobile-inline' %>" data-mobile-mode="<%= mobileMode %>">
+    <% if (useMobilePanel) { %>
+      <button class="navigation__mobile-toggle" type="button" aria-expanded="false" aria-controls="<%= navigationRoot %>-list" aria-label="Toggle navigation menu" style="anchor-name: --<%= navigationRoot %>-mobile-toggle;">
+        <span class="navigation__mobile-toggle-icon" aria-hidden="true"></span>
+        <span class="navigation__mobile-toggle-label">Menu</span>
+      </button>
+    <% } %>
+    <%- renderHeaderNavigation(menu) %>
+  </nav>
+<% } %>

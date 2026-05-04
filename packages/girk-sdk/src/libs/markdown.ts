@@ -5,7 +5,7 @@ import anchor from "markdown-it-anchor";
 import tasks from "markdown-it-tasks";
 import alert from "markdown-it-alert";
 import defList from "markdown-it-deflist";
-import { dirname, resolve } from "path";
+import { dirname, resolve } from "@/libs/path-utils";
 
 import articleBlock from "@/libs/markdown-it-article";
 import svgImages from "@/libs/markdown-it-svg";
@@ -13,7 +13,7 @@ import { extractMeta, removeMeta } from "@/libs/markdown-meta";
 import { MarkdownData } from "@/types";
 import { getGist } from "@/libs/download";
 import { asyncForEach } from "@/libs/utils";
-import fetch from "node-fetch";
+import { getFetch } from "./fetch";
 
 const md = new MarkdownIt({
   html: true,
@@ -39,7 +39,7 @@ md.use(svgImages);
  */
 const fetchUrl = async (url: string): Promise<string> => {
   try {
-    const response = await fetch(url);
+    const response = await getFetch()(url);
     if (!response.ok) {
       console.warn(`[girk-sdk] Failed to import URL ${url}: ${response.status}`);
       return "";

@@ -1,0 +1,58 @@
+<main class="main<%= meta.type ? ' content--' + meta.type : '' %>">
+    <section class="section" style="<%= meta.sectionStyle || '' %>">
+        <div class="container">
+            <div class="content">
+                <% if (subtitle) { %>
+                    <h6><%= subtitle %></h6>
+                <% } %>
+                <% if (showContentImage) { %>
+                    <h1><%= title %></h1>
+                    <figure>
+                        <img src="<%= meta.image %>">
+                    </figure>
+                    <%- removeTitle(content) %>
+                <% } else { %>
+                    <%- content %>
+                <% } %>
+            </div>
+        </div>
+    </section>
+
+    <% if (relatedPages && relatedPages.length) { %>
+        <section class="section section--related">
+            <div class="container">
+                <div class="content">
+                    <% if (parentPage) { %>
+                        <h6><%= parentPage.title %></h6>
+                    <% } %>
+                    <h2>More Pages</h2>
+                </div>
+                <ul class="archive-grid">
+                    <% relatedPages.forEach(function(item) { %>
+                        <li class="archive-card" style="<%= item.meta.sectionStyle || '' %>">
+                            <a class="archive-card__link" href="<%= item.redirect || item.link %>">
+                                <% if (item.icon) { %>
+                                    <%- renderIcon(item.icon, 'archive-card__media archive-card__media--icon', 'archive-card__icon') %>
+                                <% } %>
+                                <div class="archive-card__body">
+                                    <h3 class="archive-card__title"><%= item.title %></h3>
+                                    <% if (item.excerpt) { %>
+                                        <p class="archive-card__excerpt"><%- item.excerpt %></p>
+                                    <% } %>
+                                </div>
+                            </a>
+                        </li>
+                    <% }) %>
+                </ul>
+            </div>
+        </section>
+    <% } %>
+
+    <% if (archives.length) { %>
+        <%- partials.archive({ archives: archives, formatDate: formatDate, renderIcon: renderIcon, partials: partials }) %>
+    <% } %>
+
+    <% if (tags.length) { %>
+        <%- partials.tags({ tags: tags }) %>
+    <% } %>
+</main>

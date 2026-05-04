@@ -1,7 +1,7 @@
 // Normalize GirkBuildInput to internal Payload
 // Converts flat SDK input into the rich internal File objects
 
-import { extname, basename, join } from "path";
+import { extname, basename } from "@/libs/path-utils";
 import { asyncForEach } from "@/libs/utils";
 import { fileId, isHomePath } from "@/libs/files";
 import { getLangFromFilename } from "@/libs/language";

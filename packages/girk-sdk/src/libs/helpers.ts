@@ -1,6 +1,6 @@
 import { File, Meta } from "../types";
 import { camelCase } from "@sil/case";
-import { join } from "path";
+import { join } from "@/libs/path-utils";
 import { getStringFromTag, removeTag } from "@/libs/utils";
 
 export const removeTitle = (input: string): string => removeTag(input, "h1");

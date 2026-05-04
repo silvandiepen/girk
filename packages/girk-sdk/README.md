@@ -69,8 +69,8 @@ Each `GirkOutputFile` has `path`, `content`, and `contentType`.
 - Route generation from file paths
 - Language detection from filenames (`page:nl.md`)
 - Menu, tags, archives, socials generation
-- Page rendering via Pug templates
-- CSS generation via SASS
+- Page rendering via EJS templates (in-memory, no filesystem)
+- CSS generation with configurable color system
 - Search index generation
 - Robots.txt generation
 - Media passthrough (no processing)

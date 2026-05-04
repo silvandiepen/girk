@@ -1,8 +1,8 @@
 // Data interpolation — SDK version
-// No filesystem access. Remote data fetching via node-fetch is kept.
+// No filesystem access. Remote data fetching via configurable fetch.
 
-import fetch from "node-fetch";
-import { basename, dirname, extname, join } from "node:path";
+import { getFetch } from "./fetch";
+import { basename, dirname, extname, join } from "./path-utils";
 
 import { fileId } from "@/libs/files";
 import { extractMeta } from "@/libs/markdown-meta";
@@ -122,7 +122,7 @@ const getSourceData = async (source: string): Promise<unknown> => {
     responseCache.set(
       source,
       (async () => {
-        const response = await fetch(source);
+        const response = await getFetch()(source);
 
         if (!response.ok) {
           throw new Error(

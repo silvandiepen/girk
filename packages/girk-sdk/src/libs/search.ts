@@ -15,11 +15,9 @@ import {
   SearchManifestShard,
   SearchScope,
 } from "@/types";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
+import { scripts } from "./templates/registry";
 
 const SEARCH_DIRECTORY = "assets/search";
-const SEARCH_CLIENT_SOURCE = "../template/script/search.js";
 const SEARCH_BODY_LIMIT = 2000;
 const SEARCH_SECTION_MIN_DOCUMENTS = 2;
 const SEARCH_SECTION_AUTO_MIN_DOCUMENTS = 24;
@@ -319,8 +317,7 @@ const buildSearchShard = (
   };
 };
 
-const getSearchClientSource = async (): Promise<string> =>
-  readFile(join(__dirname, SEARCH_CLIENT_SOURCE), "utf8");
+const getSearchClientSource = (): string => scripts["search"] || "";
 
 const getSearchDocuments = (
   payload: Payload
@@ -396,7 +393,7 @@ export const buildSearchIndex = async (
 
   files.push({
     path: `/${SEARCH_DIRECTORY}/client.js`,
-    content: await getSearchClientSource(),
+    content: getSearchClientSource(),
     contentType: "application/javascript",
   });
 

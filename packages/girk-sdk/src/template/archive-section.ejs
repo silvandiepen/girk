@@ -1,0 +1,9 @@
+<% archive.children.forEach(function(item) { %>
+    <section class="section archive-item archive--section" style="<%= item.meta.sectionStyle || '' %>" id="<%= item.id %>">
+        <div class="container">
+            <div class="content">
+                <%- item.html %>
+            </div>
+        </div>
+    </section>
+<% }) %>

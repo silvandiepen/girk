@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="<%= language %>">
+<%- partials.head(data) %>
+
+<body class="page--<%= name %>">
+    <div class="page-container">
+        <%- partials.header({ project: project, logo: logo, menu: menu, homeLink: homeLink, has: has, renderIcon: renderIcon, partials: partials }) %>
+        <%- partials.content({ content: content, title: title, name: name, meta: meta, subtitle: subtitle, showContentImage: showContentImage, removeTitle: removeTitle, relatedPages: relatedPages, parentPage: parentPage, archives: archives, tags: tags, formatDate: formatDate, renderIcon: renderIcon, partials: partials }) %>
+    </div>
+
+    <%- partials.footer({ project: project, logo: logo, menu: menu, homeLink: homeLink, has: has, config: config, socials: socials, langMenu: langMenu, renderIcon: renderIcon, partials: partials }) %>
+
+    <%- partials.search({ has: has, searchContext: searchContext }) %>
+
+    <script>
+        <% if (has.header) { %>
+            <%- scripts.navigation %>
+        <% } %>
+        <%- scripts.colorMode %>
+        <% if (has.languages) { %>
+            <%- scripts.detectLanguage %>
+        <% } %>
+        <% if (has.colors) { %>
+            <%- scripts.findColors %>
+        <% } %>
+        <% if (has.table) { %>
+            <%- scripts.wrapTables %>
+        <% } %>
+        <% if (has.urlToken) { %>
+            <%- scripts.linkify %>
+        <% } %>
+    </script>
+</body>
+</html>

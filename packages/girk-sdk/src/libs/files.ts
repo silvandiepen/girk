@@ -1,12 +1,11 @@
-import pug from "pug";
-import { extname, basename, join } from "path";
-import { format } from "date-fns";
+import { basename, extname } from "./path-utils";
 import { renamePath } from "@/libs/utils";
 
 import { File, buildHtmlArgs, Archive } from "@/types";
 import { fixLangInPath } from "@/libs/language";
 import { removeTitle } from "@/libs/helpers";
 import { buildSectionStyle } from "@/libs/section-style";
+import { renderEjs } from "./render";
 
 /*
 	::fileId
@@ -79,19 +78,14 @@ export const buildHtml = async (
       ...file.meta,
       sectionStyle: buildSectionStyle(file.meta),
     },
-    pretty: true,
     archives: archives,
     type: file.type,
-    formatDate: format,
+    formatDate: undefined, // renderEjs provides formatDate automatically
     removeTitle: removeTitle,
   };
 
-  const templatePath = join(
-    __dirname,
-    `../${template ? template : "template/page.pug"}`
-  );
-
-  const html = pug.renderFile(templatePath, options);
+  const templateName = template || "page";
+  const html = renderEjs(options, templateName);
 
   return html;
 };

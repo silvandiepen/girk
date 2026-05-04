@@ -1,0 +1,26 @@
+<section class="section archive archive--blog">
+    <div class="container">
+        <ul class="archive-grid archive-grid--blog">
+            <% archive.children.forEach(function(item) { %>
+                <li class="archive-card archive-card--blog" style="<%= item.meta.sectionStyle || '' %>">
+                    <a class="archive-card__link" href="<%= item.redirect || item.link %>">
+                        <% if (item.thumbnail) { %>
+                            <span class="archive-card__media archive-card__media--image">
+                                <img class="archive-card__image" src="<%= item.thumbnail %>" alt="">
+                            </span>
+                        <% } %>
+                        <div class="archive-card__body">
+                            <% if (item.date) { %>
+                                <p class="archive-card__meta"><%= formatDate(item.date, "dd MMM yyyy") %></p>
+                            <% } %>
+                            <h3 class="archive-card__title"><%= item.title %></h3>
+                            <% if (item.excerpt) { %>
+                                <p class="archive-card__excerpt"><%- item.excerpt %></p>
+                            <% } %>
+                        </div>
+                    </a>
+                </li>
+            <% }) %>
+        </ul>
+    </div>
+</section>

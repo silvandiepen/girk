@@ -1,0 +1,11 @@
+<% archives.forEach(function(archive) { %>
+    <% if (archive.type === 'sections') { %>
+        <%- partials['archive-section']({ archive: archive }) %>
+    <% } else if (archive.type === 'collection') { %>
+        <%- partials['archive-collection']({ archive: archive }) %>
+    <% } else if (archive.type === 'blog') { %>
+        <%- partials['archive-blog']({ archive: archive, formatDate: formatDate }) %>
+    <% } else if (archive.type === 'articles') { %>
+        <%- partials['archive-articles']({ archive: archive, renderIcon: renderIcon }) %>
+    <% } %>
+<% }) %>

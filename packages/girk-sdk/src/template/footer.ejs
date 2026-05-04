@@ -1,0 +1,105 @@
+<%
+  function renderColorModeToggle() {
+    return '<div class="footer__control">' +
+      '<button class="color-mode-toggle" type="button" data-color-mode-toggle aria-label="Toggle color mode" aria-pressed="false">' +
+        '<span class="color-mode-toggle__option" aria-hidden="true">' +
+          '<span class="color-mode-toggle__icon">' +
+            '<svg class="color-mode-toggle__icon-asset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
+              '<circle cx="12" cy="12" r="4"></circle>' +
+              '<line x1="12" y1="1.5" x2="12" y2="4"></line>' +
+              '<line x1="12" y1="20" x2="12" y2="22.5"></line>' +
+              '<line x1="4.22" y1="4.22" x2="5.98" y2="5.98"></line>' +
+              '<line x1="18.02" y1="18.02" x2="19.78" y2="19.78"></line>' +
+              '<line x1="1.5" y1="12" x2="4" y2="12"></line>' +
+              '<line x1="20" y1="12" x2="22.5" y2="12"></line>' +
+              '<line x1="4.22" y1="19.78" x2="5.98" y2="18.02"></line>' +
+              '<line x1="18.02" y1="5.98" x2="19.78" y2="4.22"></line>' +
+            '</svg>' +
+          '</span>' +
+          '<span class="color-mode-toggle__track" aria-hidden="true">' +
+            '<span class="color-mode-toggle__thumb"></span>' +
+          '</span>' +
+          '<span class="color-mode-toggle__option" aria-hidden="true">' +
+            '<span class="color-mode-toggle__icon">' +
+              '<svg class="color-mode-toggle__icon-asset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
+                '<path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a6.5 6.5 0 0 0 11 11Z"></path>' +
+              '</svg>' +
+            '</span>' +
+          '</span>' +
+        '</button>' +
+      '</div>';
+  }
+
+  function renderLanguageMenu(langMenu) {
+    if (!langMenu || langMenu.length <= 1) return '';
+    let out = '<div class="footer__control"><ul class="language">';
+    langMenu.forEach(function(language) {
+      out += '<li class="language__item' + (language.active ? ' language__item--active' : '') + '">' +
+        '<a class="language__link" href="' + language.link + '" data-title="' + language.title + '" data-code="' + language.code + '" data-name="' + language.name + '">' +
+          '<span class="language__text">' + language.code + '</span>' +
+        '</a></li>';
+    });
+    out += '</ul></div>';
+    return out;
+  }
+%>
+<footer class="footer">
+    <div class="footer__container">
+        <% if (menu.length > 0) { %>
+            <div class="footer__navigation">
+                <%- partials.navigation({ menu: menu, variant: 'footer', navigationIdPrefix: 'footer-navigation', renderIcon: renderIcon }) %>
+            </div>
+        <% } %>
+
+        <% if (logo || langMenu.length > 1) { %>
+            <div class="footer__bar">
+                <% if (logo) { %>
+                    <div class="footer__brand">
+                        <%- partials.logo({ project: project, logo: logo, homeLink: homeLink, logoVariant: 'footer' }) %>
+                    </div>
+                <% } %>
+                <div class="footer__controls">
+                    <%- renderLanguageMenu(langMenu) %>
+                    <%- renderColorModeToggle() %>
+                </div>
+            </div>
+        <% } else { %>
+            <div class="footer__bar footer__bar--end">
+                <div class="footer__controls">
+                    <%- renderColorModeToggle() %>
+                </div>
+            </div>
+        <% } %>
+
+        <% if (config.copyright || (socials && socials.length)) { %>
+            <div class="footer__meta">
+                <% if (config.copyright) { %>
+                    <div class="copyright">
+                        <%- config.copyright %>
+                    </div>
+                <% } %>
+                <% if (socials && socials.length) { %>
+                    <ul class="socials">
+                        <% socials.forEach(function(social) { %>
+                            <li class="socials__item">
+                                <a class="socials__link" href="<%= social.link %>" aria-label="<%= social.title %>" title="<%= social.title %>">
+                                    <span class="socials__text"><%= social.title %></span>
+                                </a>
+                            </li>
+                        <% }) %>
+                    </ul>
+                <% } %>
+            </div>
+        <% } %>
+    </div>
+</footer>
+
+<% if (has.search) { %>
+    <script src="/assets/search/client.js"></script>
+<% } %>
+
+<% if (project.script) { %>
+    <% (Array.isArray(project.script) ? project.script : [project.script]).forEach(function(script) { %>
+        <script lang="text/javascript"<% if (typeof script === 'object') { %> src="<%= script.src %>" type="<%= script.type %>"<% } else { %> src="<%= script %>"<% } %>></script>
+    <% }) %>
+<% } %>
