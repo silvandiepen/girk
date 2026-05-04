@@ -1,0 +1,8 @@
+mixin renderIcon(icon, wrapperClass, assetClass)
+    if icon
+        span(class=wrapperClass aria-hidden="true")
+            if icon.svg
+                span(class=assetClass)
+                    | !{icon.svg}
+            else if icon.src
+                img(class=assetClass src=icon.src alt="")

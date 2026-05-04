@@ -25,6 +25,7 @@ If you are looking for upgrade notes or recent changes instead of setup guidance
 - [Page Frontmatter](/features/metadata/index.html)
 - [Use Data Sources](/how-to/data-sources/index.html)
 - [AI Reference](/how-to/ai/index.html)
+- [SDK](/how-to/sdk/index.html)
 
 Use the [Examples](/examples/index.html) section when you want to see complete projects, live output, and source side by side.
 Use [Release Notes](/release-notes/index.html) when you want the short version-by-version summary of what changed.
