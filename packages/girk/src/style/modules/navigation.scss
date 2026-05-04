@@ -392,30 +392,17 @@
 
     .navigation__list {
       display: none;
-      position: absolute;
-      top: calc(100% + var(--space-xs));
+      position: fixed;
+      top: 0;
+      left: 0;
       right: 0;
-      width: min(24em, calc(100vw - (var(--space) * 2)));
-      max-height: min(32em, calc(100dvh - 6em));
+      bottom: 0;
       overflow-y: auto;
-      padding: var(--space-s) var(--space);
-      border: var(--border-width-s) solid
-        color-mix(in srgb, var(--color-foreground) 12%, transparent);
+      padding: var(--space-l) var(--space);
       background-color: var(--color-background);
-      box-shadow: 0 var(--space-xs) var(--space)
-        color-mix(in srgb, var(--color-foreground) 8%, transparent);
       flex-direction: column;
       align-items: stretch;
       gap: var(--space-xxs);
-      border-radius: var(--border-radius-l);
-    }
-
-    @supports (position-anchor: --header-navigation-mobile-toggle) {
-      .navigation__list {
-        top: anchor(bottom);
-        right: anchor(right);
-        margin-top: var(--space-xs);
-      }
     }
 
     &.navigation--mobile-open .navigation__list {
