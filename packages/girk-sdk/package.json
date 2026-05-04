@@ -1,7 +1,6 @@
 {
   "name": "girk-sdk",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.1.0",
   "description": "Girk SDK — build static sites from in-memory data",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,13 +20,35 @@
     "test:watch": "vitest",
     "lint": "oxlint src --tsconfig tsconfig.json",
     "fmt": "oxfmt",
-    "fmt:check": "oxfmt --check"
+    "fmt:check": "oxfmt --check",
+    "prepublishOnly": "npm run build"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/silvandiepen/girk.git",
+    "directory": "packages/girk-sdk"
+  },
+  "keywords": [
+    "static-site",
+    "generator",
+    "sdk",
+    "markdown"
+  ],
+  "author": "Sil van Diepen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/silvandiepen/girk/issues"
+  },
+  "homepage": "https://github.com/silvandiepen/girk#readme",
   "files": [
     "dist",
     "src/template",
     "README.md"
   ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "dependencies": {
     "@sil/case": "^0.0.5",
     "date-fns": "^2.29.3",

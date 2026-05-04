@@ -1,7 +1,6 @@
 {
   "name": "girk-cli",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.1.0-alpha.0",
   "description": "Girk CLI — build static sites from markdown files",
   "main": "dist/index.js",
   "bin": {
@@ -14,16 +13,39 @@
   },
   "scripts": {
     "build": "tsc && tsc-alias",
+    "test": "vitest run",
     "lint": "oxlint src --tsconfig tsconfig.json",
     "fmt": "oxfmt",
-    "fmt:check": "oxfmt --check"
+    "fmt:check": "oxfmt --check",
+    "prepublishOnly": "npm run build"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/silvandiepen/girk.git",
+    "directory": "packages/girk-cli"
+  },
+  "keywords": [
+    "static-site",
+    "generator",
+    "cli",
+    "markdown"
+  ],
+  "author": "Sil van Diepen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/silvandiepen/girk/issues"
+  },
+  "homepage": "https://github.com/silvandiepen/girk#readme",
   "files": [
     "dist",
     "README.md"
   ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "dependencies": {
-    "girk-sdk": "*",
+    "girk-sdk": "^0.1.0",
     "@sil/args": "^0.0.6",
     "cli-block": "^1.4.1",
     "express": "^4.18.2",
