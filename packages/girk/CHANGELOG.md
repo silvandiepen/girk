@@ -1,3 +1,10 @@
+# [1.28.0](https://github.com/silvandiepen/girk/compare/v1.27.3...v1.28.0) (2026-05-04)
+
+
+### Features
+
+* **girk-sdk:** replace markdown-it with Nizel ([8a39d53](https://github.com/silvandiepen/girk/commit/8a39d53f84800a3bb8c2de7e72a73a3f77d5fe62))
+
 ## [1.27.3](https://github.com/silvandiepen/girk/compare/v1.27.2...v1.27.3) (2026-05-04)
 
 
