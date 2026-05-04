@@ -1,3 +1,15 @@
+# [1.27.0](https://github.com/silvandiepen/girk/compare/v1.26.0...v1.27.0) (2026-05-04)
+
+
+### Bug Fixes
+
+* add skipLibCheck to all tsconfig files for @types/markdown-it mismatch ([827bc85](https://github.com/silvandiepen/girk/commit/827bc850a2fd674ef98679e71abf07d3a6ee6fda))
+
+
+### Features
+
+* **girk-sdk:** replace Node.js deps with runtime-agnostic alternatives for CF Workers compat ([3e3d34b](https://github.com/silvandiepen/girk/commit/3e3d34b9b9c1ecae620980e18033ce7ec7a2f703))
+
 # [1.26.0](https://github.com/silvandiepen/girk/compare/v1.25.4...v1.26.0) (2026-05-04)
 
 
