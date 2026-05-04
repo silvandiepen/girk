@@ -1,7 +1,7 @@
 import { readdir } from "fs/promises";
 import { extname, resolve, basename, join } from "path";
 import { statSync } from "fs";
-import { renderEjs } from "girk-sdk";
+import { renderEjs } from "@/libs/render";
 
 import { asyncForEach, getFileData, renamePath } from "@/libs/utils";
 

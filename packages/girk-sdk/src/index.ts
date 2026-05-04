@@ -2,7 +2,6 @@
 // Zero filesystem access. Pure functions.
 
 export { build } from "./build";
-export { renderEjs } from "./libs/render";
 export { setFetchImpl } from "./libs/fetch";
 export type { FetchFn } from "./libs/fetch";
 export type {
