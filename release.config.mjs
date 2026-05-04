@@ -9,6 +9,19 @@ export default {
         changelogFile: "packages/girk/CHANGELOG.md",
       },
     ],
+    "./scripts/semantic-release/sync-versions.mjs",
+    [
+      "@semantic-release/npm",
+      {
+        pkgRoot: "packages/girk-sdk",
+      },
+    ],
+    [
+      "@semantic-release/npm",
+      {
+        pkgRoot: "packages/girk-cli",
+      },
+    ],
     [
       "@semantic-release/npm",
       {
@@ -21,6 +34,8 @@ export default {
       {
         assets: [
           "packages/girk/package.json",
+          "packages/girk-sdk/package.json",
+          "packages/girk-cli/package.json",
           "packages/girk/CHANGELOG.md",
           "apps/docs/release-notes/*.md",
         ],

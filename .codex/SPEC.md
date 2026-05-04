@@ -5,8 +5,8 @@
 ```
 packages/
   girk-sdk/       ← NEW: Pure build logic, zero CLI deps, zero filesystem
-  girk-cli/       ← NEW: CLI layer, filesystem adapters, sharp, logging
-  girk/           ← EXISTING: Becomes umbrella package, re-exports girk-sdk + girk-cli
+  girk-runner/       ← NEW: CLI layer, filesystem adapters, sharp, logging
+  girk/           ← EXISTING: Becomes umbrella package, re-exports girk-sdk + girk-runner
   utils/          ← EXISTING: Unchanged
 ```
 
@@ -20,7 +20,7 @@ packages/
 - Templates ship with the package (src/template/ copied over)
 - Exports `build(input: GirkBuildInput): Promise<GirkBuildResult>`
 
-### girk-cli (new, `packages/girk-cli/`)
+### girk-runner (new, `packages/girk-runner/`)
 - Reads from filesystem → calls SDK → writes to filesystem
 - Has the CLI entrypoint with #!/usr/bin/env node
 - Dependencies: girk-sdk, sharp, cli-block, @sil/args, express, iconator, fs-extra
@@ -29,9 +29,9 @@ packages/
 
 ### girk (existing, becomes umbrella)
 - package name stays `girky` on npm
-- Re-exports everything from girk-sdk and girk-cli
+- Re-exports everything from girk-sdk and girk-runner
 - `import { build } from "girky"` → girk-sdk
-- `npx girky` → girk-cli bin
+- `npx girky` → girk-runner bin
 - This preserves backward compatibility
 
 ## GirkBuildInput (SDK types)
@@ -116,7 +116,7 @@ data/                      — language data etc.
 types.ts                   — shared types (File, Payload, Project, etc.) — goes to SDK, re-exported by CLI
 ```
 
-### girk-cli gets:
+### girk-runner gets:
 ```
 index.ts                   — CLI entrypoint (#!/usr/bin/env node, auto-runs)
 libs/filesystem.ts         — getFileTree, getFiles (from files.ts)
@@ -129,14 +129,14 @@ libs/utils.ts              — createDir, getFileData, fileExists, hello
 ### girk (umbrella) gets:
 ```
 index.js                   — re-exports from girk-sdk
-package.json               — depends on girk-sdk + girk-cli
+package.json               — depends on girk-sdk + girk-runner
 ```
 
 ## Implementation Strategy
 
 **Phase 1: Create package structure**
 1. Create `packages/girk-sdk/` with package.json, tsconfig.json, vite.config.mts
-2. Create `packages/girk-cli/` with package.json, tsconfig.json
+2. Create `packages/girk-runner/` with package.json, tsconfig.json
 3. Update `packages/girk/package.json` to become umbrella
 
 **Phase 2: Move shared code to girk-sdk**
@@ -148,7 +148,7 @@ package.json               — depends on girk-sdk + girk-cli
    - Return data instead of writing to filesystem
    - Accept a `virtualRoot` string instead of using `process.cwd()`
 
-**Phase 3: Create girk-cli**
+**Phase 3: Create girk-runner**
 1. CLI imports `build()` from girk-sdk
 2. CLI reads filesystem → constructs GirkBuildInput → calls build() → writes GirkBuildResult to disk
 3. CLI handles logging (cli-block), thumbnails (sharp), favicon generation (iconator)
@@ -156,7 +156,7 @@ package.json               — depends on girk-sdk + girk-cli
 
 **Phase 4: Update girk umbrella**
 1. Re-exports from girk-sdk
-2. Bins point to girk-cli
+2. Bins point to girk-runner
 3. Existing tests stay in girk package (they test the full pipeline)
 
 ## Key Refactoring Patterns
@@ -172,7 +172,7 @@ export const buildRobots = (config: Record<string, unknown>): string | null => {
   return `User-agent: *\nAllow: /`;
 };
 
-// girk-cli: writes to disk
+// girk-runner: writes to disk
 export const writeRobots = async (payload: Payload): Promise<Payload> => {
   const content = buildRobots(payload.settings.config);
   if (content) await writeFile(join(payload.settings.output, "robots.txt"), content);
@@ -224,7 +224,7 @@ export const buildCss = async (baseCss: string, colors: ColorConfig | null): Pro
 5. **Node engines** — `"^20.19.0 || >=22.12.0 <26"`
 6. **Workspace** — all three packages in the monorepo workspace
 7. **Tests stay in packages/girk** for now — they test the full pipeline via the umbrella
-8. **The e2e tests use the filesystem-based pipeline** — they should keep working via girk-cli
+8. **The e2e tests use the filesystem-based pipeline** — they should keep working via girk-runner
 9. **SDK tests will be new** — they test the in-memory build path
 
 ## What NOT to do
@@ -255,9 +255,9 @@ packages/girk-sdk/
     data/           (copy from packages/girk/src/data/)
 ```
 
-### Step 2: Create packages/girk-cli/
+### Step 2: Create packages/girk-runner/
 ```
-packages/girk-cli/
+packages/girk-runner/
   package.json
   tsconfig.json
   src/

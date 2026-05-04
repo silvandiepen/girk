@@ -19,6 +19,7 @@ import {
   GirkOutputPage,
   Payload,
   File,
+  Page,
 } from "@/types";
 
 const VERSION = "0.0.0";
@@ -44,7 +45,7 @@ const buildContentPages = async (payload: Payload): Promise<Payload> => {
     !file.name.startsWith("-") && !isSectionsArchiveChild(file, payload.files);
 
   const filesToBuild = payload.files.filter(shouldBuild);
-  const builtPages: File[] = [];
+  const builtPages: Page[] = [];
 
   await asyncForEach(filesToBuild, async (file: File) => {
     const result = await buildPage(payload, file);
@@ -101,17 +102,17 @@ export const build = async (input: GirkBuildInput): Promise<GirkBuildResult> => 
   // Content pages
   const builtPages = payload._sdkBuiltPages || [];
   for (const page of builtPages) {
-    if (page.html) {
+    if (page.html?.data) {
       outputFiles.push({
-        path: page.path,
-        content: page.html,
+        path: page.link,
+        content: page.html.data,
         contentType: "text/html",
       });
     }
     pages.push({
       title: page.title || page.name,
-      path: page.path,
-      language: page.language || "en",
+      path: page.link,
+      language: "", // Page type doesn't carry language, use empty
     });
   }
 

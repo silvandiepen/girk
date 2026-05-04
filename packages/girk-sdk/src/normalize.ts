@@ -21,6 +21,7 @@ import {
   Settings,
   FileType,
 } from "@/types";
+import { languageKeys } from "@/data/language";
 
 /**
  * Parse a virtual path into file metadata.
@@ -223,7 +224,7 @@ export const normalize = async (
   }
 
   // Use explicit languages if provided, otherwise auto-detected
-  const languages = input.languages || processed.languages;
+  const languages = (input.languages || processed.languages) as languageKeys[];
 
   // Build settings
   const settings: Settings = {

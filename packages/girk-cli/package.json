@@ -1,28 +1,18 @@
 {
-  "name": "girk-cli",
+  "name": "girk-runner",
   "version": "1.25.4",
-  "description": "Girk CLI — build static sites from markdown files",
-  "main": "dist/index.js",
-  "bin": {
-    "girk": "dist/index.js",
-    "gieter": "dist/index.js"
-  },
+  "description": "Girk Runner — CLI to build static sites from markdown files (skeleton, not yet implemented)",
   "type": "commonjs",
   "engines": {
     "node": "^20.19.0 || >=22.12.0 <26"
   },
   "scripts": {
-    "build": "tsc && tsc-alias",
-    "test": "vitest run",
-    "lint": "oxlint src --tsconfig tsconfig.json",
-    "fmt": "oxfmt",
-    "fmt:check": "oxfmt --check",
-    "prepublishOnly": "npm run build"
+    "test": "echo \"No tests yet\""
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/silvandiepen/girk.git",
-    "directory": "packages/girk-cli"
+    "directory": "packages/girk-runner"
   },
   "keywords": [
     "static-site",
@@ -36,10 +26,6 @@
     "url": "https://github.com/silvandiepen/girk/issues"
   },
   "homepage": "https://github.com/silvandiepen/girk#readme",
-  "files": [
-    "dist",
-    "README.md"
-  ],
   "publishConfig": {
     "access": "public",
     "provenance": true
@@ -53,15 +39,5 @@
     "iconator": "^0.3.2",
     "kleur": "^4.1.5",
     "sharp": "^0.31.3"
-  },
-  "devDependencies": {
-    "@types/node": "^25.5.0",
-    "@types/sharp": "^0.31.1",
-    "oxfmt": "^0.41.0",
-    "oxlint": "^1.56.0",
-    "tsc-alias": "^1.8.2",
-    "typescript": "^5.9.3",
-    "vite": "^8.0.1",
-    "vitest": "^4.1.0"
   }
 }

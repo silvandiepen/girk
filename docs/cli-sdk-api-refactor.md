@@ -7,7 +7,7 @@ Girk is split into three packages that share the same version number:
 ```
 packages/
   girk-sdk/       Pure build logic, zero filesystem deps
-  girk-cli/       CLI layer — filesystem adapters, sharp, logging
+  girk-runner/       CLI layer — filesystem adapters, sharp, logging
   girk/           Umbrella package (girky on npm) — re-exports SDK + CLI
 ```
 
@@ -17,10 +17,10 @@ All three are version `1.25.4` and move in lockstep.
 
 ```
 girky  ──→  girk-sdk
-       ──→  girk-cli  ──→  girk-sdk
+       ──→  girk-runner  ──→  girk-sdk
 ```
 
-`girky` is the public-facing name. It re-exports everything from `girk-sdk` and `girk-cli` so users can install one package and get both CLI and SDK.
+`girky` is the public-facing name. It re-exports everything from `girk-sdk` and `girk-runner` so users can install one package and get both CLI and SDK.
 
 ## Installation
 
@@ -36,7 +36,7 @@ You can also install SDK or CLI individually:
 
 ```bash
 npm install girk-sdk    # SDK only, no CLI
-npm install girk-cli    # CLI only, depends on girk-sdk
+npm install girk-runner    # CLI only, depends on girk-sdk
 ```
 
 ## CLI usage
@@ -234,7 +234,7 @@ No: `sharp`, `cli-block`, `@sil/args`, `express`, `fs-extra`, `iconator`
 
 Includes: templates (`src/template/*.pug`), styles (`src/style/`)
 
-### girk-cli
+### girk-runner
 
 Dependencies: `girk-sdk`, `sharp`, `cli-block`, `@sil/args`, `express`, `fs-extra`, `iconator`
 
@@ -242,7 +242,7 @@ Adds: filesystem I/O, thumbnail generation, terminal output, config file discove
 
 ### girky (umbrella)
 
-Dependencies: `girk-sdk`, `girk-cli` + all original deps (for now, until CLI migration completes)
+Dependencies: `girk-sdk`, `girk-runner` + all original deps (for now, until CLI migration completes)
 
 Currently the CLI code still lives in `packages/girk/src/index.ts`. It will be migrated to use `girk-sdk` internally in a follow-up.
 
@@ -293,7 +293,7 @@ All packages are published to npm under the `girky` org scope (unscoped names):
 
 ```bash
 npm publish girk-sdk    # girk-sdk
-npm publish girk-cli    # girk-cli
+npm publish girk-runner    # girk-runner
 npm publish girky       # girky (umbrella)
 ```
 
@@ -310,7 +310,7 @@ After initial publish, enable GitHub Actions source deployment on npmjs.com for 
 
 ## Future work
 
-- **CLI migration**: Make `girk-cli` use `girk-sdk` internally instead of duplicated pipeline code
+- **CLI migration**: Make `girk-runner` use `girk-sdk` internally instead of duplicated pipeline code
 - **Individual function exports**: Expose `toHtml`, `generateMenu`, etc. from the SDK
 - **API mode**: HTTP endpoint wrapping the SDK (nice-to-have)
 - **Data sources**: Pre-resolved `dataSources` input for SDK mode

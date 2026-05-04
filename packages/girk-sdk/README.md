@@ -1,6 +1,8 @@
-# Girk SDK
+# girk-sdk
 
 Build static sites from in-memory data. Zero filesystem access.
+
+Part of the [Girk](https://github.com/silvandiepen/girk) static site generator.
 
 ## Install
 
@@ -10,49 +12,81 @@ npm install girk-sdk
 
 ## Usage
 
-```typescript
+```ts
 import { build } from "girk-sdk";
 
 const result = await build({
   files: [
-    {
-      path: "/blog/hello.md",
-      content: "# Hello World\n\nMy first post.",
-    },
+    { path: "/index.md", content: "# Hello world\nWelcome to my site." },
+    { path: "/about.md", content: "# About\nSome about text." },
+    { path: "/blog/post:nl.md", content: "# Blogpost\nDit is een blogpost." },
   ],
+  media: [
+    { path: "/media/photo.jpg", content: imageBuffer, contentType: "image/jpeg" },
+  ],
+  config: {
+    projectTitle: "My Site",
+  },
+  languages: ["en", "nl"],
 });
 
-// result.files — array of output files (HTML, CSS, JSON, etc.)
+// result.files — array of generated files (HTML, CSS, JSON, etc.)
 // result.pages — array of page metadata
-// result.languages — detected languages
-// result.project — project configuration
+// result.project — resolved project config
+// result.languages — detected or provided languages
 ```
 
-## API
+## Input
 
-### `build(input: GirkBuildInput): Promise<GirkBuildResult>`
+`build()` takes a `GirkBuildInput` object:
 
-Main entry point. Takes in-memory input, returns in-memory output.
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `files` | `GirkInputFile[]` | yes | Markdown files with `path` and `content` |
+| `media` | `GirkInputAsset[]` | no | Media assets — passed through as-is |
+| `assets` | `GirkInputAsset[]` | no | Static assets — passed through as-is |
+| `config` | `object` | no | Project configuration |
+| `languages` | `string[]` | no | Explicit languages; auto-detected from filenames if omitted |
 
-### `GirkBuildInput`
+## Output
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `files` | `GirkInputFile[]` | Markdown files with `path` and `content` |
-| `media` | `GirkInputAsset[]` | Media assets (images, etc.) |
-| `assets` | `GirkInputAsset[]` | Other static assets |
-| `config` | `Record<string, unknown>` | Project configuration |
-| `languages` | `string[]` | Explicit language list (auto-detected if omitted) |
+`build()` returns a `GirkBuildResult`:
 
-### `GirkBuildResult`
+```ts
+{
+  files: GirkOutputFile[];     // all generated files
+  pages: GirkOutputPage[];     // page metadata (title, path, language)
+  project: Project;            // resolved project config
+  languages: string[];         // detected languages
+}
+```
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `files` | `GirkOutputFile[]` | All output files (HTML, CSS, search JSON, robots.txt) |
-| `pages` | `GirkOutputPage[]` | Page metadata (title, path, language) |
-| `project` | `Record<string, unknown>` | Resolved project config |
-| `languages` | `string[]` | Detected/used languages |
+Each `GirkOutputFile` has `path`, `content`, and `contentType`.
 
-## No Filesystem
+## What it does
 
-This package does not read or write files. It does not use `sharp`, `fs-extra`, or any CLI dependencies. Perfect for serverless functions, Workers, and programmatic use.
+- Markdown to HTML rendering with syntax highlighting
+- Route generation from file paths
+- Language detection from filenames (`page:nl.md`)
+- Menu, tags, archives, socials generation
+- Page rendering via Pug templates
+- CSS generation via SASS
+- Search index generation
+- Robots.txt generation
+- Media passthrough (no processing)
+
+## What it does NOT do
+
+- Read or write files to disk
+- Image processing or thumbnail generation
+- Fetch remote data sources
+- CLI logging or terminal output
+- Scan directories
+
+## Languages
+
+Languages are detected from filename suffixes (`page:nl.md`) or passed explicitly via `languages: ["en", "nl"]`.
+
+## License
+
+MIT

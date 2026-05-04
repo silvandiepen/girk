@@ -40,6 +40,7 @@ export interface Project {
   searchSharding?: ProjectSearchSharding;
   searchBodyLimit?: number | string;
   searchScope?: SearchScope;
+  noRobots?: boolean;
 }
 
 export interface Style {
@@ -122,7 +123,7 @@ export interface Payload extends Settings {
   searchIndex?: Record<string, unknown>;
   searchShards?: SearchShard[];
   searchManifest?: SearchManifest;
-  _sdkBuiltPages?: File[];
+  _sdkBuiltPages?: Page[];
   _sdkTagPages?: File[];
   _sdkStyleResult?: { style: Style; cssContent: string };
 }
@@ -297,6 +298,6 @@ export interface GirkOutputPage {
 export interface GirkBuildResult {
   files: GirkOutputFile[];
   pages: GirkOutputPage[];
-  project: Record<string, unknown>;
+  project: Project;
   languages: string[];
 }
