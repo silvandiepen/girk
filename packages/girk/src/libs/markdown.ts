@@ -1,39 +1,110 @@
-import MarkdownIt from "markdown-it";
-import emoji from "markdown-it-emoji";
-import prism from "markdown-it-prism";
-import anchor from "markdown-it-anchor";
-import tasks from "markdown-it-tasks";
-import alert from "markdown-it-alert";
-import defList from "markdown-it-deflist";
+import { useNizel } from "nizel";
+import { alertPlugin } from "nizel-plugin-alert";
+import { deflistPlugin } from "nizel-plugin-deflist";
+import { emojiPlugin } from "nizel-plugin-emoji";
+import { shikiPlugin } from "nizel-plugin-shiki";
 import { readFile } from "node:fs/promises";
 import { resolve, dirname } from "path";
 
-import articleBlock from "@/libs/markdown-it-article";
-import svgImages from "@/libs/markdown-it-svg";
+import {
+  parseArticleOptions,
+  buildArticleClassName,
+  buildArticleStyle,
+} from "@/libs/article";
 import { extractMeta, removeMeta } from "@/libs/markdown-meta";
 import { MarkdownData } from "@/types";
 import { getGist } from "@/libs/download";
 import { asyncForEach } from "@/libs/utils";
-import fetch from "node-fetch";
+import type { NizelBlockNode, NizelRenderContext } from "nizel";
 
-const md = new MarkdownIt({
-  html: true,
-  linkify: true,
-  typographer: true,
-  breaks: true,
+/**
+ * Nizel processor configured with all girk plugins.
+ */
+const processor = useNizel({
+  anchors: true,
+  autolinks: { enabled: true, target: "_blank", rel: "noopener" },
+  safe: true,
+  elements: {
+    img: {
+      class: "image",
+    },
+  },
+  blocks: {
+    article: {
+      name: "article",
+      parse({ args }) {
+        return { rawOptions: args.join(" ") };
+      },
+      formats: {
+        html(node: NizelBlockNode, ctx: NizelRenderContext) {
+          const customNode = node as { value?: { rawOptions: string }; children?: NizelBlockNode[] };
+          const rawOptions = customNode.value?.rawOptions ?? "";
+          const options = parseArticleOptions(rawOptions);
+          const className = buildArticleClassName(options);
+          const style = buildArticleStyle(options);
+          const styleAttr = style ? ` style="${ctx.escape(style)}"` : "";
+          const header = renderArticleHeader(options, ctx.escape);
+          const contentHtml = ctx.render(customNode.children ?? []);
+          const body = contentHtml
+            ? `<div class="article-block__content">\n${contentHtml}\n</div>`
+            : "";
+          return `<article class="${ctx.escape(className)}"${styleAttr}>\n${header}${body}\n</article>\n`;
+        },
+      },
+    },
+  },
+  plugins: [
+    alertPlugin(),
+    deflistPlugin(),
+    emojiPlugin(),
+    shikiPlugin(),
+  ],
 });
 
-md.use(prism, {
-  highlightInlineCode: true,
-  plugins: ["autolinker"]
-});
-md.use(emoji);
-md.use(anchor);
-md.use(tasks, { enabled: true, label: true, labelAfter: true });
-md.use(alert, { bem: true });
-md.use(defList);
-md.use(articleBlock);
-md.use(svgImages);
+/**
+ * Renders the article block header with type, subtitle, date, title, and description.
+ */
+const renderArticleHeader = (
+  options: ReturnType<typeof parseArticleOptions>,
+  escape: (v: unknown) => string
+): string => {
+  const metaItems: string[] = [];
+
+  if (options.type) {
+    const humanized = options.type
+      .split("-")
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ");
+    metaItems.push(`<p class="article-block__type">${escape(humanized)}</p>`);
+  }
+
+  if (options.subtitle) {
+    metaItems.push(`<p class="article-block__subtitle">${escape(options.subtitle)}</p>`);
+  }
+
+  if (options.date) {
+    metaItems.push(`<time class="article-block__date" datetime="${escape(options.date)}">${escape(options.date)}</time>`);
+  }
+
+  const headerContent: string[] = [];
+
+  if (metaItems.length) {
+    headerContent.push(`<div class="article-block__meta">${metaItems.join("")}</div>`);
+  }
+
+  if (options.title) {
+    headerContent.push(`<h3 class="article-block__title">${escape(options.title)}</h3>`);
+  }
+
+  if (options.description) {
+    headerContent.push(`<p class="article-block__description">${escape(options.description)}</p>`);
+  }
+
+  if (!headerContent.length) return "";
+
+  return `<header class="article-block__header">${headerContent.join("")}</header>`;
+};
 
 /**
  * Fetch the raw text of a URL. Returns an empty string and logs a warning on failure.
@@ -170,8 +241,6 @@ export const resolveImports = async (content: string, filePath: string): Promise
 };
 
 export const unp = (input: string): string => {
-  // const regex = new RegExp("<p>(?:<img[^>]+>|<svg[^>]+>(.*?)</svg>)</p>", "g");
-  // const images = input.match(regex);
   return input;
 };
 
@@ -228,10 +297,10 @@ export const toHtml = async (input: string, filePath?: string): Promise<Markdown
   }
 
   const replacedData = await replaceData(strippedData);
-  const renderedDocument = md.render(replacedData);
+  const result = await processor(replacedData);
 
   return {
-    document: unp(renderedDocument),
+    document: result.html,
     meta: metaData,
   };
 };

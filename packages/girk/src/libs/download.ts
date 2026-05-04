@@ -1,42 +1,26 @@
 import { dirname } from "path";
 import { createWriteStream } from "fs";
-import https from "https";
-import fetch from "node-fetch";
+import { Readable } from "stream";
 import { createDir } from "@/libs/utils";
 
-const GITHUB_HEADERS = {
+const GITHUB_HEADERS: Record<string, string> = {
   Accept: "application/vnd.github+json",
   "User-Agent": "girky",
 };
-
-export interface DownloadResponse {
-  body?: any;
-  ok?: boolean;
-  status?: number;
-  json?: () => Promise<any>;
-  text?: () => Promise<string>;
-  [index: string]: any;
-}
 
 export const download = async (
   url: string,
   destination: string
 ): Promise<void> => {
-  const agent = new https.Agent({
-    rejectUnauthorized: false,
-  });
-  const res: DownloadResponse = await fetch(url, { agent });
+  const res = await fetch(url);
   await createDir(dirname(destination));
-  await new Promise((resolve, reject) => {
+  if (!res.body) throw new Error(`No response body for ${url}`);
+  const nodeStream = Readable.fromWeb(res.body as any);
+  await new Promise<void>((resolve, reject) => {
     const fileStream = createWriteStream(destination);
-    res.body?.pipe(fileStream);
-    res.body?.on("error", (err: any) => {
-      reject(err);
-    });
-    fileStream.on("finish", () => {
-      //@ts-ignore: Resolve has to be resolved some how
-      resolve();
-    });
+    nodeStream.pipe(fileStream);
+    nodeStream.on("error", reject);
+    fileStream.on("finish", resolve);
   });
 };
 
@@ -44,16 +28,15 @@ export const getGist = async (id: string): Promise<string> => {
   const url = `https://api.github.com/gists/${id}`;
 
   try {
-    const response: DownloadResponse = await fetch(url, {
+    const response = await fetch(url, {
       headers: GITHUB_HEADERS,
     });
-    const res =
-      typeof response.json === "function" ? await response.json() : undefined;
+    const res = await response.json() as any;
     const files = res?.files;
     const [file] =
       files && typeof files === "object" ? (Object.values(files) as any[]) : [];
 
-    if (response.ok === false || !file) {
+    if (!response.ok || !file) {
       const reason =
         typeof res?.message === "string"
           ? res.message
@@ -74,11 +57,11 @@ export const getGist = async (id: string): Promise<string> => {
       return "";
     }
 
-    const rawResponse: DownloadResponse = await fetch(file.raw_url, {
+    const rawResponse = await fetch(file.raw_url, {
       headers: GITHUB_HEADERS,
     });
 
-    if (rawResponse.ok === false || typeof rawResponse.text !== "function") {
+    if (!rawResponse.ok) {
       console.warn(`[girky] Failed to load gist ${id}: unable to fetch raw gist content`);
 
       return "";

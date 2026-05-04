@@ -1,5 +1,3 @@
-import MarkdownIt from "markdown-it";
-
 const ARTICLE_TOKEN = /^[a-z0-9-]+$/i;
 const ARTICLE_ATTRIBUTE_PATTERN =
   /([a-zA-Z][\w-]*)(?:=(?:"([^"]*)"|'([^']*)'|([^\s]+)))?/g;
@@ -30,13 +28,6 @@ const normalizeStyle = (value: unknown): string => {
   const style = normalizeValue(value);
   return style.endsWith(";") ? style.slice(0, -1) : style;
 };
-
-const humanizeToken = (value: string): string =>
-  value
-    .split("-")
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
 
 const splitClasses = (value: string): string[] =>
   normalizeValue(value)
@@ -134,81 +125,4 @@ export const buildArticleStyle = (options: ArticleOptions): string => {
   }
 
   return rules.join("; ");
-};
-
-const renderArticleHeader = (md: MarkdownIt, options: ArticleOptions): string => {
-  const metaItems: string[] = [];
-
-  if (options.type) {
-    metaItems.push(
-      `<p class="article-block__type">${md.utils.escapeHtml(
-        humanizeToken(options.type)
-      )}</p>`
-    );
-  }
-
-  if (options.subtitle) {
-    metaItems.push(
-      `<p class="article-block__subtitle">${md.utils.escapeHtml(
-        options.subtitle
-      )}</p>`
-    );
-  }
-
-  if (options.date) {
-    const escapedDate = md.utils.escapeHtml(options.date);
-    metaItems.push(
-      `<time class="article-block__date" datetime="${escapedDate}">${escapedDate}</time>`
-    );
-  }
-
-  const headerContent: string[] = [];
-
-  if (metaItems.length) {
-    headerContent.push(
-      `<div class="article-block__meta">${metaItems.join("")}</div>`
-    );
-  }
-
-  if (options.title) {
-    headerContent.push(
-      `<h3 class="article-block__title">${md.utils.escapeHtml(options.title)}</h3>`
-    );
-  }
-
-  if (options.description) {
-    headerContent.push(
-      `<p class="article-block__description">${md.utils.escapeHtml(
-        options.description
-      )}</p>`
-    );
-  }
-
-  if (!headerContent.length) {
-    return "";
-  }
-
-  return `<header class="article-block__header">${headerContent.join(
-    ""
-  )}</header>`;
-};
-
-export const renderArticle = (
-  md: MarkdownIt,
-  rawOptions: string,
-  rawContent: string
-): string => {
-  const options = parseArticleOptions(rawOptions);
-  const className = buildArticleClassName(options);
-  const style = buildArticleStyle(options);
-  const header = renderArticleHeader(md, options);
-  const bodyContent = md.render(rawContent).trim();
-  const styleAttribute = style ? ` style="${md.utils.escapeHtml(style)}"` : "";
-  const body = bodyContent
-    ? `<div class="article-block__content">\n${bodyContent}\n</div>`
-    : "";
-
-  return `<article class="${md.utils.escapeHtml(
-    className
-  )}"${styleAttribute}>\n${header}${body}\n</article>\n`;
 };

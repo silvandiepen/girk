@@ -1,9 +1,8 @@
-import pug from "pug";
-
 import { readdir } from "fs/promises";
 import { extname, resolve, basename, join } from "path";
 import { statSync } from "fs";
-import { format } from "date-fns";
+import { renderEjs } from "girk-sdk";
+
 import { asyncForEach, getFileData, renamePath } from "@/libs/utils";
 
 import { File, buildHtmlArgs, FileType, Dirent, Archive } from "@/types";
@@ -92,7 +91,7 @@ export const getFiles = async (dir: string, ext: string): Promise<File[]> => {
    const parentId =  parentPath.split("/")[parentPath.split("/").length - 2];
   
   return parentId;
-  }
+ }
 
   await asyncForEach(fileTree, async (file: File) => {
     const data = await getFileData(file.path);
@@ -161,19 +160,13 @@ export const buildHtml = async (
       ...file.meta,
       sectionStyle: buildSectionStyle(file.meta),
     },
-    pretty: true,
     archives: archives,
     type: file.type,
-    formatDate: format,
     removeTitle: removeTitle,
   };
 
-  const templatePath = join(
-    __dirname,
-    `../../src/${template ? template : "template/page.pug"}`
-  );
-
-  const html = pug.renderFile(templatePath, options);
+  const templateName = template || "page";
+  const html = renderEjs(options, templateName);
 
   return html;
 };

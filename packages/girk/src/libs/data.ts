@@ -1,4 +1,3 @@
-import fetch from "node-fetch";
 import { basename, dirname, extname, join, relative, resolve } from "node:path";
 
 import { fileId } from "@/libs/files";
