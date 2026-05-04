@@ -1,3 +1,10 @@
+## [1.27.3](https://github.com/silvandiepen/girk/compare/v1.27.2...v1.27.3) (2026-05-04)
+
+
+### Bug Fixes
+
+* mobile nav panel - fix specificity conflict with header, pin toggle above overlay ([6c9c349](https://github.com/silvandiepen/girk/commit/6c9c349d36b9c2e8df88d97fea2c8a4b9e4e67d1))
+
 ## [1.27.2](https://github.com/silvandiepen/girk/compare/v1.27.1...v1.27.2) (2026-05-04)
 
 
