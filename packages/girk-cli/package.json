@@ -23,7 +23,7 @@
     "README.md"
   ],
   "dependencies": {
-    "girk-sdk": "workspace:*",
+    "girk-sdk": "*",
     "@sil/args": "^0.0.6",
     "cli-block": "^1.4.1",
     "express": "^4.18.2",

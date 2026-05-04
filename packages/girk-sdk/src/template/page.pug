@@ -1,0 +1,34 @@
+doctype html
+html(lang=`${language}`)
+ 
+  include head.pug
+     
+  body(class= `page--${name}`)
+  
+    div.page-container
+        include header.pug 
+        
+        include content.pug
+    
+    include footer.pug
+
+    include search.pug
+
+  
+
+  script
+      if has.header
+          include script/navigation.js
+      include script/colorMode.js
+      if has.languages
+          include script/detectLanguage.js 
+      if has.colors
+          include script/findColors.js
+      if has.table
+          include script/wrapTables.js
+      if has.urlToken
+          include script/linkify.js
+
+
+
+    
