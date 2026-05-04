@@ -253,6 +253,7 @@ export const templates: Record<string, string> = {
 <% } %>
 `,
   "head": `<head>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="view-transition" content="same-origin">
     <% if (generator && generator.name && generator.version) { %>

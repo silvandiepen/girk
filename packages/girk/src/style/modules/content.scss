@@ -128,11 +128,15 @@
   }
 
   a {
-    color: var(--color-secondary);
+    color: var(--color-foreground);
     text-decoration-line: underline;
-    text-decoration-color: color-mix(in srgb, currentColor 25%, transparent);
+    text-decoration-color: color-mix(in srgb, var(--color-secondary) 50%, transparent);
     text-decoration-thickness: 2px;
     text-underline-offset: 0.16em;
+
+    &:hover {
+      color: var(--color-secondary);
+    }
   }
 
   a code {
