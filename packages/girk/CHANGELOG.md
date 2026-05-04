@@ -1,3 +1,10 @@
+## [1.27.1](https://github.com/silvandiepen/girk/compare/v1.27.0...v1.27.1) (2026-05-04)
+
+
+### Bug Fixes
+
+* add charset meta tag and improve link contrast for WCAG AA ([d50012f](https://github.com/silvandiepen/girk/commit/d50012feaf371666480e32023c7ea3d420330d5d))
+
 # [1.27.0](https://github.com/silvandiepen/girk/compare/v1.26.0...v1.27.0) (2026-05-04)
 
 

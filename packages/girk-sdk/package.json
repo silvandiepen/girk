@@ -1,6 +1,6 @@
 {
   "name": "girk-sdk",
-  "version": "1.27.0",
+  "version": "1.27.1",
   "description": "Girk SDK — build static sites from in-memory data",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
