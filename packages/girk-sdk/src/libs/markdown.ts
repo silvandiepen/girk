@@ -18,48 +18,82 @@ import { getFetch } from "./fetch";
 import { dirname, resolve } from "@/libs/path-utils";
 
 /**
- * Nizel processor configured with all girk plugins.
+ * Lazily-initialized Nizel processor with JS-engine Shiki for Worker compatibility.
  */
-const processor = useNizel({
-  anchors: true,
-  autolinks: { enabled: true, target: "_blank", rel: "noopener" },
-  safe: true,
-  elements: {
-    img: {
-      class: "image",
-    },
-  },
-  blocks: {
-    article: {
-      name: "article",
-      parse({ args }) {
-        return { rawOptions: args.join(" ") };
+let _processor: ReturnType<typeof useNizel> | null = null;
+
+async function getProcessor() {
+  if (_processor) return _processor;
+
+  // Use Shiki's JavaScript regex engine (no WASM) for Worker compatibility.
+  // This import is safe in both Node and Workers.
+  const { createBundledHighlighter } = await import("shiki/core");
+  const { createJavaScriptRegexEngine } = await import("shiki/engine/javascript");
+  const { bundledLanguages } = await import("shiki/langs");
+  const { bundledThemes } = await import("shiki/themes");
+
+  const createHighlighter = createBundledHighlighter({
+    langs: bundledLanguages,
+    themes: bundledThemes,
+    engine: createJavaScriptRegexEngine,
+  });
+
+  const highlighter = await createHighlighter({
+    themes: ["github-dark"],
+    langs: ["javascript", "typescript", "html", "css", "json", "bash", "markdown", "python", "rust", "go"],
+  });
+
+  const highlightFn = (code: string, input: { lang?: string; theme?: string; meta?: string }) => {
+    return highlighter.codeToHtml(code, {
+      lang: input.lang || "text",
+      theme: input.theme || "github-dark",
+      meta: input.meta ? { __raw: input.meta } : undefined,
+    });
+  };
+
+  _processor = useNizel({
+    anchors: true,
+    autolinks: { enabled: true, target: "_blank", rel: "noopener" },
+    safe: true,
+    elements: {
+      img: {
+        class: "image",
       },
-      formats: {
-        html(node: NizelBlockNode, ctx: NizelRenderContext) {
-          const customNode = node as { value?: { rawOptions: string }; children?: NizelBlockNode[] };
-          const rawOptions = customNode.value?.rawOptions ?? "";
-          const options = parseArticleOptions(rawOptions);
-          const className = buildArticleClassName(options);
-          const style = buildArticleStyle(options);
-          const styleAttr = style ? ` style="${ctx.escape(style)}"` : "";
-          const header = renderArticleHeader(options, ctx.escape);
-          const contentHtml = ctx.render(customNode.children ?? []);
-          const body = contentHtml
-            ? `<div class="article-block__content">\n${contentHtml}\n</div>`
-            : "";
-          return `<article class="${ctx.escape(className)}"${styleAttr}>\n${header}${body}\n</article>\n`;
+    },
+    blocks: {
+      article: {
+        name: "article",
+        parse({ args }) {
+          return { rawOptions: args.join(" ") };
+        },
+        formats: {
+          html(node: NizelBlockNode, ctx: NizelRenderContext) {
+            const customNode = node as { value?: { rawOptions: string }; children?: NizelBlockNode[] };
+            const rawOptions = customNode.value?.rawOptions ?? "";
+            const options = parseArticleOptions(rawOptions);
+            const className = buildArticleClassName(options);
+            const style = buildArticleStyle(options);
+            const styleAttr = style ? ` style="${ctx.escape(style)}"` : "";
+            const header = renderArticleHeader(options, ctx.escape);
+            const contentHtml = ctx.render(customNode.children ?? []);
+            const body = contentHtml
+              ? `<div class="article-block__content">\n${contentHtml}\n</div>`
+              : "";
+            return `<article class="${ctx.escape(className)}"${styleAttr}>\n${header}${body}\n</article>\n`;
+          },
         },
       },
     },
-  },
-  plugins: [
-    alertPlugin(),
-    deflistPlugin(),
-    emojiPlugin(),
-    shikiPlugin(),
-  ],
-});
+    plugins: [
+      alertPlugin(),
+      deflistPlugin(),
+      emojiPlugin(),
+      shikiPlugin({ highlighter: highlightFn }),
+    ],
+  });
+
+  return _processor;
+}
 
 /**
  * Renders the article block header with type, subtitle, date, title, and description.
@@ -253,7 +287,8 @@ export const toHtml = async (
   }
 
   const replacedData = await replaceData(strippedData);
-  const result = await processor(replacedData);
+  const nizel = await getProcessor();
+  const result = await nizel(replacedData);
 
   return {
     document: result.html,
