@@ -7,6 +7,7 @@ describe("getSiteKey", () => {
     expect(getSiteKey("girk.dev")).toBe("docs");
     expect(getSiteKey("www.girk.dev")).toBe("docs");
     expect(getSiteKey("docs.girk.dev")).toBe("docs");
+    expect(getSiteKey("dev.girk.dev")).toBe("docs");
   });
 
   it("maps example subdomains to the matching site bundle", () => {

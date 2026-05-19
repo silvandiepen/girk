@@ -8,6 +8,7 @@
   "scripts": {
     "build": "node ../../scripts/build-sites-worker.mjs",
     "deploy": "wrangler deploy",
+    "deploy:dev": "wrangler deploy --env development",
     "dev": "wrangler dev",
     "test": "vitest run",
     "test:watch": "vitest",

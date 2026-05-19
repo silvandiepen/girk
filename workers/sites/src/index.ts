@@ -2,6 +2,16 @@ import { getAssetCandidates, getSiteKey } from "./host";
 import type { SiteKey } from "./host.model";
 import type { Env, WorkerHandler } from "./index.model";
 
+const withEnvironmentHeader = (response: Response, env: Env): Response => {
+  const headers = new Headers(response.headers);
+  headers.set("X-Girk-Environment", env.GIRK_ENVIRONMENT ?? "production");
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+};
+
 const fetchSiteAsset = async (
   request: Request,
   env: Env,
@@ -16,11 +26,11 @@ const fetchSiteAsset = async (
     const response = await env.ASSETS.fetch(assetUrl);
 
     if (response.status !== 404) {
-      return response;
+      return withEnvironmentHeader(response, env);
     }
   }
 
-  return new Response("Not Found", { status: 404 });
+  return withEnvironmentHeader(new Response("Not Found", { status: 404 }), env);
 };
 
 export default {
@@ -29,7 +39,7 @@ export default {
     const siteKey = getSiteKey(url.hostname, url.searchParams);
 
     if (!siteKey) {
-      return Response.redirect("https://girk.dev/", 302);
+      return withEnvironmentHeader(Response.redirect("https://girk.dev/", 302), env);
     }
 
     return fetchSiteAsset(request, env, siteKey);

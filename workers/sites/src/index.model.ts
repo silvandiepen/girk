@@ -4,6 +4,7 @@ export interface AssetBinding {
 
 export interface Env {
   ASSETS: AssetBinding;
+  GIRK_ENVIRONMENT?: string;
 }
 
 export interface WorkerHandler<TEnv> {

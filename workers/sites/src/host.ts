@@ -1,6 +1,6 @@
 import type { SiteKey } from "./host.model";
 
-const docsHosts = new Set(["girk.dev", "www.girk.dev", "docs.girk.dev"]);
+const docsHosts = new Set(["girk.dev", "www.girk.dev", "docs.girk.dev", "dev.girk.dev"]);
 const localHosts = new Set(["localhost", "127.0.0.1"]);
 const subdomainSites: Record<string, SiteKey> = {
   docs: "docs",

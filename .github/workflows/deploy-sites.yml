@@ -6,6 +6,9 @@ on:
       - Publish
     types:
       - completed
+  push:
+    branches:
+      - development
   workflow_dispatch:
 
 concurrency:
@@ -17,14 +20,41 @@ permissions:
 
 jobs:
   deploy:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'push' ||
+      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
 
     steps:
+      - name: Resolve deploy target
+        id: target
+        shell: bash
+        run: |
+          branch="${GITHUB_REF_NAME}"
+          if [ "${{ github.event_name }}" = "workflow_run" ]; then
+            branch="${{ github.event.workflow_run.head_branch }}"
+          fi
+
+          case "$branch" in
+            development)
+              echo "ref=development" >> "$GITHUB_OUTPUT"
+              echo "script=deploy:sites:dev" >> "$GITHUB_OUTPUT"
+              ;;
+            main)
+              echo "ref=main" >> "$GITHUB_OUTPUT"
+              echo "script=deploy:sites" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "Unsupported deploy branch: $branch" >&2
+              exit 1
+              ;;
+          esac
+
       - name: Checkout
         uses: actions/checkout@v5
         with:
-          ref: main
+          ref: ${{ steps.target.outputs.ref }}
 
       - name: Set up Node
         uses: actions/setup-node@v5
@@ -38,4 +68,5 @@ jobs:
       - name: Deploy Worker Sites
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: npm run deploy:sites
+          CLOUDFLARE_ACCOUNT_ID: 8cef251b5fdcf6c6f63db98b7aa49f9a
+        run: npm run ${{ steps.target.outputs.script }}

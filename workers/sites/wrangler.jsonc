@@ -9,6 +9,9 @@
     "binding": "ASSETS",
     "run_worker_first": true
   },
+  "vars": {
+    "GIRK_ENVIRONMENT": "production"
+  },
   "routes": [
     {
       "pattern": "girk.dev/*",
@@ -23,6 +26,20 @@
       "zone_name": "girk.dev"
     }
   ],
+  "env": {
+    "development": {
+      "name": "girk-sites-dev",
+      "vars": {
+        "GIRK_ENVIRONMENT": "development"
+      },
+      "routes": [
+        {
+          "pattern": "dev.girk.dev/*",
+          "zone_name": "girk.dev"
+        }
+      ]
+    }
+  },
   "observability": {
     "enabled": true
   }
