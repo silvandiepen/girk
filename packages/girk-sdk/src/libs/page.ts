@@ -219,5 +219,6 @@ export const buildPage = async (
     name: file.name,
     link: currentLink,
     title: file.title,
+    language: currentLanguage,
   };
 };

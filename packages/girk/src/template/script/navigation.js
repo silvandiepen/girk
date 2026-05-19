@@ -85,8 +85,18 @@ const setMobileNavigationOpen = (navigation, isOpen) => {
   const toggle = navigation.querySelector(".navigation__mobile-toggle");
   if (!(toggle instanceof HTMLButtonElement)) return;
 
+  const header = navigation.closest(".header");
+
   navigation.classList.toggle("navigation--mobile-open", isOpen);
+  header?.classList.toggle("header--navigation-open", isOpen);
+  document.documentElement.classList.toggle("navigation-open", isOpen);
   toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+
+  if (isOpen) return;
+
+  getNavigationItems(navigation).forEach((item) => {
+    setNavigationItemOpen(item, false);
+  });
 };
 
 const initHeaderNavigation = (navigation) => {
@@ -187,9 +197,15 @@ const initMobileNavigation = (navigation) => {
   });
 
   const media = window.matchMedia(DESKTOP_NAVIGATION_MEDIA);
-  media.addEventListener("change", (event) => {
+  const onMediaChange = (event) => {
     if (event.matches) setMobileNavigationOpen(navigation, false);
-  });
+  };
+
+  if (typeof media.addEventListener === "function") {
+    media.addEventListener("change", onMediaChange);
+  } else if (typeof media.addListener === "function") {
+    media.addListener(onMediaChange);
+  }
 };
 
 const initNavigation = () => {

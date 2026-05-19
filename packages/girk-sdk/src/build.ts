@@ -1,7 +1,6 @@
 // SDK Build Pipeline — pure in-memory build from GirkBuildInput to GirkBuildResult
 
 import { normalize } from "./normalize";
-import { processPartials } from "@/libs/partials";
 import { generateSocials } from "@/libs/socials";
 import { generateTags, createTagPages } from "@/libs/tags";
 import { generateArchives } from "@/libs/archives";
@@ -22,7 +21,7 @@ import {
   Page,
 } from "@/types";
 
-const VERSION = "0.0.0";
+import { VERSION } from "./version";
 
 /**
  * Remove /src/ from paths — same logic as CLI version
@@ -74,7 +73,6 @@ export const build = async (input: GirkBuildInput): Promise<GirkBuildResult> => 
 
   // 2. Run the pipeline
   payload = removeUrlParts(payload);
-  payload = await processPartials(payload);
   // No media processing in SDK — media comes from input as-is
   payload = await generateSocials(payload);
   payload = await generateTags(payload);
@@ -112,7 +110,7 @@ export const build = async (input: GirkBuildInput): Promise<GirkBuildResult> => 
     pages.push({
       title: page.title || page.name,
       path: page.link,
-      language: "", // Page type doesn't carry language, use empty
+      language: page.language || "",
     });
   }
 
@@ -158,7 +156,7 @@ export const build = async (input: GirkBuildInput): Promise<GirkBuildResult> => 
         outputFiles.push({
           path: mediaFile.path,
           content: mediaFile.data,
-          contentType: "application/octet-stream",
+          contentType: mediaFile.contentType || "application/octet-stream",
         });
       }
     }

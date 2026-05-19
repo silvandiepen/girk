@@ -56,17 +56,15 @@ export const buildHtml = async (
 ): Promise<string> => {
   const archives = filterArchive(file);
 
-  archives.map((archive) => {
+  archives.forEach((archive, index) => {
     if (archive.type === "blog") {
-      archive.children;
-      return {
+      archives[index] = {
         ...archive,
         children: archive.children.sort((a, b) =>
           b.created > a.created ? 1 : a.created > b.created ? -1 : 0
         ),
       };
     }
-    return archive;
   });
 
   const options = {

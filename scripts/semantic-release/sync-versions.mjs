@@ -5,7 +5,6 @@ export async function prepare(pluginConfig, context) {
 
   const packages = [
     "packages/girk-sdk/package.json",
-    "packages/girk-cli/package.json",
   ];
 
   const version = nextRelease.version;

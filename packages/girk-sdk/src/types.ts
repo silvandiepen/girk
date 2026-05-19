@@ -166,7 +166,7 @@ export interface File {
   archives?: Archive[];
   ext?: string;
   date?: Date;
-  data?: string;
+  data?: string | Buffer;
   html?: string;
   excerpt?: string;
   meta?: Meta;
@@ -175,6 +175,7 @@ export interface File {
   thumbnail?: string;
   thumbnailSvg?: string;
   icon?: ResolvedIcon;
+  contentType?: string;
 }
 export interface MenuItem {
   id: string;
@@ -254,6 +255,7 @@ export interface Page {
   link: string;
   name: string;
   title: string;
+  language?: Language;
 }
 
 export interface Dirent {

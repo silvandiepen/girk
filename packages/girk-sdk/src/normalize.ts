@@ -164,7 +164,7 @@ const processFiles = async (files: File[]): Promise<{ files: File[]; languages: 
 
   // Render markdown to HTML and extract metadata
   await asyncForEach(files, async (file: File, index: number) => {
-    const rendered = await toHtml(file.data || "", file.path);
+    const rendered = await toHtml(file.data?.toString() ?? "", file.path);
     files[index] = {
       ...file,
       html: rendered.document,
@@ -246,7 +246,8 @@ export const normalize = async (
       ext: parsed.ext,
       language: parsed.language,
       created: new Date(),
-      data: typeof asset.content === "string" ? asset.content : undefined,
+      data: asset.content,
+      contentType: asset.contentType,
     };
   });
 

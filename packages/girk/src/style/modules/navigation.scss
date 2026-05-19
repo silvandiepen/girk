@@ -1,3 +1,7 @@
+html.navigation-open {
+  overflow: hidden;
+}
+
 .navigation {
   font-size: var(--font-size);
 
@@ -394,7 +398,7 @@
       display: none;
       position: fixed;
       inset: 0;
-      z-index: 100;
+      z-index: 1000;
       overflow-y: auto;
       padding: var(--space-l) var(--space);
       background-color: var(--color-background);
@@ -407,7 +411,7 @@
       position: fixed;
       top: var(--space);
       right: var(--space);
-      z-index: 101;
+      z-index: 1001;
     }
 
     &.navigation--mobile-open .navigation__list {

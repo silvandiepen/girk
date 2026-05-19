@@ -1,8 +1,3 @@
-import { useNizel } from "nizel";
-import { alertPlugin } from "nizel-plugin-alert";
-import { deflistPlugin } from "nizel-plugin-deflist";
-import { emojiPlugin } from "nizel-plugin-emoji";
-import { shikiPlugin } from "nizel-plugin-shiki";
 import { readFile } from "node:fs/promises";
 import { resolve, dirname } from "path";
 
@@ -17,49 +12,72 @@ import { getGist } from "@/libs/download";
 import { asyncForEach } from "@/libs/utils";
 import type { NizelBlockNode, NizelRenderContext } from "nizel";
 
+type NizelProcessor = (input: string) => Promise<{ html: string }>;
+
+const importEsm = (process.env.VITEST
+  ? ((specifier: string) => import(/* @vite-ignore */ specifier))
+  : new Function("specifier", "return import(specifier)")) as <T>(specifier: string) => Promise<T>;
+
 /**
  * Nizel processor configured with all girk plugins.
  */
-const processor = useNizel({
-  anchors: true,
-  autolinks: { enabled: true, target: "_blank", rel: "noopener" },
-  safe: true,
-  elements: {
-    img: {
-      class: "image",
-    },
-  },
-  blocks: {
-    article: {
-      name: "article",
-      parse({ args }) {
-        return { rawOptions: args.join(" ") };
+let processor: NizelProcessor | null = null;
+
+const getProcessor = async (): Promise<NizelProcessor> => {
+  if (processor) return processor;
+
+  const [{ useNizel }, { alertPlugin }, { deflistPlugin }, { emojiPlugin }, { shikiPlugin }] =
+    await Promise.all([
+      importEsm<typeof import("nizel")>("nizel"),
+      importEsm<typeof import("nizel-plugin-alert")>("nizel-plugin-alert"),
+      importEsm<typeof import("nizel-plugin-deflist")>("nizel-plugin-deflist"),
+      importEsm<typeof import("nizel-plugin-emoji")>("nizel-plugin-emoji"),
+      importEsm<typeof import("nizel-plugin-shiki")>("nizel-plugin-shiki"),
+    ]);
+
+  processor = useNizel({
+    anchors: true,
+    autolinks: { enabled: true, target: "_blank", rel: "noopener" },
+    safe: true,
+    elements: {
+      img: {
+        class: "image",
       },
-      formats: {
-        html(node: NizelBlockNode, ctx: NizelRenderContext) {
-          const customNode = node as { value?: { rawOptions: string }; children?: NizelBlockNode[] };
-          const rawOptions = customNode.value?.rawOptions ?? "";
-          const options = parseArticleOptions(rawOptions);
-          const className = buildArticleClassName(options);
-          const style = buildArticleStyle(options);
-          const styleAttr = style ? ` style="${ctx.escape(style)}"` : "";
-          const header = renderArticleHeader(options, ctx.escape);
-          const contentHtml = ctx.render(customNode.children ?? []);
-          const body = contentHtml
-            ? `<div class="article-block__content">\n${contentHtml}\n</div>`
-            : "";
-          return `<article class="${ctx.escape(className)}"${styleAttr}>\n${header}${body}\n</article>\n`;
+    },
+    blocks: {
+      article: {
+        name: "article",
+        parse({ args }) {
+          return { rawOptions: args.join(" ") };
+        },
+        formats: {
+          html(node: NizelBlockNode, ctx: NizelRenderContext) {
+            const customNode = node as { value?: { rawOptions: string }; children?: NizelBlockNode[] };
+            const rawOptions = customNode.value?.rawOptions ?? "";
+            const options = parseArticleOptions(rawOptions);
+            const className = buildArticleClassName(options);
+            const style = buildArticleStyle(options);
+            const styleAttr = style ? ` style="${ctx.escape(style)}"` : "";
+            const header = renderArticleHeader(options, ctx.escape);
+            const contentHtml = ctx.render(customNode.children ?? []);
+            const body = contentHtml
+              ? `<div class="article-block__content">\n${contentHtml}\n</div>`
+              : "";
+            return `<article class="${ctx.escape(className)}"${styleAttr}>\n${header}${body}\n</article>\n`;
+          },
         },
       },
     },
-  },
-  plugins: [
-    alertPlugin(),
-    deflistPlugin(),
-    emojiPlugin(),
-    shikiPlugin(),
-  ],
-});
+    plugins: [
+      alertPlugin(),
+      deflistPlugin(),
+      emojiPlugin(),
+      shikiPlugin(),
+    ],
+  }) as NizelProcessor;
+
+  return processor;
+};
 
 /**
  * Renders the article block header with type, subtitle, date, title, and description.
@@ -297,6 +315,7 @@ export const toHtml = async (input: string, filePath?: string): Promise<Markdown
   }
 
   const replacedData = await replaceData(strippedData);
+  const processor = await getProcessor();
   const result = await processor(replacedData);
 
   return {
