@@ -161,6 +161,8 @@ const getNameFromPath = (relativePath: string): string => {
   return fileName.split(":")[0].toLowerCase();
 };
 
+const fileDataToString = (file: File): string => file.data?.toString() ?? "";
+
 const buildGeneratedPath = (file: File, slug: unknown): string => {
   const rawSlug = stringifyValue(slug).trim().replace(/^\/+|\/+$/g, "");
 
@@ -181,13 +183,14 @@ const buildGeneratedPath = (file: File, slug: unknown): string => {
 };
 
 const createGeneratedFile = async (file: File, item: unknown): Promise<File> => {
-  const rawMeta = await extractMeta(file.data || "");
+  const sourceData = fileDataToString(file);
+  const rawMeta = await extractMeta(sourceData);
   const definition = getDataDefinition(rawMeta);
   const generatedPath = buildGeneratedPath(file, getValueByPath(item, definition.slug));
   const relativePath = generatedPath;
 
   const renderedData = stripDataMeta(
-    interpolateDataTemplate(file.data || "", {
+    interpolateDataTemplate(sourceData, {
       result: item,
     })
   );
@@ -208,7 +211,8 @@ export const prepareDataFiles = async (files: File[]): Promise<File[]> => {
   const preparedFiles: File[] = [];
 
   for (const file of files) {
-    const rawMeta = await extractMeta(file.data || "");
+    const sourceData = fileDataToString(file);
+    const rawMeta = await extractMeta(sourceData);
     const definition = getDataDefinition(rawMeta);
 
     if (!definition.source) {
@@ -235,7 +239,7 @@ export const prepareDataFiles = async (files: File[]): Promise<File[]> => {
     preparedFiles.push({
       ...file,
       data: stripDataMeta(
-        interpolateDataTemplate(file.data || "", {
+        interpolateDataTemplate(sourceData, {
           result,
         })
       ),
