@@ -296,6 +296,10 @@ export const toHtml = async (input: string, filePath?: string): Promise<Markdown
     strippedData = await resolveImports(strippedData, filePath);
   }
 
+  // Rewrite .md links to girk's URL format so links between pages work on the
+  // generated site (e.g. `setup-new-project.md` -> `setup-new-project/`).
+  strippedData = rewriteImportedLinks(strippedData);
+
   const replacedData = await replaceData(strippedData);
   const result = await processor(replacedData);
 

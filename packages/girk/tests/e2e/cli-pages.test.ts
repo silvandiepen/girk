@@ -28,6 +28,16 @@ describe("CLI page generation", () => {
     expect(aboutHtml).toContain("About this site.");
   });
 
+  it("rewrites .md links to girk's URL format", async () => {
+    const result = await runFixtureBuild("basic");
+    cleanups.push(result.cleanup);
+
+    const homeHtml = await readOutput(result.outputDir, "index.html");
+
+    expect(homeHtml).toContain('href="about/"');
+    expect(homeHtml).not.toContain('href="about.md"');
+  });
+
   it("creates pages for the config fixture", async () => {
     const result = await runFixtureBuild("config");
     cleanups.push(result.cleanup);
