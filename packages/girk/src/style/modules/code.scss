@@ -5,27 +5,51 @@ pre code {
 .nizel-code-copy {
   position: relative;
   margin-block: var(--space) var(--space-l);
+  border: var(--border-width-s) solid
+    color-mix(in srgb, var(--color-foreground) 14%, transparent);
+  border-radius: var(--border-radius-m);
+  background: color-mix(in srgb, var(--color-background) 96%, var(--color-foreground) 4%);
+  overflow: hidden;
 
   pre {
     margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    padding-top: calc(var(--code-padding, var(--space)) + var(--space-l));
   }
 }
 
 .nizel-code-copy__button {
   position: absolute;
   z-index: 1;
-  top: var(--space-s);
-  right: var(--space-s);
+  top: var(--space-xs);
+  right: var(--space-xs);
   border: var(--border-width-s) solid
-    color-mix(in srgb, var(--color-foreground) 18%, transparent);
-  border-radius: var(--border-radius-s);
-  background: color-mix(in srgb, var(--color-background) 88%, transparent);
+    color-mix(in srgb, var(--color-foreground) 16%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-background) 94%, var(--color-foreground) 6%);
+  box-shadow: 0 0.45rem 1rem color-mix(in srgb, var(--color-foreground) 12%, transparent);
   color: var(--color-foreground);
-  padding: var(--space-xxs) var(--space-xs);
+  padding: 0.45em 0.75em;
   font: inherit;
   font-size: var(--font-size-xs);
-  line-height: 1;
+  font-weight: 650;
+  line-height: 1.1;
   cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease,
+    transform 160ms ease;
+}
+
+.nizel-code-copy__button:hover,
+.nizel-code-copy__button:focus-visible {
+  border-color: color-mix(in srgb, var(--color-secondary) 45%, transparent);
+  background: color-mix(in srgb, var(--color-background) 88%, var(--color-secondary) 12%);
+  color: var(--color-secondary);
+}
+
+.nizel-code-copy__button:active {
+  transform: translateY(1px);
 }
 
 .nizel-code-copy__button[data-copy-state="copied"] {
@@ -41,11 +65,11 @@ pre code {
 pre[class^="language"] {
   position: relative;
   border: var(--border-width-s) solid
-    color-mix(in srgb, var(--color-foreground) 12%, transparent);
+    color-mix(in srgb, var(--color-foreground) 14%, transparent);
   background: color-mix(in srgb, var(--color-background) 96%, var(--color-foreground) 4%);
   color: var(--color-foreground);
   padding: var(--code-padding, var(--space));
-  border-radius: var(--border-radius-s);
+  border-radius: var(--border-radius-m);
   overflow: scroll;
 
   &::before {
@@ -83,6 +107,12 @@ pre[class^="language"] {
       }
     }
   }
+}
+
+.nizel-code-copy pre[class^="language"]::before {
+  right: auto;
+  left: var(--space);
+  top: var(--space-s);
 }
 
 :not(pre) > code {

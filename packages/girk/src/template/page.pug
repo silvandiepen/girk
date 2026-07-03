@@ -29,6 +29,10 @@ html(lang=`${language}`)
           include script/wrapTables.js
       if has.urlToken
           include script/linkify.js
+      if has.math
+          include script/renderMath.js
+      if has.diagrams
+          include script/renderDiagrams.js
 
 
 

@@ -141,7 +141,7 @@ These render as `<mark>`, `<sub>`, and `<sup>`.
 
 ## Math
 
-Inline and display math are wrapped in renderer-friendly HTML:
+Inline and display math render from TeX source:
 
 ```markdown
 Inline math: $E = mc^2$
@@ -151,11 +151,11 @@ f(x) = x^2
 $$
 ```
 
-Girk preserves the TeX source inside `.math` elements. It does not bundle KaTeX or MathJax. Add your own renderer with `projectScript` or `projectScriptModule` when you want browser-rendered equations.
+Girk preserves the TeX source inside `.math` elements and conditionally loads KaTeX only on pages that contain math.
 
 ## Diagrams
 
-Mermaid fences are converted into Mermaid containers:
+Mermaid fences are converted into Mermaid diagrams:
 
 ````markdown
 ```mermaid
@@ -164,7 +164,7 @@ flowchart TD
 ```
 ````
 
-Girk outputs `.mermaid` elements. It does not bundle Mermaid. Add Mermaid from your project if you want diagrams rendered in the browser.
+Girk outputs `.mermaid` elements and conditionally loads Mermaid only on pages that contain diagrams.
 
 ## Media Figures
 
@@ -198,7 +198,7 @@ This is a hardening layer, not a replacement for platform-level restrictions whe
 ## Compatibility Notes
 
 - `nizel-plugin-gfm` is not listed separately because Girk enables its concrete plugins directly: alerts and autolinks.
-- Math and diagrams output renderer-friendly wrappers, but they do not load KaTeX, MathJax, or Mermaid.
+- Math pages load KaTeX from the pinned Girk runtime, and diagram pages load Mermaid from the pinned Girk runtime. Pages without those features do not load those assets.
 - Keep `::frontmatter` blocks separate from footnote definitions. They are both block-level extensions and are most predictable when they are not adjacent in the same block sequence.
 
 ## Related

@@ -40,17 +40,36 @@ export const isActiveMenuParent = (link: string, current: string): boolean => {
   );
 };
 
-const hasTable = (file: File) => file.html && file.html.includes("<table>");
+const getArchiveHtml = (file: File): string =>
+  (file.archives || [])
+    .flatMap((archive) => archive.children || [])
+    .map((child) => child.html || child.excerpt || "")
+    .join("\n");
 
-const hasUrlToken = (file: File) =>
-  file.html && file.html.includes('<span class="token url">http');
+const getPageFeatureHtml = (file: File, relatedPages: File[]): string =>
+  [
+    file.html || "",
+    getArchiveHtml(file),
+    ...relatedPages.map((page) => page.excerpt || ""),
+  ].join("\n");
+
+const hasTable = (html: string) => html.includes("<table>");
+
+const hasUrlToken = (html: string) =>
+  html.includes('<span class="token url">http');
 
 const hasHeader = (menu: MenuItem[]) => menu.length > 0;
 
-const hasColors = (file: File) =>
-  file.html && !!file.html.match(/#[a-fA-F0-9]{6}|#[a-fA-F0-9]{3}/i);
+const hasColors = (html: string) =>
+  !!html.match(/#[a-fA-F0-9]{6}|#[a-fA-F0-9]{3}/i);
 
 const hasLanguages = (languages: Language[]) => !!(languages.length > 1);
+
+const hasMath = (html: string) =>
+  /\bclass="[^"]*\bmath(?:-inline|-display)?\b/.test(html);
+
+const hasDiagrams = (html: string) =>
+  /\bclass="[^"]*\bmermaid\b/.test(html);
 
 const getParentPage = (file: File, files: File[]): File | undefined =>
   files.find(
@@ -149,6 +168,7 @@ export const buildPage = async (
   const project = getProjectByLanguage(payload.project, currentLanguage);
   const parentPage = getParentPage(file, payload.files);
   const relatedPages = getRelatedPages(file, payload.files);
+  const pageFeatureHtml = getPageFeatureHtml(file, relatedPages);
   const favicons = payload.favicons;
   const tags = payload.tags
     ? payload.tags.filter((tag) => tag.parent == file.parent)
@@ -183,11 +203,13 @@ export const buildPage = async (
     searchContext: getSearchContext(file, payload),
     config: payload.settings.config,
     has: {
-      table: hasTable(file),
+      table: hasTable(pageFeatureHtml),
       header: hasHeader(menu),
-      urlToken: hasUrlToken(file),
-      colors: hasColors(file),
+      urlToken: hasUrlToken(pageFeatureHtml),
+      colors: hasColors(pageFeatureHtml),
       languages: hasLanguages(payload.languages),
+      math: hasMath(pageFeatureHtml),
+      diagrams: hasDiagrams(pageFeatureHtml),
       search: hasSearchEnabled(file, payload),
     },
   };

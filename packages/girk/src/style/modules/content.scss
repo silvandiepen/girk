@@ -148,6 +148,35 @@
     text-decoration: none;
   }
 
+  .heading-anchor {
+    display: inline-flex;
+    width: 0.9em;
+    height: 0.9em;
+    margin-left: 0.22em;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    color: color-mix(in srgb, currentColor 42%, transparent);
+    font-size: 0.62em;
+    font-weight: 700;
+    line-height: 1;
+    opacity: 0;
+    text-decoration: none;
+    transform: translateY(-0.06em);
+    transition: opacity 160ms ease, color 160ms ease, background-color 160ms ease;
+  }
+
+  :where(h1, h2, h3, h4, h5, h6):hover .heading-anchor,
+  .heading-anchor:focus-visible {
+    opacity: 1;
+  }
+
+  .heading-anchor:hover,
+  .heading-anchor:focus-visible {
+    background-color: color-mix(in srgb, currentColor 10%, transparent);
+    color: currentColor;
+  }
+
   p:first-of-type:has(+ p) {
     font-size: var(--font-size-lead);
     line-height: 1.4;
@@ -364,6 +393,36 @@
   figcaption {
     font-size: var(--font-size-s);
     opacity: 0.72;
+  }
+
+  .math-inline {
+    font-family: KaTeX_Main, "Times New Roman", serif;
+  }
+
+  .math-display {
+    display: block;
+    max-width: 100%;
+    margin-block: var(--space);
+    overflow-x: auto;
+    text-align: center;
+    font-family: KaTeX_Main, "Times New Roman", serif;
+  }
+
+  .mermaid {
+    max-width: 100%;
+    margin-block: var(--space);
+    overflow-x: auto;
+    padding: var(--space);
+    border: var(--border-width-s) solid
+      color-mix(in srgb, currentColor 12%, transparent);
+    border-radius: var(--border-radius-m);
+    background-color: color-mix(in srgb, currentColor 3%, transparent);
+    text-align: center;
+  }
+
+  .mermaid svg {
+    max-width: 100%;
+    height: auto;
   }
 
   progress,

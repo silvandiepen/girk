@@ -491,6 +491,12 @@ export const templates: Record<string, string> = {
         <% if (has.urlToken) { %>
             <%- scripts.linkify %>
         <% } %>
+        <% if (has.math) { %>
+            <%- scripts.renderMath %>
+        <% } %>
+        <% if (has.diagrams) { %>
+            <%- scripts.renderDiagrams %>
+        <% } %>
     </script>
 </body>
 </html>
@@ -551,6 +557,35 @@ export const templates: Record<string, string> = {
 };
 
 export const scripts: Record<string, string> = {
+  "codeCopy": `const initCodeCopy = () => {
+  document.querySelectorAll("[data-nizel-code-copy]").forEach((container) => {
+    const button = container.querySelector("[data-nizel-copy-button]");
+    const source = container.getAttribute("data-nizel-copy-source");
+
+    if (!button || !source) return;
+
+    const originalLabel = button.textContent || "Copy";
+
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(source);
+        button.textContent = "Copied";
+        button.dataset.copyState = "copied";
+
+        window.setTimeout(() => {
+          button.textContent = originalLabel;
+          delete button.dataset.copyState;
+        }, 1800);
+      } catch {
+        button.textContent = "Failed";
+        button.dataset.copyState = "error";
+      }
+    });
+  });
+};
+
+initCodeCopy();
+`,
   "colorMode": `const isDarkMode = window.matchMedia("prefers-color-scheme: dark").matches;
 let localMode = isDarkMode ? "dark" : "light";
 
@@ -595,35 +630,6 @@ const bindColorModeToggle = () => {
 
 initColorMode();
 bindColorModeToggle();
-`,
-  "codeCopy": `const initCodeCopy = () => {
-  document.querySelectorAll("[data-nizel-code-copy]").forEach((container) => {
-    const button = container.querySelector("[data-nizel-copy-button]");
-    const source = container.getAttribute("data-nizel-copy-source");
-
-    if (!button || !source) return;
-
-    const originalLabel = button.textContent || "Copy";
-
-    button.addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText(source);
-        button.textContent = "Copied";
-        button.dataset.copyState = "copied";
-
-        window.setTimeout(() => {
-          button.textContent = originalLabel;
-          delete button.dataset.copyState;
-        }, 1800);
-      } catch {
-        button.textContent = "Failed";
-        button.dataset.copyState = "error";
-      }
-    });
-  });
-};
-
-initCodeCopy();
 `,
   "detectLanguage": `const languageElements = document.querySelectorAll(".language__item");
 const languages = [];
@@ -972,6 +978,57 @@ const initNavigation = () => {
 };
 
 initNavigation();
+`,
+  "renderDiagrams": `const initDiagrams = async () => {
+  const nodes = document.querySelectorAll(".mermaid");
+  if (!nodes.length) return;
+
+  try {
+    const mermaid = await import("https://cdn.jsdelivr.net/npm/mermaid@11.16.0/dist/mermaid.esm.min.mjs");
+    mermaid.default.initialize({
+      startOnLoad: false,
+      securityLevel: "strict",
+      theme: document.documentElement.getAttribute("color-mode") === "dark" ? "dark" : "default",
+    });
+    await mermaid.default.run({ nodes });
+  } catch (error) {
+    console.warn("[girk] Failed to render diagrams", error);
+  }
+};
+
+initDiagrams();
+`,
+  "renderMath": `const initMath = async () => {
+  const nodes = document.querySelectorAll(".math-inline, .math-display");
+  if (!nodes.length) return;
+
+  const ensureKatexStyles = () => {
+    if (document.querySelector('link[data-girk-katex="true"]')) return;
+
+    const link = document.createElement("link");
+    link.dataset.girkKatex = "true";
+    link.rel = "stylesheet";
+    link.href = "https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/katex.min.css";
+    document.head.appendChild(link);
+  };
+
+  try {
+    ensureKatexStyles();
+    const katex = await import("https://cdn.jsdelivr.net/npm/katex@0.17.0/dist/katex.mjs");
+
+    nodes.forEach((node) => {
+      katex.render(node.textContent || "", node, {
+        displayMode: node.classList.contains("math-display"),
+        throwOnError: false,
+        trust: false,
+      });
+    });
+  } catch (error) {
+    console.warn("[girk] Failed to render math", error);
+  }
+};
+
+initMath();
 `,
   "search": `(function () {
   var manifestPromise;

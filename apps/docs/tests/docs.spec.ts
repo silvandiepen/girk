@@ -430,8 +430,12 @@ test.describe("generated docs", () => {
     await expect(semantics.locator(".math-inline")).toContainText("E = mc^2");
     await expect(semantics.locator(".math-display")).toContainText("f(x) = x^2");
     await expect(semantics.locator(".media-figure")).toBeVisible();
-    await expect(semantics.locator(".mermaid")).toContainText("Markdown --> Girk");
+    await expect(semantics.locator(".mermaid")).toBeVisible();
     await expect(semantics.locator(".frontmatter")).toContainText("Kitchen Sink Metadata");
+
+    const html = await page.content();
+    expect(html).toContain("katex@0.17.0");
+    expect(html).toContain("mermaid@11.16.0");
   });
 
   test("semantic article blocks render with default styling", async ({ page }) => {

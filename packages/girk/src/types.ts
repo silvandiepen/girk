@@ -221,6 +221,8 @@ export interface buildHtmlArgs {
     urlToken: boolean;
     colors: boolean;
     languages: boolean;
+    math: boolean;
+    diagrams: boolean;
     search: boolean;
   };
 }

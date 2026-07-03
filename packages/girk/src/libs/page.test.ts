@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { buildPage, isActiveMenuParent } from "@/libs/page";
-import { File, Payload } from "@/types";
+import { ArchiveType, File, Payload } from "@/types";
 
 describe("Page navigation state", () => {
   it("does not treat the homepage as the parent of every route", () => {
@@ -55,6 +55,165 @@ describe("Page navigation state", () => {
     const page = await buildPage(payload, file);
 
     expect(page.html.data).toContain('<meta name="generator" content="Girk 9.9.9-test">');
+  });
+
+  it("loads math and diagram renderers only when those wrappers are present", async () => {
+    const file: File = {
+      id: "page-home",
+      name: "index",
+      fileName: "README",
+      path: "/tmp/project/README.md",
+      created: new Date("2026-03-25T00:00:00.000Z"),
+      language: "en",
+      home: true,
+      title: "Example",
+      html: '<p><span class="math math-inline">a+b</span></p><div class="mermaid">flowchart TD; A-->B;</div>',
+      meta: {},
+    };
+
+    const payload: Payload = {
+      files: [file],
+      media: [],
+      socials: [],
+      languages: ["en"],
+      settings: {
+        output: "/tmp/project/public",
+        languages: ["en"],
+        args: {},
+        config: {},
+      },
+      output: "/tmp/project/public",
+      args: {},
+      config: {},
+      project: {
+        title: "Example Project",
+      },
+      style: {
+        path: "/style/app.css",
+      },
+      generator: {
+        name: "Girk",
+        version: "9.9.9-test",
+      },
+    };
+
+    const page = await buildPage(payload, file);
+
+    expect(page.html.data).toContain("katex@0.17.0");
+    expect(page.html.data).toContain("mermaid@11.16.0");
+  });
+
+  it("does not load math or diagram renderers on normal pages", async () => {
+    const file: File = {
+      id: "page-home",
+      name: "index",
+      fileName: "README",
+      path: "/tmp/project/README.md",
+      created: new Date("2026-03-25T00:00:00.000Z"),
+      language: "en",
+      home: true,
+      title: "Example",
+      html: "<p>Hello world</p>",
+      meta: {},
+    };
+
+    const payload: Payload = {
+      files: [file],
+      media: [],
+      socials: [],
+      languages: ["en"],
+      settings: {
+        output: "/tmp/project/public",
+        languages: ["en"],
+        args: {},
+        config: {},
+      },
+      output: "/tmp/project/public",
+      args: {},
+      config: {},
+      project: {
+        title: "Example Project",
+      },
+      style: {
+        path: "/style/app.css",
+      },
+      generator: {
+        name: "Girk",
+        version: "9.9.9-test",
+      },
+    };
+
+    const page = await buildPage(payload, file);
+
+    expect(page.html.data).not.toContain("katex@0.17.0");
+    expect(page.html.data).not.toContain("mermaid@11.16.0");
+  });
+
+  it("detects math and diagram renderers in section archive children", async () => {
+    const child: File = {
+      id: "page-child",
+      name: "child",
+      fileName: "child",
+      path: "/tmp/project/child.md",
+      created: new Date("2026-03-25T00:00:00.000Z"),
+      language: "en",
+      parent: "index",
+      title: "Child",
+      html: '<span class="math math-display">x^2</span><div class="mermaid">flowchart TD; A-->B;</div>',
+      meta: {},
+    };
+    const file: File = {
+      id: "page-home",
+      name: "index",
+      fileName: "README",
+      path: "/tmp/project/README.md",
+      created: new Date("2026-03-25T00:00:00.000Z"),
+      language: "en",
+      home: true,
+      title: "Example",
+      html: "<p>Hello world</p>",
+      archives: [
+        {
+          name: "index",
+          type: ArchiveType.SECTIONS,
+          children: [child],
+        },
+      ],
+      meta: {
+        archive: ArchiveType.SECTIONS,
+      },
+    };
+
+    const payload: Payload = {
+      files: [file, child],
+      media: [],
+      socials: [],
+      languages: ["en"],
+      settings: {
+        output: "/tmp/project/public",
+        languages: ["en"],
+        args: {},
+        config: {},
+      },
+      output: "/tmp/project/public",
+      args: {},
+      config: {},
+      project: {
+        title: "Example Project",
+      },
+      style: {
+        path: "/style/app.css",
+      },
+      generator: {
+        name: "Girk",
+        version: "9.9.9-test",
+      },
+    };
+
+    const page = await buildPage(payload, file);
+
+    expect(page.html.data).toContain("katex@0.17.0");
+    expect(page.html.data).toContain("mermaid@11.16.0");
   });
 
   it("includes the built-in search client when project search is enabled", async () => {

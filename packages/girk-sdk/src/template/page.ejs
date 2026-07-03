@@ -30,6 +30,12 @@
         <% if (has.urlToken) { %>
             <%- scripts.linkify %>
         <% } %>
+        <% if (has.math) { %>
+            <%- scripts.renderMath %>
+        <% } %>
+        <% if (has.diagrams) { %>
+            <%- scripts.renderDiagrams %>
+        <% } %>
     </script>
 </body>
 </html>
