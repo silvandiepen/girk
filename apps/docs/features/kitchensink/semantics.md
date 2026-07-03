@@ -76,15 +76,15 @@ Semantic article markup should also inherit the default content styling.
 You can also generate the same element directly from Markdown:
 
 ```markdown
-:::article type="info" title="Note" subtitle="Authoring pattern" date="2026-03-27" description="Use article containers when a block needs a semantic wrapper and shared color styling."
+::article type="info" title="Note" subtitle="Authoring pattern" date="2026-03-27" description="Use article containers when a block needs a semantic wrapper and shared color styling."
 This article assumes basic Markdown knowledge.
 
 Add `color="warning"` when you want a direct palette token, or `class="editorial-note"` when you need an extra project hook.
-:::
+::
 ```
 
-:::article type="info" title="Note" subtitle="Authoring pattern" date="2026-03-27" description="Use article containers when a block needs a semantic wrapper and shared color styling."
+::article type="info" title="Note" subtitle="Authoring pattern" date="2026-03-27" description="Use article containers when a block needs a semantic wrapper and shared color styling."
 This article assumes basic Markdown knowledge.
 
 Add `color="warning"` when you want a direct palette token, or `class="editorial-note"` when you need an extra project hook.
-:::
+::

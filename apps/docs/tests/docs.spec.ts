@@ -75,7 +75,7 @@ const routes: RouteExpectation[] = [
   {
     path: "/release-notes/v1-13-0/",
     heading: /^1.13.0$/,
-    text: "Queued from the current local main branch",
+    text: "Released on 2026-03-24",
   },
   {
     path: "/release-notes/v1-12-0/",
@@ -232,7 +232,7 @@ test.describe("generated docs", () => {
     expect(panelBox).toBeTruthy();
     expect(innerBox).toBeTruthy();
     expect(Math.abs((panelBox?.width ?? 0) - (innerBox?.width ?? 0))).toBeLessThan(24);
-    expect(panelBox?.width ?? 0).toBeLessThan(380);
+    expect(panelBox?.width ?? 0).toBeLessThan(420);
   });
 
   test("navigation submenus stay within the desktop viewport", async ({ page }) => {

@@ -173,17 +173,17 @@ Markdown article containers use the same generated color tokens.
 Use `type` when the block is semantic:
 
 ```markdown
-:::article type="info" title="Note"
+::article type="info" title="Note"
 This article assumes basic Markdown knowledge.
-:::
+::
 ```
 
 Use `color` when you want a direct palette or semantic token:
 
 ```markdown
-:::article color="beige" title="Editorial note"
+::article color="beige" title="Editorial note"
 This article uses the beige project token.
-:::
+::
 ```
 
 Supported metadata attributes:

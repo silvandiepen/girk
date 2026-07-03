@@ -1,8 +1,3 @@
-import { useNizel } from "nizel";
-import { alertPlugin } from "nizel-plugin-alert";
-import { deflistPlugin } from "nizel-plugin-deflist";
-import { emojiPlugin } from "nizel-plugin-emoji";
-import { shikiPlugin } from "nizel-plugin-shiki";
 import { readFile } from "node:fs/promises";
 import { resolve, dirname } from "path";
 
@@ -18,48 +13,102 @@ import { asyncForEach } from "@/libs/utils";
 import type { NizelBlockNode, NizelRenderContext } from "nizel";
 
 /**
- * Nizel processor configured with all girk plugins.
+ * Lazily-initialized Nizel processor configured with all girk plugins.
+ *
+ * Nizel and its plugins are ESM-only packages. Girky still publishes a
+ * CommonJS build, so runtime imports must stay dynamic.
  */
-const processor = useNizel({
-  anchors: true,
-  autolinks: { enabled: true, target: "_blank", rel: "noopener" },
-  safe: true,
-  elements: {
-    img: {
-      class: "image",
-    },
-  },
-  blocks: {
-    article: {
-      name: "article",
-      parse({ args }) {
-        return { rawOptions: args.join(" ") };
+type NizelProcessor = (input: string) => Promise<{ html: string }>;
+
+let _processor: NizelProcessor | null = null;
+
+const importEsm = (
+  process.env.VITEST
+    ? <T>(specifier: string) => import(specifier) as Promise<T>
+    : (new Function("specifier", "return import(specifier)") as <T>(
+        specifier: string
+      ) => Promise<T>)
+);
+
+const getProcessor = async (): Promise<NizelProcessor> => {
+  if (_processor) return _processor;
+
+  const { useNizel } = await importEsm<typeof import("nizel")>("nizel");
+  const { abbrPlugin } = await importEsm<typeof import("nizel-plugin-abbr")>("nizel-plugin-abbr");
+  const { alertPlugin } = await importEsm<typeof import("nizel-plugin-alert")>("nizel-plugin-alert");
+  const { autolinkPlugin } = await importEsm<typeof import("nizel-plugin-autolink")>("nizel-plugin-autolink");
+  const { citationsPlugin } = await importEsm<typeof import("nizel-plugin-citations")>("nizel-plugin-citations");
+  const { codeCopyPlugin } = await importEsm<typeof import("nizel-plugin-code-copy")>("nizel-plugin-code-copy");
+  const { deflistPlugin } = await importEsm<typeof import("nizel-plugin-deflist")>("nizel-plugin-deflist");
+  const { detailsPlugin } = await importEsm<typeof import("nizel-plugin-details")>("nizel-plugin-details");
+  const { diagramsPlugin } = await importEsm<typeof import("nizel-plugin-diagrams")>("nizel-plugin-diagrams");
+  const { emojiPlugin } = await importEsm<typeof import("nizel-plugin-emoji")>("nizel-plugin-emoji");
+  const { footnotesPlugin } = await importEsm<typeof import("nizel-plugin-footnotes")>("nizel-plugin-footnotes");
+  const { frontmatterUiPlugin } = await importEsm<typeof import("nizel-plugin-frontmatter-ui")>("nizel-plugin-frontmatter-ui");
+  const { headingAnchorsPlugin } = await importEsm<typeof import("nizel-plugin-heading-anchors")>("nizel-plugin-heading-anchors");
+  const { mathPlugin } = await importEsm<typeof import("nizel-plugin-math")>("nizel-plugin-math");
+  const { mediaPlugin } = await importEsm<typeof import("nizel-plugin-media")>("nizel-plugin-media");
+  const { sanitizePlugin } = await importEsm<typeof import("nizel-plugin-sanitize")>("nizel-plugin-sanitize");
+  const { shikiPlugin } = await importEsm<typeof import("nizel-plugin-shiki")>("nizel-plugin-shiki");
+  const { tocPlugin } = await importEsm<typeof import("nizel-plugin-toc")>("nizel-plugin-toc");
+  const { typographyPlugin } = await importEsm<typeof import("nizel-plugin-typography")>("nizel-plugin-typography");
+
+  _processor = useNizel({
+    anchors: true,
+    safe: false,
+    elements: {
+      img: {
+        class: "image",
       },
-      formats: {
-        html(node: NizelBlockNode, ctx: NizelRenderContext) {
-          const customNode = node as { value?: { rawOptions: string }; children?: NizelBlockNode[] };
-          const rawOptions = customNode.value?.rawOptions ?? "";
-          const options = parseArticleOptions(rawOptions);
-          const className = buildArticleClassName(options);
-          const style = buildArticleStyle(options);
-          const styleAttr = style ? ` style="${ctx.escape(style)}"` : "";
-          const header = renderArticleHeader(options, ctx.escape);
-          const contentHtml = ctx.render(customNode.children ?? []);
-          const body = contentHtml
-            ? `<div class="article-block__content">\n${contentHtml}\n</div>`
-            : "";
-          return `<article class="${ctx.escape(className)}"${styleAttr}>\n${header}${body}\n</article>\n`;
+    },
+    blocks: {
+      article: {
+        name: "article",
+        parse({ args }) {
+          return { rawOptions: args.join(" ") };
+        },
+        formats: {
+          html(node: NizelBlockNode, ctx: NizelRenderContext) {
+            const customNode = node as { value?: { rawOptions: string }; children?: NizelBlockNode[] };
+            const rawOptions = customNode.value?.rawOptions ?? "";
+            const options = parseArticleOptions(rawOptions);
+            const className = buildArticleClassName(options);
+            const style = buildArticleStyle(options);
+            const styleAttr = style ? ` style="${ctx.escape(style)}"` : "";
+            const header = renderArticleHeader(options, ctx.escape);
+            const contentHtml = ctx.render(customNode.children ?? []);
+            const body = contentHtml
+              ? `<div class="article-block__content">\n${contentHtml}\n</div>`
+              : "";
+            return `<article class="${ctx.escape(className)}"${styleAttr}>\n${header}${body}\n</article>\n`;
+          },
         },
       },
     },
-  },
-  plugins: [
-    alertPlugin(),
-    deflistPlugin(),
-    emojiPlugin(),
-    shikiPlugin(),
-  ],
-});
+    plugins: [
+      abbrPlugin(),
+      alertPlugin(),
+      autolinkPlugin({ target: "_blank", rel: "noopener" }),
+      citationsPlugin(),
+      deflistPlugin(),
+      detailsPlugin(),
+      diagramsPlugin(),
+      emojiPlugin(),
+      frontmatterUiPlugin(),
+      footnotesPlugin(),
+      headingAnchorsPlugin(),
+      mathPlugin(),
+      mediaPlugin(),
+      shikiPlugin(),
+      codeCopyPlugin(),
+      tocPlugin(),
+      typographyPlugin(),
+      sanitizePlugin({ allowRawHtml: true }),
+    ],
+  });
+
+  return _processor;
+};
 
 /**
  * Renders the article block header with type, subtitle, date, title, and description.
@@ -257,6 +306,44 @@ export const replaceData = async (input: string): Promise<string> => {
   return input;
 };
 
+const escapeHtml = (input: string): string =>
+  input
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+
+export const renderTaskLists = (input: string): string => {
+  const lines = input.split("\n");
+  const output: string[] = [];
+  let taskItems: string[] = [];
+
+  const flushTaskList = () => {
+    if (!taskItems.length) return;
+    output.push(`<ul class="task-list">\n${taskItems.join("\n")}\n</ul>`);
+    taskItems = [];
+  };
+
+  for (const line of lines) {
+    const match = line.match(/^\s*[-*+]\s+\[([ xX])\]\s+(.*)$/);
+
+    if (!match) {
+      flushTaskList();
+      output.push(line);
+      continue;
+    }
+
+    const checked = match[1].toLowerCase() === "x";
+    const checkedAttr = checked ? " checked" : "";
+    taskItems.push(
+      `<li class="task-list__item"><input class="task-list__input" type="checkbox" disabled${checkedAttr}><span class="task-list__label">${escapeHtml(match[2])}</span></li>`
+    );
+  }
+
+  flushTaskList();
+  return output.join("\n");
+};
+
 /**
  * Convert a markdown string to HTML with full import and data resolution.
  *
@@ -300,7 +387,8 @@ export const toHtml = async (input: string, filePath?: string): Promise<Markdown
   // generated site (e.g. `setup-new-project.md` -> `setup-new-project/`).
   strippedData = rewriteImportedLinks(strippedData);
 
-  const replacedData = await replaceData(strippedData);
+  const replacedData = renderTaskLists(await replaceData(strippedData));
+  const processor = await getProcessor();
   const result = await processor(replacedData);
 
   return {

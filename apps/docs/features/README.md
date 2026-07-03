@@ -14,6 +14,7 @@ Girk is useful because it gives you practical site-building features without for
 
 - archive pages for grouped content
 - copied media and assets
+- expanded Markdown syntax powered by Nizel
 - styling hooks and theme variables
 - a kitchensink reference page for the generated defaults
 - multilingual content
@@ -23,6 +24,7 @@ Girk is useful because it gives you practical site-building features without for
 ## Explore The Features
 
 - [Archives](/features/archives/index.html)
+- [Markdown](/features/markdown/index.html)
 - [Media and Assets](/features/media/index.html)
 - [Icons](/features/icons/index.html)
 - [Customisation](/features/customisation/index.html)

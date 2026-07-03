@@ -5,8 +5,14 @@ import { getStringFromTag, removeTag } from "@/libs/utils";
 
 export const removeTitle = (input: string): string => removeTag(input, "h1");
 
+const stripGeneratedHeadingAnchors = (input: string): string =>
+  input.replace(/<a\b[^>]*class="[^"]*\bheading-anchor\b[^"]*"[^>]*>.*?<\/a>/gi, "");
+
+const stripHtml = (input: string): string =>
+  input.replace(/<[^>]+>/g, "").trim();
+
 export const getTitle = (input: string): string =>
-  getStringFromTag(input, "h1");
+  stripHtml(stripGeneratedHeadingAnchors(getStringFromTag(input, "h1")));
 
 export const fileTitle = (file: File): string =>
   getTitle(file.html) || file.name;

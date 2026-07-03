@@ -2,6 +2,42 @@ pre code {
   font-size: var(--font-size-s);
 }
 
+.nizel-code-copy {
+  position: relative;
+  margin-block: var(--space) var(--space-l);
+
+  pre {
+    margin: 0;
+  }
+}
+
+.nizel-code-copy__button {
+  position: absolute;
+  z-index: 1;
+  top: var(--space-s);
+  right: var(--space-s);
+  border: var(--border-width-s) solid
+    color-mix(in srgb, var(--color-foreground) 18%, transparent);
+  border-radius: var(--border-radius-s);
+  background: color-mix(in srgb, var(--color-background) 88%, transparent);
+  color: var(--color-foreground);
+  padding: var(--space-xxs) var(--space-xs);
+  font: inherit;
+  font-size: var(--font-size-xs);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.nizel-code-copy__button[data-copy-state="copied"] {
+  border-color: color-mix(in srgb, var(--color-success) 45%, transparent);
+  color: var(--color-success);
+}
+
+.nizel-code-copy__button[data-copy-state="error"] {
+  border-color: color-mix(in srgb, var(--color-error) 45%, transparent);
+  color: var(--color-error);
+}
+
 pre[class^="language"] {
   position: relative;
   border: var(--border-width-s) solid
