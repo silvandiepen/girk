@@ -1,3 +1,18 @@
+# [1.29.0](https://github.com/silvandiepen/girk/compare/v1.28.0...v1.29.0) (2026-07-03)
+
+
+### Bug Fixes
+
+* **girky:** rewrite .md links in page content to Girk URL format ([92d50d9](https://github.com/silvandiepen/girk/commit/92d50d95ec665df9875fe9ffe653b9f962a50480))
+* self-contained EJS renderer for girky CLI ([8a14e2d](https://github.com/silvandiepen/girk/commit/8a14e2d0dc931834987ac3423b1f43f7b1d358bd))
+
+
+### Features
+
+* **girk-sdk:** use Shiki JS regex engine for Worker-compatible syntax highlighting ([af5a72b](https://github.com/silvandiepen/girk/commit/af5a72b6a499372cf80f4cc2e83f7a6d8a2802b0))
+* **girky:** replace markdown-it/pug with Nizel, remove 12 old deps ([3afb08f](https://github.com/silvandiepen/girk/commit/3afb08fc8fb6a6d6e7551737719916a0888751ee))
+* support latest Nizel plugins ([74596fd](https://github.com/silvandiepen/girk/commit/74596fd706f71b2802f269e9da0e664f36366e22))
+
 # [1.28.0](https://github.com/silvandiepen/girk/compare/v1.27.3...v1.28.0) (2026-05-04)
 
 
