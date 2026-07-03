@@ -53,6 +53,7 @@ test("renderReleaseNotesIndex lists versions from newest to oldest", () => {
 
   assert.match(index, /\[1\.17\.1\].*\n- \[1\.17\.0\].*\n- \[1\.16\.0\]/s);
   assert.match(index, /generated during the publish workflow/i);
+  assert.match(index, /searchExclude: true/);
 });
 
 test("writeReleaseNotes writes the version page and refreshes the index", () => {
