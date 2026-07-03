@@ -2,6 +2,10 @@
 @use "modules/reset";
 @use "modules/typography";
 @use "nizel-style/dist/nizel-style";
+@use "nizel-plugin-badge/style" as badge-style;
+@use "nizel-plugin-kbd/style" as kbd-style;
+@use "nizel-plugin-open-icon/style" as open-icon-style;
+@use "nizel-plugin-print/style" as print-style;
 @use "modules/code";
 @use "modules/layout";
 @use "modules/color";

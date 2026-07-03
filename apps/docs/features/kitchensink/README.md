@@ -10,6 +10,8 @@ archive: sections
 
 This page shows how Girk renders Markdown, Nizel plugin output, semantic HTML, and native HTML controls before you add any project-specific components or CSS.
 
+[[toc]]
+
 ## Why You Want It
 
 Use this page when you need a quick visual check for the generated defaults:
@@ -18,8 +20,9 @@ Use this page when you need a quick visual check for the generated defaults:
 - lists, quotes, and tables
 - inline code and fenced code blocks
 - task lists, alerts, details blocks, and definition lists
-- abbreviations, citations, footnotes, emoji, and typography helpers
-- math, diagrams, media figures, frontmatter UI blocks, and article blocks
+- abbreviations, badges, citations, footnotes, emoji, keyboard shortcuts, and typography helpers
+- math, diagrams, media figures, Open Icon icons, print controls, frontmatter UI blocks, and article blocks
+- GFM-style alerts, autolinks, and editable task lists
 - native HTML forms with grouped fieldsets and labels
 
 ## What This Covers

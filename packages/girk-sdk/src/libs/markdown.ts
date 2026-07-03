@@ -2,6 +2,7 @@ import { useNizel } from "nizel";
 import { abbrPlugin } from "nizel-plugin-abbr";
 import { alertPlugin } from "nizel-plugin-alert";
 import { autolinkPlugin } from "nizel-plugin-autolink";
+import { badgePlugin } from "nizel-plugin-badge";
 import { citationsPlugin } from "nizel-plugin-citations";
 import { codeCopyPlugin } from "nizel-plugin-code-copy";
 import { deflistPlugin } from "nizel-plugin-deflist";
@@ -11,10 +12,14 @@ import { emojiPlugin } from "nizel-plugin-emoji";
 import { footnotesPlugin } from "nizel-plugin-footnotes";
 import { frontmatterUiPlugin } from "nizel-plugin-frontmatter-ui";
 import { headingAnchorsPlugin } from "nizel-plugin-heading-anchors";
+import { kbdPlugin } from "nizel-plugin-kbd";
 import { mathPlugin } from "nizel-plugin-math";
 import { mediaPlugin } from "nizel-plugin-media";
+import { openIconPlugin } from "nizel-plugin-open-icon";
+import { printPlugin } from "nizel-plugin-print";
 import { sanitizePlugin } from "nizel-plugin-sanitize";
 import { shikiPlugin } from "nizel-plugin-shiki";
+import { taskListPlugin } from "nizel-plugin-task-list";
 import { tocPlugin } from "nizel-plugin-toc";
 import { typographyPlugin } from "nizel-plugin-typography";
 
@@ -101,6 +106,7 @@ async function getProcessor() {
       abbrPlugin(),
       alertPlugin(),
       autolinkPlugin({ target: "_blank", rel: "noopener" }),
+      badgePlugin(),
       citationsPlugin(),
       deflistPlugin(),
       detailsPlugin(),
@@ -109,10 +115,14 @@ async function getProcessor() {
       frontmatterUiPlugin(),
       footnotesPlugin(),
       headingAnchorsPlugin(),
+      kbdPlugin(),
       mathPlugin(),
       mediaPlugin(),
+      openIconPlugin(),
+      printPlugin({ injectCss: false }),
       shikiPlugin({ highlighter: highlightFn }),
-      codeCopyPlugin(),
+      codeCopyPlugin({ mode: "button" }),
+      taskListPlugin({ mode: "edit" }),
       tocPlugin(),
       typographyPlugin(),
       sanitizePlugin({ allowRawHtml: true }),
@@ -280,44 +290,6 @@ export const replaceData = async (input: string): Promise<string> => {
   return input;
 };
 
-const escapeHtml = (input: string): string =>
-  input
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-
-export const renderTaskLists = (input: string): string => {
-  const lines = input.split("\n");
-  const output: string[] = [];
-  let taskItems: string[] = [];
-
-  const flushTaskList = () => {
-    if (!taskItems.length) return;
-    output.push(`<ul class="task-list">\n${taskItems.join("\n")}\n</ul>`);
-    taskItems = [];
-  };
-
-  for (const line of lines) {
-    const match = line.match(/^\s*[-*+]\s+\[([ xX])\]\s+(.*)$/);
-
-    if (!match) {
-      flushTaskList();
-      output.push(line);
-      continue;
-    }
-
-    const checked = match[1].toLowerCase() === "x";
-    const checkedAttr = checked ? " checked" : "";
-    taskItems.push(
-      `<li class="task-list__item"><input class="task-list__input" type="checkbox" disabled${checkedAttr}><span class="task-list__label">${escapeHtml(match[2])}</span></li>`
-    );
-  }
-
-  flushTaskList();
-  return output.join("\n");
-};
-
 /**
  * Convert a markdown string to HTML with full import and data resolution.
  *
@@ -351,7 +323,7 @@ export const toHtml = async (
     strippedData = await resolveImports(strippedData, filePath, importFileMap);
   }
 
-  const replacedData = renderTaskLists(await replaceData(strippedData));
+  const replacedData = await replaceData(strippedData);
   const nizel = await getProcessor();
   const result = await nizel(replacedData);
 

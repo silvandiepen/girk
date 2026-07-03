@@ -37,6 +37,7 @@ const getProcessor = async (): Promise<NizelProcessor> => {
   const { abbrPlugin } = await importEsm<typeof import("nizel-plugin-abbr")>("nizel-plugin-abbr");
   const { alertPlugin } = await importEsm<typeof import("nizel-plugin-alert")>("nizel-plugin-alert");
   const { autolinkPlugin } = await importEsm<typeof import("nizel-plugin-autolink")>("nizel-plugin-autolink");
+  const { badgePlugin } = await importEsm<typeof import("nizel-plugin-badge")>("nizel-plugin-badge");
   const { citationsPlugin } = await importEsm<typeof import("nizel-plugin-citations")>("nizel-plugin-citations");
   const { codeCopyPlugin } = await importEsm<typeof import("nizel-plugin-code-copy")>("nizel-plugin-code-copy");
   const { deflistPlugin } = await importEsm<typeof import("nizel-plugin-deflist")>("nizel-plugin-deflist");
@@ -46,10 +47,14 @@ const getProcessor = async (): Promise<NizelProcessor> => {
   const { footnotesPlugin } = await importEsm<typeof import("nizel-plugin-footnotes")>("nizel-plugin-footnotes");
   const { frontmatterUiPlugin } = await importEsm<typeof import("nizel-plugin-frontmatter-ui")>("nizel-plugin-frontmatter-ui");
   const { headingAnchorsPlugin } = await importEsm<typeof import("nizel-plugin-heading-anchors")>("nizel-plugin-heading-anchors");
+  const { kbdPlugin } = await importEsm<typeof import("nizel-plugin-kbd")>("nizel-plugin-kbd");
   const { mathPlugin } = await importEsm<typeof import("nizel-plugin-math")>("nizel-plugin-math");
   const { mediaPlugin } = await importEsm<typeof import("nizel-plugin-media")>("nizel-plugin-media");
+  const { openIconPlugin } = await importEsm<typeof import("nizel-plugin-open-icon")>("nizel-plugin-open-icon");
+  const { printPlugin } = await importEsm<typeof import("nizel-plugin-print")>("nizel-plugin-print");
   const { sanitizePlugin } = await importEsm<typeof import("nizel-plugin-sanitize")>("nizel-plugin-sanitize");
   const { shikiPlugin } = await importEsm<typeof import("nizel-plugin-shiki")>("nizel-plugin-shiki");
+  const { taskListPlugin } = await importEsm<typeof import("nizel-plugin-task-list")>("nizel-plugin-task-list");
   const { tocPlugin } = await importEsm<typeof import("nizel-plugin-toc")>("nizel-plugin-toc");
   const { typographyPlugin } = await importEsm<typeof import("nizel-plugin-typography")>("nizel-plugin-typography");
 
@@ -89,6 +94,7 @@ const getProcessor = async (): Promise<NizelProcessor> => {
       abbrPlugin(),
       alertPlugin(),
       autolinkPlugin({ target: "_blank", rel: "noopener" }),
+      badgePlugin(),
       citationsPlugin(),
       deflistPlugin(),
       detailsPlugin(),
@@ -97,10 +103,14 @@ const getProcessor = async (): Promise<NizelProcessor> => {
       frontmatterUiPlugin(),
       footnotesPlugin(),
       headingAnchorsPlugin(),
+      kbdPlugin(),
       mathPlugin(),
       mediaPlugin(),
+      openIconPlugin(),
+      printPlugin({ injectCss: false }),
       shikiPlugin(),
-      codeCopyPlugin(),
+      codeCopyPlugin({ mode: "button" }),
+      taskListPlugin({ mode: "edit" }),
       tocPlugin(),
       typographyPlugin(),
       sanitizePlugin({ allowRawHtml: true }),
@@ -306,44 +316,6 @@ export const replaceData = async (input: string): Promise<string> => {
   return input;
 };
 
-const escapeHtml = (input: string): string =>
-  input
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-
-export const renderTaskLists = (input: string): string => {
-  const lines = input.split("\n");
-  const output: string[] = [];
-  let taskItems: string[] = [];
-
-  const flushTaskList = () => {
-    if (!taskItems.length) return;
-    output.push(`<ul class="task-list">\n${taskItems.join("\n")}\n</ul>`);
-    taskItems = [];
-  };
-
-  for (const line of lines) {
-    const match = line.match(/^\s*[-*+]\s+\[([ xX])\]\s+(.*)$/);
-
-    if (!match) {
-      flushTaskList();
-      output.push(line);
-      continue;
-    }
-
-    const checked = match[1].toLowerCase() === "x";
-    const checkedAttr = checked ? " checked" : "";
-    taskItems.push(
-      `<li class="task-list__item"><input class="task-list__input" type="checkbox" disabled${checkedAttr}><span class="task-list__label">${escapeHtml(match[2])}</span></li>`
-    );
-  }
-
-  flushTaskList();
-  return output.join("\n");
-};
-
 /**
  * Convert a markdown string to HTML with full import and data resolution.
  *
@@ -387,7 +359,7 @@ export const toHtml = async (input: string, filePath?: string): Promise<Markdown
   // generated site (e.g. `setup-new-project.md` -> `setup-new-project/`).
   strippedData = rewriteImportedLinks(strippedData);
 
-  const replacedData = renderTaskLists(await replaceData(strippedData));
+  const replacedData = await replaceData(strippedData);
   const processor = await getProcessor();
   const result = await processor(replacedData);
 

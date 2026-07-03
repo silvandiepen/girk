@@ -172,7 +172,7 @@ test.describe("generated docs", () => {
       const response = await page.goto(route.path);
 
       expect(response?.ok()).toBeTruthy();
-      await expect(page.getByRole("heading", { level: 1, name: route.heading })).toBeVisible();
+      await expect(page.locator("main h1")).toContainText(route.heading);
       await expect(page.locator("main")).toContainText(route.text);
     });
   }
@@ -190,11 +190,11 @@ test.describe("generated docs", () => {
     await page.getByRole("banner").getByRole("link", { name: "Features" }).click();
     await page.getByRole("banner").getByRole("link", { name: "Features" }).click();
     await expect(page).toHaveURL(/\/features(?:\/|\/index\.html)?$/);
-    await expect(page.getByRole("heading", { level: 1, name: "Features" })).toBeVisible();
+    await expect(page.locator("main h1")).toContainText("Features");
 
     await page.getByRole("banner").getByRole("link", { name: "About" }).click();
     await expect(page).toHaveURL(/\/(?:index\.html)?$/);
-    await expect(page.getByRole("heading", { level: 1, name: "Girk" })).toBeVisible();
+    await expect(page.locator("main h1")).toContainText("Girk");
   });
 
   test("navigation submenus can be opened from the header", async ({ page }) => {
@@ -340,7 +340,7 @@ test.describe("generated docs", () => {
     await dialog.getByRole("link", { name: "Archives" }).first().click();
 
     await expect(page).toHaveURL(/\/features\/archives(?:\/|\/index\.html)?$/);
-    await expect(page.getByRole("heading", { level: 1, name: "Archives" })).toBeVisible();
+    await expect(page.locator("main h1")).toContainText("Archives");
   });
 
   test("header search opens and works on mobile", async ({ page }) => {
@@ -413,20 +413,33 @@ test.describe("generated docs", () => {
   test("kitchen sink exposes supported Markdown plugin output", async ({ page }) => {
     await page.goto("/features/kitchensink/");
 
+    const main = page.locator("main");
     const typography = page.locator("#en-features-kitchensink-typography");
     const semantics = page.locator("#en-features-kitchensink-semantics");
 
-    await expect(typography.locator(".task-list")).toBeVisible();
+    await expect(main.locator(".toc")).toBeVisible();
+    await expect(typography.locator(".nizel-task-list__checkbox")).toHaveCount(2);
+    await expect(typography.locator(".nizel-task-list__checkbox").first()).toBeEnabled();
     await expect(typography.locator('abbr[title="HyperText Markup Language"]').first()).toBeVisible();
     await expect(typography.locator("mark")).toContainText("marked text");
     await expect(typography.locator("sub")).toContainText("2");
     await expect(typography.locator("sup").first()).toContainText("2");
+    await expect(typography.locator(".nizel-badge")).toContainText("beta");
+    await expect(typography.locator(".nizel-kbd-group")).toContainText(/Ctrl|Cmd/);
+    await expect(typography.locator(".nizel-open-icon").first()).toBeVisible();
     await expect(typography.locator(".details")).toBeVisible();
     await expect(typography.locator(".footnotes")).toBeVisible();
     await expect(typography.locator(".citations")).toBeVisible();
     await expect(typography.locator("dl")).toContainText("Nizel");
+    await expect(typography.locator(".nizel-print-only")).toContainText("printed output");
+    await expect(typography.locator(".nizel-screen-only")).toContainText("appears on screen");
+    await expect(typography.locator(".nizel-keep")).toContainText("avoid splitting");
+    await expect(typography.locator(".nizel-pagebreak")).toBeAttached();
 
     await expect(semantics.locator(".nizel-code-copy").first()).toBeVisible();
+    await expect(semantics.locator(".nizel-badge")).toContainText("stable");
+    await expect(semantics.locator(".nizel-kbd-group")).toContainText(/Ctrl|Cmd/);
+    await expect(semantics.locator(".nizel-open-icon").first()).toBeVisible();
     await expect(semantics.locator(".math-inline")).toContainText("E = mc^2");
     await expect(semantics.locator(".math-display")).toContainText("f(x) = x^2");
     await expect(semantics.locator(".media-figure")).toBeVisible();

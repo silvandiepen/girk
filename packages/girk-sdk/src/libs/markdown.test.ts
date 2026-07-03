@@ -9,7 +9,7 @@ const pluginFixture = `*[HTML]: HyperText Markup Language
 
 ## Section
 
-HTML text with ==marked==, H~2~O, E = mc^2^, $a+b$, and https://example.com.
+HTML text with ==marked==, H~2~O, E = mc^2^, $a+b$, :badge(beta), :kbd(Mod+K), :open-icon(ui/search-m), and https://example.com.
 
 :::details More
 Hidden **text**
@@ -47,10 +47,16 @@ describe("markdown plugins", () => {
     expect(html).toContain("H<sub>2</sub>O");
     expect(html).toContain("mc<sup>2</sup>");
     expect(html).toContain('<span class="math math-inline">a+b</span>');
+    expect(html).toContain('class="nizel-badge"');
+    expect(html).toContain('class="nizel-kbd-group"');
+    expect(html).toContain('class="nizel-open-icon"');
     expect(html).toContain('href="https://example.com" target="_blank" rel="noopener"');
     expect(html).toContain('<details class="details">');
     expect(html).toContain('<div class="mermaid">');
     expect(html).toContain('data-nizel-code-copy');
+    expect(html).toContain('data-nizel-copy-source');
+    expect(html).toContain('data-nizel-copy-button');
+    expect(html).not.toContain("onclick=");
     expect(html).toContain('<figure class="media-figure">');
     expect(html).toContain('<section class="citations">');
     expect(html).toContain('<dl class="frontmatter">');
@@ -63,13 +69,28 @@ describe("markdown plugins", () => {
     expect(result.document).not.toContain("onclick");
   });
 
-  it("renders task lists with the Girk task-list markup", async () => {
+  it("renders task lists with the Nizel task-list plugin markup", async () => {
     const result = await toHtml(`- [ ] Prep
 - [x] Done`);
 
-    expect(result.document).toContain('class="task-list"');
-    expect(result.document).toContain('class="task-list__input" type="checkbox" disabled>');
-    expect(result.document).toContain('class="task-list__input" type="checkbox" disabled checked>');
+    expect(result.document).toContain('class="nizel-task-list__checkbox"');
+    expect(result.document).toContain("data-nizel-task-checkbox");
+    expect(result.document).toContain('type="checkbox"');
+    expect(result.document).toContain('type="checkbox" checked');
+    expect(result.document).not.toContain("disabled");
+  });
+
+  it("renders print layout directives", async () => {
+    const result = await toHtml(`:::print-only
+Printed text.
+:::
+
+:::pagebreak
+:::
+`);
+
+    expect(result.document).toContain('class="nizel-print-only"');
+    expect(result.document).toContain('class="nizel-pagebreak"');
   });
 
   it("renders Girk article blocks with Nizel custom block syntax", async () => {

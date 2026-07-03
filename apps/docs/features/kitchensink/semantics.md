@@ -18,6 +18,8 @@ console.log(supported.join(" and "));
 
 Use <abbr title="Application Programming Interface">API</abbr> labels, highlight text with <mark>mark</mark>, and show shortcuts like <kbd>Cmd</kbd> + <kbd>K</kbd> without reaching for custom classes.
 
+Plugin-rendered badges, shortcuts, and icons should align with native inline elements: :badge(stable, tone="success") :kbd(Mod+Shift+P) :open-icon(ui/search-m, label="Search")
+
 H<sub>2</sub>O and E = mc<sup>2</sup> should also look sane out of the box.
 
 Inline math renders as $E = mc^2$.

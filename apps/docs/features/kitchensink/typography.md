@@ -24,6 +24,8 @@ This paragraph is normal body copy. It shows the default measure, spacing, and t
 - [ ] one incomplete task item
 - [x] one completed task item
 
+GFM-style task list checkboxes should be editable in the rendered page.
+
 #### Small data table
 
 | Element | What it demonstrates | Why it matters |
@@ -36,7 +38,9 @@ This paragraph is normal body copy. It shows the default measure, spacing, and t
 
 *[HTML]: HyperText Markup Language
 
-HTML abbreviations, ==marked text==, H~2~O, E = mc^2^, emoji shortcuts :rocket:, and bare links like https://example.com should all render from Markdown.
+HTML abbreviations, ==marked text==, H~2~O, E = mc^2^, emoji shortcuts :rocket:, bare links like https://example.com, badges like :badge(beta, tone="info"), and keyboard shortcuts like :kbd(Mod+K) should all render from Markdown.
+
+:open-icon(ui/check-m, label="Rendered icon") Open Icon syntax should render an inline icon from the installed local icon catalog.
 
 Girk
 : A Markdown-first static site generator.
@@ -52,4 +56,19 @@ This paragraph includes a citation [@kitchen] and a footnote.[^kitchen-note]
 
 :::details Expandable Markdown details
 Details blocks can contain **Markdown** content and links to [other docs](/features/markdown/index.html).
+:::
+
+:::print-only
+This note only appears in printed output.
+:::
+
+:::screen-only
+This note only appears on screen.
+:::
+
+:::keep
+This block asks print renderers to avoid splitting it across pages.
+:::
+
+:::pagebreak
 :::
