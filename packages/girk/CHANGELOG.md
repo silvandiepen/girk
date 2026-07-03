@@ -1,3 +1,10 @@
+## [1.31.2](https://github.com/silvandiepen/girk/compare/v1.31.1...v1.31.2) (2026-07-03)
+
+
+### Bug Fixes
+
+* support latest Nizel plugins ([00cbdaf](https://github.com/silvandiepen/girk/commit/00cbdaf4cabcadc2ca9b61f9d75f374c0462277e))
+
 ## [1.31.1](https://github.com/silvandiepen/girk/compare/v1.31.0...v1.31.1) (2026-07-03)
 
 
