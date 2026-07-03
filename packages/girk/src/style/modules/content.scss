@@ -16,7 +16,7 @@
   --wide-width: 100%;
   padding: 0;
 
-  svg {
+  > svg {
     rect,
     path,
     circle {
@@ -27,18 +27,6 @@
           }
         }
       }
-    }
-  }
-
-  article {
-    padding: var(--space-l);
-    border: var(--border-width-s) solid
-      color-mix(in srgb, currentColor 12%, transparent);
-    border-radius: var(--border-radius-m);
-    background-color: color-mix(in srgb, currentColor 2%, transparent);
-
-    > :first-child {
-      margin-top: 0;
     }
   }
 

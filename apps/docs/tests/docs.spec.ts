@@ -140,8 +140,8 @@ test.describe("generated docs", () => {
       const main = document.querySelector(".main");
       const footer = document.querySelector(".footer");
       const navList = document.querySelector(".navigation--header .navigation__list");
-      const activeLink = document.querySelector(
-        ".navigation--header .navigation__item--current > .navigation__entry > .navigation__link, .navigation--header .navigation__item--parent > .navigation__entry > .navigation__link"
+      const activeEntry = document.querySelector(
+        ".navigation--header .navigation__item--current > .navigation__entry, .navigation--header .navigation__item--parent > .navigation__entry"
       );
       const activePill = document.querySelector(".navigation--header .navigation__active-pill");
 
@@ -151,7 +151,7 @@ test.describe("generated docs", () => {
         mainTransition: main ? getComputedStyle(main).viewTransitionName : "",
         footerTransition: footer ? getComputedStyle(footer).viewTransitionName : "",
         navTransition: navList ? getComputedStyle(navList).viewTransitionName : "",
-        activeAnchor: activeLink ? getComputedStyle(activeLink).anchorName : "",
+        activeAnchor: activeEntry ? getComputedStyle(activeEntry).anchorName : "",
         pillTransition: activePill ? getComputedStyle(activePill).viewTransitionName : "",
       };
     });
@@ -455,34 +455,29 @@ test.describe("generated docs", () => {
     await page.goto("/features/kitchensink/");
 
     const articles = page.locator("#en-features-kitchensink-semantics article");
+    const articleBlock = page.locator("#en-features-kitchensink-semantics article.article-block");
 
     await expect(articles).toHaveCount(2);
     await expect(articles.nth(0)).toContainText("Raw HTML article");
-    await expect(articles.nth(1)).toContainText("Note");
-    await expect(articles.nth(1)).toContainText("Authoring pattern");
-    await expect(articles.nth(1)).toContainText("2026-03-27");
-    await expect(articles.nth(1)).toContainText("This article assumes basic Markdown knowledge.");
+    await expect(articleBlock).toContainText("Note");
+    await expect(articleBlock).toContainText("Authoring pattern");
+    await expect(articleBlock).toContainText("2026-03-27");
+    await expect(articleBlock).toContainText("This article assumes basic Markdown knowledge.");
 
-    const styles = await articles.nth(1).evaluate((element) => {
+    const styles = await articleBlock.evaluate((element) => {
       const computed = window.getComputedStyle(element);
 
       return {
         articleColor: element.getAttribute("style"),
         backgroundColor: computed.backgroundColor,
-        borderTopWidth: computed.borderTopWidth,
-        borderRadius: computed.borderRadius,
         color: computed.color,
-        paddingTop: computed.paddingTop,
       };
     });
 
     expect(styles.articleColor).toContain("--article-color:");
     expect(styles.articleColor).toContain("--article-color-contrast:");
     expect(styles.backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
-    expect(styles.borderTopWidth).not.toBe("0px");
-    expect(styles.borderRadius).not.toBe("0px");
     expect(styles.color).not.toBe("rgba(0, 0, 0, 0)");
-    expect(styles.paddingTop).not.toBe("0px");
   });
 
   test("child pages expose related sibling pages below the content", async ({ page }) => {

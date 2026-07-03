@@ -6,7 +6,6 @@
 @use "nizel-plugin-kbd/style" as kbd-style;
 @use "nizel-plugin-open-icon/style" as open-icon-style;
 @use "nizel-plugin-print/style" as print-style;
-@use "modules/code";
 @use "modules/layout";
 @use "modules/color";
 @use "modules/settings";
@@ -14,13 +13,9 @@
 @use "modules/footer";
 @use "modules/navigation";
 @use "modules/logo";
-@use "modules/list";
-@use "modules/table";
-@use "modules/form";
 @use "modules/search";
 @use "modules/content";
 @use "modules/language";
 @use "modules/archive";
 @use "modules/tags";
 @use "modules/animation";
-@use "modules/task-list";

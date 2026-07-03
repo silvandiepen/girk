@@ -26,8 +26,10 @@ mixin renderHeaderNavigation(items)
             - const isOpen = false
             - const panelId = `${navigationRoot}-panel-${index}`
             - const panelAnchor = `--${navigationRoot}-panel-anchor-${index}`
+            - const isActive = item.current || item.isParent
+            - const entryAnchors = [hasChildren ? panelAnchor : null, isActive ? '--navigation-active' : null].filter(Boolean).join(', ')
             li.navigation__item(class=`${item.current ? ' navigation__item--current' : ''}${item.isParent && !item.current ? ' navigation__item--parent' : ''}${hasChildren ? ' navigation__item--has-children' : ''}${isOpen ? ' navigation__item--open' : ''}`)
-                .navigation__entry(style=hasChildren ? `anchor-name: ${panelAnchor};` : undefined)
+                .navigation__entry(style=entryAnchors ? `anchor-name: ${entryAnchors};` : undefined)
                     a.navigation__link(href=item.link)
                         +renderIcon(item.icon, "navigation__icon", "navigation__icon-asset")
                         span.navigation__text= item.name

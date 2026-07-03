@@ -394,12 +394,14 @@ export const templates: Record<string, string> = {
       const isOpen = false;
       const panelId = navigationRoot + '-panel-' + index;
       const panelAnchor = '--' + navigationRoot + '-panel-anchor-' + index;
+      const isActive = item.current || item.isParent;
+      const entryAnchors = [hasChildren ? panelAnchor : null, isActive ? '--navigation-active' : null].filter(Boolean).join(', ');
       out += '<li class="navigation__item' +
         (item.current ? ' navigation__item--current' : '') +
         (item.isParent && !item.current ? ' navigation__item--parent' : '') +
         (hasChildren ? ' navigation__item--has-children' : '') +
         (isOpen ? ' navigation__item--open' : '') + '">';
-      out += '<div class="navigation__entry"' + (hasChildren ? ' style="anchor-name: ' + panelAnchor + ';"' : '') + '>';
+      out += '<div class="navigation__entry"' + (entryAnchors ? ' style="anchor-name: ' + entryAnchors + ';"' : '') + '>';
       out += '<a class="navigation__link" href="' + item.link + '">';
       out += renderIcon(item.icon, 'navigation__icon', 'navigation__icon-asset');
       out += '<span class="navigation__text">' + item.name + '</span></a>';

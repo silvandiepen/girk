@@ -248,9 +248,13 @@
     z-index: 1;
   }
 
+  .navigation__item--current > .navigation__entry,
+  .navigation__item--parent > .navigation__entry {
+    anchor-name: --navigation-active;
+  }
+
   .navigation__item--current > .navigation__entry > .navigation__link,
   .navigation__item--parent > .navigation__entry > .navigation__link {
-    anchor-name: --navigation-active;
     view-transition-name: navigation-label;
   }
 
