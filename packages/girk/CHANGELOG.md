@@ -1,3 +1,10 @@
+# [1.30.0](https://github.com/silvandiepen/girk/compare/v1.29.0...v1.30.0) (2026-07-03)
+
+
+### Features
+
+* render math and diagrams automatically ([69469c2](https://github.com/silvandiepen/girk/commit/69469c2a815e0523cdec5feef46f057e165745f0))
+
 # [1.29.0](https://github.com/silvandiepen/girk/compare/v1.28.0...v1.29.0) (2026-07-03)
 
 

@@ -2,7 +2,6 @@
 title: Release Notes
 archive: articles
 hide: true
-searchExclude: true
 order: 5
 ---
 
