@@ -1,6 +1,6 @@
 {
   "name": "girky",
-  "version": "1.31.0",
+  "version": "1.31.1",
   "description": "Create a Girk site from Markdown",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

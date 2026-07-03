@@ -1,3 +1,10 @@
+## [1.31.1](https://github.com/silvandiepen/girk/compare/v1.31.0...v1.31.1) (2026-07-03)
+
+
+### Bug Fixes
+
+* keep generated release notes out of search ([8ad8fc4](https://github.com/silvandiepen/girk/commit/8ad8fc45e3019d5aaa30e34f56ea39588ac9f222))
+
 # [1.31.0](https://github.com/silvandiepen/girk/compare/v1.30.0...v1.31.0) (2026-07-03)
 
 
