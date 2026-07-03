@@ -1,3 +1,10 @@
+# [1.31.0](https://github.com/silvandiepen/girk/compare/v1.30.0...v1.31.0) (2026-07-03)
+
+
+### Features
+
+* use Nizel content styling ([ca1ec76](https://github.com/silvandiepen/girk/commit/ca1ec76bee7464692452b6d0484285a0057321ee))
+
 # [1.30.0](https://github.com/silvandiepen/girk/compare/v1.29.0...v1.30.0) (2026-07-03)
 
 
