@@ -10,11 +10,19 @@ This paragraph is normal body copy. It shows the default measure, spacing, and t
 
 > Girk aims to make plain HTML look deliberate before you start layering project styles on top.
 
+> [!NOTE]
+> Alert blocks keep important Markdown content visually distinct.
+
+> [!WARNING]
+> Warning alerts use the same content rhythm as the rest of the page.
+
 ### Mixed content
 
 - one list item with enough text to show line length and spacing
 - a second item with `inline code` and a [standard link](/features/customisation/index.html)
 - a third item that exists only to show consistent defaults across elements
+- [ ] one incomplete task item
+- [x] one completed task item
 
 #### Small data table
 
@@ -23,3 +31,25 @@ This paragraph is normal body copy. It shows the default measure, spacing, and t
 | Heading | scale and spacing | sets the visual hierarchy |
 | Table | responsive table defaults | keeps structured content readable |
 | Form control | native input styling | gives plain HTML a usable baseline |
+
+### Markdown Extensions
+
+*[HTML]: HyperText Markup Language
+
+HTML abbreviations, ==marked text==, H~2~O, E = mc^2^, emoji shortcuts :rocket:, and bare links like https://example.com should all render from Markdown.
+
+Girk
+: A Markdown-first static site generator.
+
+Nizel
+: The Markdown processor used by Girk.
+
+This paragraph includes a citation [@kitchen] and a footnote.[^kitchen-note]
+
+[@kitchen]: Kitchen Sink Rendering Notes, 2026.
+
+[^kitchen-note]: Footnotes collect supporting notes below the content.
+
+:::details Expandable Markdown details
+Details blocks can contain **Markdown** content and links to [other docs](/features/markdown/index.html).
+:::

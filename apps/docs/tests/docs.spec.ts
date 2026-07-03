@@ -40,7 +40,7 @@ const routes: RouteExpectation[] = [
   {
     path: "/features/kitchensink/",
     heading: /^Kitchen Sink$/,
-    text: "shows how Girk renders common content and native HTML controls",
+    text: "shows how Girk renders Markdown, Nizel plugin output",
   },
   {
     path: "/features/multilingual/",
@@ -408,6 +408,30 @@ test.describe("generated docs", () => {
     await expect(main.getByRole("checkbox", { name: /send security notices/i })).toBeVisible();
     await expect(main.getByRole("radio", { name: "Email" })).toBeVisible();
     await expect(main.getByRole("radio", { name: "RSS" })).toBeVisible();
+  });
+
+  test("kitchen sink exposes supported Markdown plugin output", async ({ page }) => {
+    await page.goto("/features/kitchensink/");
+
+    const typography = page.locator("#en-features-kitchensink-typography");
+    const semantics = page.locator("#en-features-kitchensink-semantics");
+
+    await expect(typography.locator(".task-list")).toBeVisible();
+    await expect(typography.locator('abbr[title="HyperText Markup Language"]').first()).toBeVisible();
+    await expect(typography.locator("mark")).toContainText("marked text");
+    await expect(typography.locator("sub")).toContainText("2");
+    await expect(typography.locator("sup").first()).toContainText("2");
+    await expect(typography.locator(".details")).toBeVisible();
+    await expect(typography.locator(".footnotes")).toBeVisible();
+    await expect(typography.locator(".citations")).toBeVisible();
+    await expect(typography.locator("dl")).toContainText("Nizel");
+
+    await expect(semantics.locator(".nizel-code-copy").first()).toBeVisible();
+    await expect(semantics.locator(".math-inline")).toContainText("E = mc^2");
+    await expect(semantics.locator(".math-display")).toContainText("f(x) = x^2");
+    await expect(semantics.locator(".media-figure")).toBeVisible();
+    await expect(semantics.locator(".mermaid")).toContainText("Markdown --> Girk");
+    await expect(semantics.locator(".frontmatter")).toContainText("Kitchen Sink Metadata");
   });
 
   test("semantic article blocks render with default styling", async ({ page }) => {

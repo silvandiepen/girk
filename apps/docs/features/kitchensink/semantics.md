@@ -11,9 +11,20 @@ color: beige
 <input id="email" name="email" type="email" placeholder="hello@example.com" />
 ```
 
+```ts
+const supported = ["syntax highlighting", "copy buttons"];
+console.log(supported.join(" and "));
+```
+
 Use <abbr title="Application Programming Interface">API</abbr> labels, highlight text with <mark>mark</mark>, and show shortcuts like <kbd>Cmd</kbd> + <kbd>K</kbd> without reaching for custom classes.
 
 H<sub>2</sub>O and E = mc<sup>2</sup> should also look sane out of the box.
+
+Inline math renders as $E = mc^2$.
+
+$$
+f(x) = x^2
+$$
 
 <details>
   <summary>Expandable content with native details/summary</summary>
@@ -48,6 +59,14 @@ H<sub>2</sub>O and E = mc<sup>2</sup> should also look sane out of the box.
   </svg>
   <figcaption>A plain figure with figcaption should inherit the same visual language.</figcaption>
 </figure>
+
+![Girk logo](/media/logo.svg)
+
+```mermaid
+flowchart TD
+  Markdown --> Girk
+  Girk --> HTML
+```
 
 <p>
   Progress
@@ -87,4 +106,11 @@ Add `color="warning"` when you want a direct palette token, or `class="editorial
 This article assumes basic Markdown knowledge.
 
 Add `color="warning"` when you want a direct palette token, or `class="editorial-note"` when you need an extra project hook.
+::
+
+### Visible Frontmatter UI
+
+::frontmatter
+title: Kitchen Sink Metadata
+status: Visible example
 ::
