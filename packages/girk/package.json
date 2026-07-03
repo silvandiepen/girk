@@ -108,6 +108,7 @@
     "nizel-plugin-toc": "^0.1.4",
     "nizel-plugin-typography": "^0.1.4",
     "mv": "^2.1.1",
+    "nizel-style": "^0.1.0",
     "open-icon": "^1.1.3",
     "rimraf": "^4.3.0",
     "sass": "^1.98.0",

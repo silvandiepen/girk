@@ -5,7 +5,7 @@ export const templates: Record<string, string> = {
   "archive-articles": `<section class="section archive archive--articles">
     <div class="container">
         <% if (archive.title) { %>
-            <div class="content">
+            <div class="content nizel-content" data-nizel-content>
                 <h2 class="h4"><%= archive.title %></h2>
             </div>
         <% } %>
@@ -68,7 +68,7 @@ export const templates: Record<string, string> = {
   "archive-section": `<% archive.children.forEach(function(item) { %>
     <section class="section archive-item archive--section" style="<%= item.meta.sectionStyle || '' %>" id="<%= item.id %>">
         <div class="container">
-            <div class="content">
+            <div class="content nizel-content" data-nizel-content>
                 <%- item.html %>
             </div>
         </div>
@@ -90,7 +90,7 @@ export const templates: Record<string, string> = {
   "content": `<main class="main<%= meta.type ? ' content--' + meta.type : '' %>">
     <section class="section" style="<%= meta.sectionStyle || '' %>">
         <div class="container">
-            <div class="content">
+            <div class="content nizel-content" data-nizel-content>
                 <% if (subtitle) { %>
                     <h6><%= subtitle %></h6>
                 <% } %>
@@ -110,7 +110,7 @@ export const templates: Record<string, string> = {
     <% if (relatedPages && relatedPages.length) { %>
         <section class="section section--related">
             <div class="container">
-                <div class="content">
+                <div class="content nizel-content" data-nizel-content>
                     <% if (parentPage) { %>
                         <h6><%= parentPage.title %></h6>
                     <% } %>

@@ -3,7 +3,7 @@ include icon.pug
 section.section.archive.archive--articles
     div.container
         if archive.title
-            .content
+            .content.nizel-content(data-nizel-content)
                 h2.h4= archive.title
         ul.archive-grid
             each item in archive.children

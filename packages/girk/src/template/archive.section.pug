@@ -1,6 +1,6 @@
 each item in archive.children
     section.section.archive-item(class=`archive--section`, style=`${item.meta.sectionStyle ? item.meta.sectionStyle : "" }`, id=`${item.id}`)
         div.container
-            div.content
+            div.content.nizel-content(data-nizel-content)
                 | !{item.html}
             

@@ -71,6 +71,10 @@ const message = "hello";
 
 The copy button works in browsers that allow `navigator.clipboard`. If the browser blocks clipboard access, the button reports the failure without breaking the page.
 
+## Styling
+
+Rendered Markdown is wrapped in Nizel's scoped content root and styled with `nizel-style`. Girk maps its active theme colors and fonts into Nizel's content tokens, while keeping Girk's navigation, archives, forms, and other site chrome styled by Girk.
+
 ## Details Blocks
 
 Use details blocks for expandable content:
@@ -198,6 +202,7 @@ This is a hardening layer, not a replacement for platform-level restrictions whe
 ## Compatibility Notes
 
 - `nizel-plugin-gfm` is not listed separately because Girk enables its concrete plugins directly: alerts and autolinks.
+- Rendered Markdown uses Nizel's official scoped CSS for base prose and plugin output.
 - Math pages load KaTeX from the pinned Girk runtime, and diagram pages load Mermaid from the pinned Girk runtime. Pages without those features do not load those assets.
 - Keep `::frontmatter` blocks separate from footnote definitions. They are both block-level extensions and are most predictable when they are not adjacent in the same block sequence.
 

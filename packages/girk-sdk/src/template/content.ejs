@@ -1,7 +1,7 @@
 <main class="main<%= meta.type ? ' content--' + meta.type : '' %>">
     <section class="section" style="<%= meta.sectionStyle || '' %>">
         <div class="container">
-            <div class="content">
+            <div class="content nizel-content" data-nizel-content>
                 <% if (subtitle) { %>
                     <h6><%= subtitle %></h6>
                 <% } %>
@@ -21,7 +21,7 @@
     <% if (relatedPages && relatedPages.length) { %>
         <section class="section section--related">
             <div class="container">
-                <div class="content">
+                <div class="content nizel-content" data-nizel-content>
                     <% if (parentPage) { %>
                         <h6><%= parentPage.title %></h6>
                     <% } %>

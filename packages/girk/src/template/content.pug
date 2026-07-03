@@ -3,7 +3,7 @@ include icon.pug
 main.main(class=`${meta.type ? 'content--'+ meta.type : ''}`)
     section.section(style=`${meta.sectionStyle ? meta.sectionStyle : ""}`)
         div.container
-            div.content
+            div.content.nizel-content(data-nizel-content)
                 if subtitle
                     h6=subtitle
                 if showContentImage
@@ -17,7 +17,7 @@ main.main(class=`${meta.type ? 'content--'+ meta.type : ''}`)
     if relatedPages && relatedPages.length
         section.section.section--related
             div.container
-                div.content
+                div.content.nizel-content(data-nizel-content)
                     if parentPage
                         h6= parentPage.title
                     h2 More Pages

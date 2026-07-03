@@ -2,6 +2,7 @@
 title: Release Notes
 archive: articles
 hide: true
+searchExclude: true
 order: 5
 ---
 
@@ -13,6 +14,7 @@ These pages are generated during the publish workflow from the conventional comm
 
 ## Read The Latest
 
+- [1.31.0](/release-notes/v1-31-0/index.html)
 - [1.30.0](/release-notes/v1-30-0/index.html)
 - [1.29.0](/release-notes/v1-29-0/index.html)
 - [1.28.1](/release-notes/v1-28-1/index.html)

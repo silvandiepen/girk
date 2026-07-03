@@ -69,6 +69,7 @@
     "nizel-plugin-shiki": "^0.1.6",
     "nizel-plugin-toc": "^0.1.4",
     "nizel-plugin-typography": "^0.1.4",
+    "nizel-style": "^0.1.0",
     "shiki": "^4.3.0",
     "open-icon": "^1.1.3"
   },
