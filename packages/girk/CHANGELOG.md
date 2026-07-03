@@ -1,3 +1,10 @@
+## [1.31.3](https://github.com/silvandiepen/girk/compare/v1.31.2...v1.31.3) (2026-07-03)
+
+
+### Bug Fixes
+
+* defer content styling to Nizel ([013667c](https://github.com/silvandiepen/girk/commit/013667cbb2503ebec43ac64b0fbaa6326845fb74))
+
 ## [1.31.2](https://github.com/silvandiepen/girk/compare/v1.31.1...v1.31.2) (2026-07-03)
 
 
