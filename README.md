@@ -18,7 +18,7 @@ Use it for:
 
 ## Start In One Command
 
-```bash
+``` bash
 npx girky
 ```
 
@@ -28,7 +28,7 @@ Supported Node versions: `20.19+`, `22.12+`, and `24` through `25`.
 
 ## Minimal Project
 
-```text
+``` text
 my-site/
   README.md
   features/
@@ -65,7 +65,7 @@ That becomes:
 
 ## Quick Config Example
 
-```json
+``` json
 {
   "project": {
     "title": "My Site",
@@ -86,10 +86,10 @@ Useful project hooks:
 ## Learn More
 
 - Docs: `https://girk.dev`
-- Features: `https://girk.dev/features/`
-- How to Use: `https://girk.dev/how-to/`
-- Examples: `https://girk.dev/examples/`
-- Release Notes: `https://girk.dev/release-notes/`
+- Features: `https://girk.dev/features`
+- How to Use: `https://girk.dev/how-to`
+- Examples: `https://girk.dev/examples`
+- Release Notes: `https://girk.dev/release-notes`
 
 Example sites:
 
@@ -137,7 +137,7 @@ Common commands from the repo root:
 
 Dry-run the release logic locally with:
 
-```bash
+``` bash
 npm run release:dry-run
 ```
 
