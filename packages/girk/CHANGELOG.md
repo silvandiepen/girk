@@ -1,3 +1,10 @@
+## [1.31.4](https://github.com/silvandiepen/girk/compare/v1.31.3...v1.31.4) (2026-07-06)
+
+
+### Bug Fixes
+
+* keep girky consumers on latest sdk ([d80d1de](https://github.com/silvandiepen/girk/commit/d80d1de883046830c7d3aa8183625e53d4ccd376))
+
 ## [1.31.3](https://github.com/silvandiepen/girk/compare/v1.31.2...v1.31.3) (2026-07-03)
 
 
