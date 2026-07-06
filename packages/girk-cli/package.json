@@ -31,7 +31,7 @@
     "provenance": true
   },
   "dependencies": {
-    "girk-sdk": "^1.25.4",
+    "girk-sdk": "latest",
     "@sil/args": "^0.0.6",
     "cli-block": "^1.4.1",
     "express": "^4.18.2",
