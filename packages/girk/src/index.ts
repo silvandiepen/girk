@@ -41,6 +41,28 @@ const { version } = JSON.parse(readFileSync(join(__dirname, "../package.json"), 
 };
 
 /*
+ * Girk requires require()-of-ESM support to load girk-sdk's compiled
+ * template registry, which only landed in Node 20.19+ / 22.12+. Without
+ * this check, an older Node fails deep inside render.js with a confusing
+ * "could not resolve template registry" error instead of the real cause.
+ */
+const checkNodeVersion = (): void => {
+  const [major, minor] = process.versions.node.split(".").map(Number);
+  const supported = (major === 20 && minor >= 19) || (major === 22 && minor >= 12) || major > 22;
+
+  if (!supported) {
+    console.error(
+      `Girk requires Node.js ^20.19.0 || >=22.12.0 (needs require() support for ESM, ` +
+        `available from Node 20.19 or 22.12 onwards).\n` +
+        `You're running Node.js ${process.versions.node}. Please upgrade Node and try again.`,
+    );
+    process.exit(1);
+  }
+};
+
+checkNodeVersion();
+
+/*
  * Files
  */
 export const files = async (payload: Payload): Promise<Payload> => {
