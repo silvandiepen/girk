@@ -1,3 +1,10 @@
+## [1.31.5](https://github.com/silvandiepen/girk/compare/v1.31.4...v1.31.5) (2026-07-12)
+
+
+### Bug Fixes
+
+* **girk:** fail fast with a clear error on unsupported Node versions ([a647e99](https://github.com/silvandiepen/girk/commit/a647e99fa2311671d42078423a91b607b3785a42))
+
 ## [1.31.4](https://github.com/silvandiepen/girk/compare/v1.31.3...v1.31.4) (2026-07-06)
 
 
