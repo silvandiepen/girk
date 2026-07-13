@@ -1,3 +1,10 @@
+## [1.31.6](https://github.com/silvandiepen/girk/compare/v1.31.5...v1.31.6) (2026-07-13)
+
+
+### Bug Fixes
+
+* **girky:** use nizel style sass entrypoint ([8acf3d6](https://github.com/silvandiepen/girk/commit/8acf3d62f2ad88f98ec0d35691a4b1178a7fcf8d))
+
 ## [1.31.5](https://github.com/silvandiepen/girk/compare/v1.31.4...v1.31.5) (2026-07-12)
 
 
