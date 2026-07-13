@@ -1,6 +1,6 @@
 {
   "name": "girk-runner",
-  "version": "1.31.6",
+  "version": "1.31.7",
   "description": "Girk Runner — CLI to build static sites from markdown files (skeleton, not yet implemented)",
   "type": "commonjs",
   "engines": {

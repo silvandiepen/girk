@@ -1,3 +1,10 @@
+## [1.31.7](https://github.com/silvandiepen/girk/compare/v1.31.6...v1.31.7) (2026-07-13)
+
+
+### Bug Fixes
+
+* **girky:** load installed nizel style ([d1481e8](https://github.com/silvandiepen/girk/commit/d1481e83c27d237370bd552f9f091032bddb7b6f))
+
 ## [1.31.6](https://github.com/silvandiepen/girk/compare/v1.31.5...v1.31.6) (2026-07-13)
 
 
