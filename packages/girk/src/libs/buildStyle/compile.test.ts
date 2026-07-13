@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { buildModeColorVariables } from "./compile";
+import { buildCss, buildModeColorVariables } from "./compile";
 
 describe("buildStyle compile", () => {
   it("creates a minimal semantic color contract for light mode", () => {
@@ -50,5 +50,13 @@ describe("buildStyle compile", () => {
     );
 
     expect(variables).toContain("--color-background: var(--color-beige);");
+  });
+
+  it("appends the installed nizel-style stylesheet after the bundled app stylesheet", async () => {
+    const css = await buildCss(null);
+
+    expect(css).toContain("text-indent:100%");
+    expect(css).toContain("font-size:.8em");
+    expect(css).toContain(".nizel-code-copy__button::before");
   });
 });

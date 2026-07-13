@@ -1,4 +1,5 @@
 import { readFile } from "fs/promises";
+import { createRequire } from "module";
 import { join } from "path";
 
 export type ColorConfig = Record<string, string>;
@@ -59,6 +60,17 @@ const clamp = (value: number, min: number, max: number): number =>
 const loadStyling = async (path: string): Promise<string> => {
   const data = await readFile(path).then((res: Buffer) => res.toString());
   return data;
+};
+
+const requireFromHere = createRequire(__filename);
+
+const loadInstalledNizelStyle = async (): Promise<string> => {
+  try {
+    const stylePath = requireFromHere.resolve("nizel-style");
+    return await loadStyling(stylePath);
+  } catch {
+    return "";
+  }
 };
 
 const normalizeKey = (key: string): string =>
@@ -359,6 +371,7 @@ export const buildModeColorVariables = (
 export const buildCss = async (colors: ColorConfig | null) => {
   const stylingPath = join(__dirname, "../../../dist/style/app.css");
   const styleData = await loadStyling(stylingPath);
+  const nizelStyle = await loadInstalledNizelStyle();
   const lightMode = buildModeColorVariables(colors, "light");
   const darkMode = buildModeColorVariables(colors, "dark");
 
@@ -367,7 +380,7 @@ export const buildCss = async (colors: ColorConfig | null) => {
   const findDarkmodeProd = `content:"[DARKMODE]"`;
   const findLightmodeProd = `content:"[LIGHTMODE]"`;
 
-  return styleData
+  return `${styleData}\n${nizelStyle}`
     .replaceAll(findDarkmodeDev, `${darkMode}`)
     .replaceAll(findLightmodeDev, `${lightMode}`)
     .replaceAll(findDarkmodeProd, `${darkMode}`)
