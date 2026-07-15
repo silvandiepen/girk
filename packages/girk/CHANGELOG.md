@@ -1,3 +1,10 @@
+## [1.31.8](https://github.com/silvandiepen/girk/compare/v1.31.7...v1.31.8) (2026-07-15)
+
+
+### Bug Fixes
+
+* **girky:** repair generated mobile chrome ([41e0c58](https://github.com/silvandiepen/girk/commit/41e0c58c59e18fbfda8ddeb6b1a393d2e1df550b))
+
 ## [1.31.7](https://github.com/silvandiepen/girk/compare/v1.31.6...v1.31.7) (2026-07-13)
 
 
