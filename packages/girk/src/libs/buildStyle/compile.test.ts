@@ -55,8 +55,10 @@ describe("buildStyle compile", () => {
   it("appends the installed nizel-style stylesheet after the bundled app stylesheet", async () => {
     const css = await buildCss(null);
 
-    expect(css).toContain("text-indent:100%");
-    expect(css).toContain("font-size:.8em");
+    const compactCss = css.replace(/\s+/g, "");
+
+    expect(compactCss).toContain("text-indent:100%");
+    expect(compactCss).toContain("font-size:0.8em");
     expect(css).toContain(".nizel-code-copy__button::before");
   });
 });

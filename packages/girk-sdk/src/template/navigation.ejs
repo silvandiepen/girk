@@ -1,6 +1,8 @@
 <%
   var navigationRoot = typeof navigationIdPrefix !== 'undefined' ? navigationIdPrefix : 'navigation';
-  var variant = typeof navigationVariant !== 'undefined' ? navigationVariant : 'header';
+  var navVariant = typeof variant !== 'undefined'
+    ? variant
+    : (typeof navigationVariant !== 'undefined' ? navigationVariant : 'header');
 
   function renderPanelGroups(items, level) {
     const compactColumnClass = level === 1 && items.length <= 5 ? ' navigation__groups--compact-column' : '';
@@ -78,7 +80,7 @@
     return out;
   }
 %>
-<% if (variant === 'footer') { %>
+<% if (navVariant === 'footer') { %>
   <nav class="navigation navigation--footer">
     <%- renderFooterTree(menu, 0) %>
   </nav>
