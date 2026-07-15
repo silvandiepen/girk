@@ -1,3 +1,11 @@
+## [1.31.10](https://github.com/silvandiepen/girk/compare/v1.31.9...v1.31.10) (2026-07-15)
+
+
+### Bug Fixes
+
+* **girky:** clean up mobile menu overlay ([2bfe287](https://github.com/silvandiepen/girk/commit/2bfe287e9e395e4a7ad9001c695df2a523259335))
+* **girky:** stabilize mobile submenu rendering ([b53d960](https://github.com/silvandiepen/girk/commit/b53d9602d7e47dedbad0153461644af17f7e6e3c))
+
 ## [1.31.9](https://github.com/silvandiepen/girk/compare/v1.31.8...v1.31.9) (2026-07-15)
 
 
