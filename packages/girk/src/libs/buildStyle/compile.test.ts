@@ -60,13 +60,16 @@ describe("buildStyle compile", () => {
     expect(compactCss).toContain("text-indent:100%");
     expect(compactCss).toContain("font-size:0.8em");
     expect(compactCss).toContain(".header:has(.navigation--mobile-open){backdrop-filter:none}");
+    expect(compactCss).toContain("display:flex;overflow-y:auto");
+    expect(compactCss).toContain("opacity:0;visibility:hidden;pointer-events:none");
     expect(compactCss).toContain(
-      "navigation--mobile-panel.navigation--mobile-open.navigation__list{display:flex}",
+      "navigation--mobile-panel.navigation--mobile-open.navigation__list{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition-delay:0s}",
     );
     expect(compactCss).toContain("justify-content:flex-start");
     expect(compactCss).toContain(
-      "padding:var(--space-xxl)var(--space)var(--space-l)",
+      "padding:calc(var(--space-xxl)+var(--space-l))var(--space)var(--space-l)",
     );
+    expect(compactCss).toContain("font-size:var(--font-size-l)");
     expect(css).toContain(".nizel-code-copy__button::before");
   });
 });
