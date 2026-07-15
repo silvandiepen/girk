@@ -164,6 +164,7 @@ export const templates: Record<string, string> = {
               '<line x1="18.02" y1="5.98" x2="19.78" y2="4.22"></line>' +
             '</svg>' +
           '</span>' +
+        '</span>' +
           '<span class="color-mode-toggle__track" aria-hidden="true">' +
             '<span class="color-mode-toggle__thumb"></span>' +
           '</span>' +
@@ -363,7 +364,9 @@ export const templates: Record<string, string> = {
 <% } %>`,
   "navigation": `<%
   var navigationRoot = typeof navigationIdPrefix !== 'undefined' ? navigationIdPrefix : 'navigation';
-  var variant = typeof navigationVariant !== 'undefined' ? navigationVariant : 'header';
+  var navVariant = typeof variant !== 'undefined'
+    ? variant
+    : (typeof navigationVariant !== 'undefined' ? navigationVariant : 'header');
 
   function renderPanelGroups(items, level) {
     const compactColumnClass = level === 1 && items.length <= 5 ? ' navigation__groups--compact-column' : '';
@@ -441,7 +444,7 @@ export const templates: Record<string, string> = {
     return out;
   }
 %>
-<% if (variant === 'footer') { %>
+<% if (navVariant === 'footer') { %>
   <nav class="navigation navigation--footer">
     <%- renderFooterTree(menu, 0) %>
   </nav>
@@ -460,7 +463,8 @@ export const templates: Record<string, string> = {
     <% } %>
     <%- renderHeaderNavigation(menu) %>
   </nav>
-<% } %>`,
+<% } %>
+`,
   "page": `<!DOCTYPE html>
 <html lang="<%= language %>">
 <%- partials.head(data) %>
