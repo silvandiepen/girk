@@ -1,3 +1,10 @@
+## [1.31.11](https://github.com/silvandiepen/girk/compare/v1.31.10...v1.31.11) (2026-07-15)
+
+
+### Bug Fixes
+
+* update nizel copy styles ([8f188ab](https://github.com/silvandiepen/girk/commit/8f188ab4f3f2f37391eb76394c6a7440c77b1f5f))
+
 ## [1.31.10](https://github.com/silvandiepen/girk/compare/v1.31.9...v1.31.10) (2026-07-15)
 
 
