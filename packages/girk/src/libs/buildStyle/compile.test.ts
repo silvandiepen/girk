@@ -61,12 +61,15 @@ describe("buildStyle compile", () => {
     expect(compactCss).toContain("font-size:0.8em");
     expect(compactCss).toContain(".header:has(.navigation--mobile-open){backdrop-filter:none}");
     expect(compactCss).toContain("display:flex;overflow-y:auto;-webkit-overflow-scrolling:touch");
-    expect(compactCss).toContain("opacity:0;visibility:hidden;pointer-events:none");
-    expect(compactCss).toContain("transition:opacity.18sease,visibility0slinear.18s");
+    expect(compactCss).toContain("opacity:0;visibility:hidden;clip-path:inset(00100%0);pointer-events:none");
+    expect(compactCss).toContain("clip-path.24scubic-bezier(0.22,1,0.36,1)");
     expect(compactCss).toContain("view-transition-name:none");
+    expect(compactCss).toContain("navigation__mobile-toggle[aria-expanded=true].navigation__mobile-toggle-icon{background-color:rgba(0,0,0,0)}");
+    expect(compactCss).toContain("navigation__mobile-toggle[aria-expanded=true].navigation__mobile-toggle-icon::before{transform:translateY(calc(var(--space)*0.375-var(--border-width-s)/2))rotate(45deg)}");
     expect(compactCss).toContain(
-      "navigation--mobile-panel.navigation--mobile-open.navigation__list{opacity:1;visibility:visible;pointer-events:auto;transition-delay:0s}",
+      "navigation--mobile-panel.navigation--mobile-open.navigation__list{opacity:1;visibility:visible;clip-path:inset(0000);pointer-events:auto;transition-delay:0s}",
     );
+    expect(compactCss).toContain("navigation--mobile-panel.navigation--mobile-open.navigation__item{opacity:1;transform:translateY(0)}");
     expect(compactCss).toContain(
       "navigation--header.navigation--mobile-panel.navigation__item--open>.navigation__panel,.navigation--header.navigation--mobile-panel.navigation__panel[data-state=open],.navigation--header.navigation--mobile-panel.navigation__panel[data-state=opening]{display:block;opacity:1;visibility:visible;transform:none}",
     );
