@@ -1,3 +1,10 @@
+## [1.31.9](https://github.com/silvandiepen/girk/compare/v1.31.8...v1.31.9) (2026-07-15)
+
+
+### Bug Fixes
+
+* **girky:** stabilize mobile header menu ([79a1dd9](https://github.com/silvandiepen/girk/commit/79a1dd91eca4e0149f07612e3a87ee617ec6b0d8))
+
 ## [1.31.8](https://github.com/silvandiepen/girk/compare/v1.31.7...v1.31.8) (2026-07-15)
 
 
