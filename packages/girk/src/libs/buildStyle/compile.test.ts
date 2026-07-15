@@ -31,7 +31,7 @@ describe("buildStyle compile", () => {
         background: "beige",
         beige: "#efe2cf",
       },
-      "light"
+      "light",
     );
 
     expect(variables).toContain("--color-red: #aa0000;");
@@ -46,7 +46,7 @@ describe("buildStyle compile", () => {
         backgroundDark: "dark",
         beige: "#efe2cf",
       },
-      "light"
+      "light",
     );
 
     expect(variables).toContain("--color-background: var(--color-beige);");
@@ -57,8 +57,12 @@ describe("buildStyle compile", () => {
 
     const compactCss = css.replace(/\s+/g, "");
 
-    expect(compactCss).toContain("text-indent:100%");
-    expect(compactCss).toContain("font-size:0.8em");
+    expect(compactCss).toContain(
+      ".nizel-code-copy__label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}",
+    );
+    expect(compactCss).toContain("@media(hover:hover)and(pointer:fine)");
+    expect(compactCss).toContain(".nizel-code-copy__button:hover.nizel-code-copy__label");
+    expect(compactCss).not.toContain("text-indent:100%");
     expect(compactCss).toContain(".header:has(.navigation--mobile-open){backdrop-filter:none}");
     expect(compactCss).toContain("display:flex;overflow-y:auto;-webkit-overflow-scrolling:touch");
     expect(compactCss).toContain("opacity:0;visibility:hidden;pointer-events:none");
