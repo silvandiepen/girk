@@ -59,6 +59,14 @@ describe("buildStyle compile", () => {
 
     expect(compactCss).toContain("text-indent:100%");
     expect(compactCss).toContain("font-size:0.8em");
+    expect(compactCss).toContain(".header:has(.navigation--mobile-open){backdrop-filter:none}");
+    expect(compactCss).toContain(
+      "navigation--mobile-panel.navigation--mobile-open.navigation__list{display:flex}",
+    );
+    expect(compactCss).toContain("justify-content:flex-start");
+    expect(compactCss).toContain(
+      "padding:var(--space-xxl)var(--space)var(--space-l)",
+    );
     expect(css).toContain(".nizel-code-copy__button::before");
   });
 });

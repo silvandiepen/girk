@@ -8,6 +8,10 @@
     color-mix(in srgb, var(--color-foreground) 12%, transparent);
   backdrop-filter: blur(18px);
 
+  &:has(.navigation--mobile-open) {
+    backdrop-filter: none;
+  }
+
   &__container {
     position: static;
     width: min(100%, var(--layout-width));
