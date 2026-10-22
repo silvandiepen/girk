@@ -53,14 +53,9 @@ type SemanticAssignment = Record<SemanticKey, string>;
 const clamp = (value: number, min: number, max: number): number =>
   Math.min(Math.max(value, min), max);
 
-const normalizeKey = (key: string): string =>
-  key.toLowerCase().replace(/^palette/, "");
+const normalizeKey = (key: string): string => key.toLowerCase().replace(/^palette/, "");
 
-const hslToRgb = (
-  hue: number,
-  saturation: number,
-  lightness: number
-): [number, number, number] => {
+const hslToRgb = (hue: number, saturation: number, lightness: number): [number, number, number] => {
   const s = saturation / 100;
   const l = lightness / 100;
   const c = (1 - Math.abs(2 * l - 1)) * s;
@@ -79,11 +74,7 @@ const hslToRgb = (
   else if (h < 5) [r, g, b] = [x, 0, c];
   else [r, g, b] = [c, 0, x];
 
-  return [
-    Math.round((r + m) * 255),
-    Math.round((g + m) * 255),
-    Math.round((b + m) * 255),
-  ];
+  return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
 };
 
 const parseHexColor = (value: string): [number, number, number] | null => {
@@ -117,7 +108,7 @@ const parseRgbColor = (value: string): [number, number, number] | null => {
   if (channels.some((channel) => Number.isNaN(channel))) return null;
 
   return [channels[0], channels[1], channels[2]].map((channel) =>
-    clamp(Math.round(channel), 0, 255)
+    clamp(Math.round(channel), 0, 255),
   ) as [number, number, number];
 };
 
@@ -125,7 +116,10 @@ const parseHslColor = (value: string): [number, number, number] | null => {
   const match = value.match(/hsla?\(([^)]+)\)/i);
   if (!match) return null;
 
-  const channels = match[1].split(",").slice(0, 3).map((channel) => channel.trim());
+  const channels = match[1]
+    .split(",")
+    .slice(0, 3)
+    .map((channel) => channel.trim());
   if (channels.length < 3) return null;
 
   const hue = parseFloat(channels[0].replace("deg", ""));
@@ -140,27 +134,16 @@ const parseHslColor = (value: string): [number, number, number] | null => {
 };
 
 const parseColor = (value: string): [number, number, number] | null => {
-  return (
-    parseHexColor(value) ||
-    parseRgbColor(value) ||
-    parseHslColor(value) ||
-    null
-  );
+  return parseHexColor(value) || parseRgbColor(value) || parseHslColor(value) || null;
 };
 
-const getContrastReference = (
-  value: string,
-  darkColor: string,
-  lightColor: string
-): string => {
+const getContrastReference = (value: string, darkColor: string, lightColor: string): string => {
   const rgb = parseColor(value);
   if (!rgb) return "var(--color-light)";
 
   const [r, g, b] = rgb.map((channel) => {
     const normalized = channel / 255;
-    return normalized <= 0.03928
-      ? normalized / 12.92
-      : ((normalized + 0.055) / 1.055) ** 2.4;
+    return normalized <= 0.03928 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
   });
 
   const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
@@ -177,7 +160,7 @@ const buildPalette = (colors: ColorConfig | null): Record<ThemeKey | PaletteKey,
       result[normalizeKey(key)] = value;
       return result;
     },
-    {}
+    {},
   );
 
   return {
@@ -202,7 +185,7 @@ const buildPalette = (colors: ColorConfig | null): Record<ThemeKey | PaletteKey,
 const resolveToken = (
   token: string,
   source: Record<string, string>,
-  stack = new Set<string>()
+  stack = new Set<string>(),
 ): string => {
   const key = token.trim().toLowerCase();
   if (!source[key]) return token;
@@ -218,7 +201,7 @@ const resolveToken = (
 const resolveReference = (
   token: string,
   source: Record<string, string>,
-  stack = new Set<string>()
+  stack = new Set<string>(),
 ): string => {
   const key = token.trim().toLowerCase();
   if (!source[key]) return token;
@@ -237,14 +220,14 @@ const resolveReference = (
 const buildSemanticColors = (
   colors: ColorConfig | null,
   mode: Mode,
-  palette: Record<ThemeKey | PaletteKey, string>
+  palette: Record<ThemeKey | PaletteKey, string>,
 ): Record<ThemeKey | PaletteKey | SemanticKey, string> => {
   const overrides = Object.entries(colors || {}).reduce<Record<string, string>>(
     (result, [key, value]) => {
       result[normalizeKey(key)] = value;
       return result;
     },
-    {}
+    {},
   );
 
   const raw = {
@@ -271,16 +254,13 @@ const buildSemanticColors = (
   }, {}) as Record<ThemeKey | PaletteKey | SemanticKey, string>;
 };
 
-const buildSemanticAssignments = (
-  colors: ColorConfig | null,
-  mode: Mode
-): SemanticAssignment => {
+const buildSemanticAssignments = (colors: ColorConfig | null, mode: Mode): SemanticAssignment => {
   const overrides = Object.entries(colors || {}).reduce<Record<string, string>>(
     (result, [key, value]) => {
       result[normalizeKey(key)] = value;
       return result;
     },
-    {}
+    {},
   );
 
   return {
@@ -303,16 +283,12 @@ const buildSemanticAssignments = (
 
 export const createColorVariables = (
   colors: Record<ThemeKey | PaletteKey | SemanticKey, string>,
-  semanticAssignments?: SemanticAssignment
+  semanticAssignments?: SemanticAssignment,
 ): string => {
   const paletteKeys = ["dark", "light", ...PALETTE_KEYS] as const;
   const paletteVariables = paletteKeys.flatMap((key) => {
     const value = colors[key];
-    const contrast = getContrastReference(
-      value,
-      colors.dark,
-      colors.light
-    );
+    const contrast = getContrastReference(value, colors.dark, colors.light);
 
     return [`--color-${key}: ${value};`, `--color-${key}-contrast: ${contrast};`];
   });
@@ -335,17 +311,11 @@ export const createColorVariables = (
   return [...paletteVariables, ...semanticVariables].join("");
 };
 
-export const buildModeColorVariables = (
-  colors: ColorConfig | null,
-  mode: Mode
-): string => {
+export const buildModeColorVariables = (colors: ColorConfig | null, mode: Mode): string => {
   const palette = buildPalette(colors);
   const semanticAssignments = buildSemanticAssignments(colors, mode);
 
-  return createColorVariables(
-    buildSemanticColors(colors, mode, palette),
-    semanticAssignments
-  );
+  return createColorVariables(buildSemanticColors(colors, mode, palette), semanticAssignments);
 };
 
 /**

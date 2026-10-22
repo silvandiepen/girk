@@ -154,7 +154,9 @@
   background: transparent;
   color: color-mix(in srgb, currentColor 62%, transparent);
   cursor: pointer;
-  transition: background-color 160ms ease, color 160ms ease;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
 }
 
 .search-shell__close:hover,

@@ -1,14 +1,13 @@
 .footer {
   view-transition-name: site-footer;
   border-top: var(--border-width-s) solid
-      color-mix(in srgb, var(--color-foreground) 12%, transparent);
+    color-mix(in srgb, var(--color-foreground) 12%, transparent);
   background-color: color-mix(in srgb, var(--color-background) 94%, var(--color-foreground) 6%);
 
   &__container {
     width: min(100%, var(--layout-width));
     margin: 0 auto;
-    padding: var(--footer-padding-y, var(--space-xl))
-      var(--footer-padding-x, var(--space));
+    padding: var(--footer-padding-y, var(--space-xl)) var(--footer-padding-x, var(--space));
     display: grid;
     gap: var(--space);
   }
@@ -148,7 +147,9 @@
     min-height: var(--switch-segment-height);
     padding: 0;
     color: color-mix(in srgb, var(--color-foreground) 68%, transparent);
-    transition: color 0.2s ease, background-color 0.2s ease;
+    transition:
+      color 0.2s ease,
+      background-color 0.2s ease;
   }
 
   &__option:hover {
@@ -182,7 +183,9 @@
     border-radius: var(--border-radius-s);
     background: var(--color-background);
     box-shadow: 0 0.2em 0.75em color-mix(in srgb, var(--color-foreground) 18%, transparent);
-    transition: transform 0.2s ease, background-color 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      background-color 0.2s ease;
   }
 
   &[data-color-mode="light"] &__option:first-child,

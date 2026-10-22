@@ -70,11 +70,7 @@
   }
 
   .article-block {
-    --article-background-default: color-mix(
-      in srgb,
-      currentColor 2%,
-      transparent
-    );
+    --article-background-default: color-mix(in srgb, currentColor 2%, transparent);
     --article-text-default: inherit;
     background-color: var(--article-color, var(--article-background-default));
     color: var(--article-color-contrast, var(--article-text-default));

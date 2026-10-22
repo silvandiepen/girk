@@ -106,13 +106,14 @@ function getCompiled(name: string, source: string) {
  * Each key is a template name, each value is a render function.
  */
 function buildPartials(
-  allTemplates: Record<string, string>
+  allTemplates: Record<string, string>,
 ): Record<string, (data: Record<string, unknown>) => string> {
   const partials: Record<string, (data: Record<string, unknown>) => string> = {};
 
   for (const [name, source] of Object.entries(allTemplates)) {
     if (name === "page") continue; // page is the top-level template, not a partial
-    partials[name] = (data) => getCompiled(name, source)({ ...data, data, partials, scripts, formatDate, renderIcon });
+    partials[name] = (data) =>
+      getCompiled(name, source)({ ...data, data, partials, scripts, formatDate, renderIcon });
   }
 
   return partials;
@@ -148,7 +149,7 @@ export function uniqueSvgIds(html: string): string {
 export function renderEjs(
   data: Record<string, unknown>,
   templateName = "page",
-  customTemplates?: Record<string, string>
+  customTemplates?: Record<string, string>,
 ): string {
   const allTemplates = { ...templates, ...customTemplates };
   const source = allTemplates[templateName];

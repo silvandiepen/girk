@@ -2,16 +2,7 @@ import { writeFile } from "fs/promises";
 import { join } from "path";
 import { blockLine, blockLineSuccess } from "cli-block";
 
-import {
-  Payload,
-  File,
-  Page,
-  Meta,
-  buildHtmlArgs,
-  MenuItem,
-  Project,
-  Language,
-} from "../types";
+import { Payload, File, Page, Meta, buildHtmlArgs, MenuItem, Project, Language } from "../types";
 import { getLanguageMenu, getDefaultLanguage } from "../libs/language";
 import { makePath, buildHtml, getParentFile } from "./files";
 import { getExcerpt } from "./helpers";
@@ -34,10 +25,7 @@ export const isActiveMenuParent = (link: string, current: string): boolean => {
 
   if (normalizedLink === "/" || normalizedCurrent === "/") return false;
 
-  return (
-    normalizedCurrent.startsWith(`${normalizedLink}/`) &&
-    normalizedCurrent !== normalizedLink
-  );
+  return normalizedCurrent.startsWith(`${normalizedLink}/`) && normalizedCurrent !== normalizedLink;
 };
 
 const getArchiveHtml = (file: File): string =>
@@ -47,29 +35,23 @@ const getArchiveHtml = (file: File): string =>
     .join("\n");
 
 const getPageFeatureHtml = (file: File, relatedPages: File[]): string =>
-  [
-    file.html || "",
-    getArchiveHtml(file),
-    ...relatedPages.map((page) => page.excerpt || ""),
-  ].join("\n");
+  [file.html || "", getArchiveHtml(file), ...relatedPages.map((page) => page.excerpt || "")].join(
+    "\n",
+  );
 
 const hasTable = (html: string) => html.includes("<table>");
 
-const hasUrlToken = (html: string) =>
-  html.includes('<span class="token url">http');
+const hasUrlToken = (html: string) => html.includes('<span class="token url">http');
 
 const hasHeader = (menu: MenuItem[]) => menu.length > 0;
 
-const hasColors = (html: string) =>
-  !!html.match(/#[a-fA-F0-9]{6}|#[a-fA-F0-9]{3}/i);
+const hasColors = (html: string) => !!html.match(/#[a-fA-F0-9]{6}|#[a-fA-F0-9]{3}/i);
 
 const hasLanguages = (languages: Language[]) => !!(languages.length > 1);
 
-const hasMath = (html: string) =>
-  /\bclass="[^"]*\bmath(?:-inline|-display)?\b/.test(html);
+const hasMath = (html: string) => /\bclass="[^"]*\bmath(?:-inline|-display)?\b/.test(html);
 
-const hasDiagrams = (html: string) =>
-  /\bclass="[^"]*\bmermaid\b/.test(html);
+const hasDiagrams = (html: string) => /\bclass="[^"]*\bmermaid\b/.test(html);
 
 const getParentPage = (file: File, files: File[]): File | undefined =>
   files.find(
@@ -77,7 +59,7 @@ const getParentPage = (file: File, files: File[]): File | undefined =>
       candidate.home &&
       candidate.name == file.parent &&
       candidate.id !== file.id &&
-      candidate.language === file.language
+      candidate.language === file.language,
   );
 
 const getRelatedPages = (file: File, files: File[]): File[] => {
@@ -93,7 +75,7 @@ const getRelatedPages = (file: File, files: File[]): File[] => {
         candidate.id !== file.id &&
         !candidate.home &&
         candidate.language === file.language &&
-        !isHidden(candidate.meta)
+        !isHidden(candidate.meta),
     )
     .map((candidate): File => {
       const meta: Meta = candidate.meta || {};
@@ -120,10 +102,7 @@ const subtitle = (file: File, payload: Payload): string => {
   }
 };
 
-const getProjectByLanguage = (
-  project: Project,
-  language: Language
-): Project => {
+const getProjectByLanguage = (project: Project, language: Language): Project => {
   const langProject = {};
   Object.entries(project).filter((value) => {
     if (value[0].includes(":")) {
@@ -138,10 +117,7 @@ const getProjectByLanguage = (
   return langProject;
 };
 
-export const buildPage = async (
-  payload: Payload,
-  file: File
-): Promise<Page> => {
+export const buildPage = async (payload: Payload, file: File): Promise<Page> => {
   const currentLink = makePath(file);
   const currentLanguage = file.language;
 
@@ -170,9 +146,7 @@ export const buildPage = async (
   const relatedPages = getRelatedPages(file, payload.files);
   const pageFeatureHtml = getPageFeatureHtml(file, relatedPages);
   const favicons = payload.favicons;
-  const tags = payload.tags
-    ? payload.tags.filter((tag) => tag.parent == file.parent)
-    : [];
+  const tags = payload.tags ? payload.tags.filter((tag) => tag.parent == file.parent) : [];
 
   const style = {
     ...payload.style,
@@ -215,21 +189,15 @@ export const buildPage = async (
   };
   const html = await buildHtml(file, data);
 
-  const customCssFilePath = join(payload.settings.output, currentLink).replace(
-    ".html",
-    ".css"
-  );
+  const customCssFilePath = join(payload.settings.output, currentLink).replace(".html", ".css");
 
   /*
    * Return the page
    */
   return {
-    dir: join(
-      payload.settings.output,
-      currentLink.split("/").slice(0, -1).join("/")
-    ),
+    dir: join(payload.settings.output, currentLink.split("/").slice(0, -1).join("/")),
     css: {
-      data: '',
+      data: "",
       file: customCssFilePath,
     },
     html: {
@@ -242,10 +210,7 @@ export const buildPage = async (
   };
 };
 
-export const createPage = async (
-  payload: Payload,
-  file: File
-): Promise<void> => {
+export const createPage = async (payload: Payload, file: File): Promise<void> => {
   const page = await buildPage(payload, file);
 
   await createDir(page.dir);

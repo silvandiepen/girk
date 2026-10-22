@@ -1,11 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { resolve, dirname } from "path";
 
-import {
-  parseArticleOptions,
-  buildArticleClassName,
-  buildArticleStyle,
-} from "@/libs/article";
+import { parseArticleOptions, buildArticleClassName, buildArticleStyle } from "@/libs/article";
 import { extractMeta, removeMeta } from "@/libs/markdown-meta";
 import { MarkdownData } from "@/types";
 import { getGist } from "@/libs/download";
@@ -22,41 +18,58 @@ type NizelProcessor = (input: string) => Promise<{ html: string }>;
 
 let _processor: NizelProcessor | null = null;
 
-const importEsm = (
-  process.env.VITEST
-    ? <T>(specifier: string) => import(specifier) as Promise<T>
-    : (new Function("specifier", "return import(specifier)") as <T>(
-        specifier: string
-      ) => Promise<T>)
-);
+const importEsm = process.env.VITEST
+  ? <T>(specifier: string) => import(specifier) as Promise<T>
+  : (new Function("specifier", "return import(specifier)") as <T>(specifier: string) => Promise<T>);
 
 const getProcessor = async (): Promise<NizelProcessor> => {
   if (_processor) return _processor;
 
   const { useNizel } = await importEsm<typeof import("nizel")>("nizel");
   const { abbrPlugin } = await importEsm<typeof import("nizel-plugin-abbr")>("nizel-plugin-abbr");
-  const { alertPlugin } = await importEsm<typeof import("nizel-plugin-alert")>("nizel-plugin-alert");
-  const { autolinkPlugin } = await importEsm<typeof import("nizel-plugin-autolink")>("nizel-plugin-autolink");
-  const { badgePlugin } = await importEsm<typeof import("nizel-plugin-badge")>("nizel-plugin-badge");
-  const { citationsPlugin } = await importEsm<typeof import("nizel-plugin-citations")>("nizel-plugin-citations");
-  const { codeCopyPlugin } = await importEsm<typeof import("nizel-plugin-code-copy")>("nizel-plugin-code-copy");
-  const { deflistPlugin } = await importEsm<typeof import("nizel-plugin-deflist")>("nizel-plugin-deflist");
-  const { detailsPlugin } = await importEsm<typeof import("nizel-plugin-details")>("nizel-plugin-details");
-  const { diagramsPlugin } = await importEsm<typeof import("nizel-plugin-diagrams")>("nizel-plugin-diagrams");
-  const { emojiPlugin } = await importEsm<typeof import("nizel-plugin-emoji")>("nizel-plugin-emoji");
-  const { footnotesPlugin } = await importEsm<typeof import("nizel-plugin-footnotes")>("nizel-plugin-footnotes");
-  const { frontmatterUiPlugin } = await importEsm<typeof import("nizel-plugin-frontmatter-ui")>("nizel-plugin-frontmatter-ui");
-  const { headingAnchorsPlugin } = await importEsm<typeof import("nizel-plugin-heading-anchors")>("nizel-plugin-heading-anchors");
+  const { alertPlugin } =
+    await importEsm<typeof import("nizel-plugin-alert")>("nizel-plugin-alert");
+  const { autolinkPlugin } =
+    await importEsm<typeof import("nizel-plugin-autolink")>("nizel-plugin-autolink");
+  const { badgePlugin } =
+    await importEsm<typeof import("nizel-plugin-badge")>("nizel-plugin-badge");
+  const { citationsPlugin } =
+    await importEsm<typeof import("nizel-plugin-citations")>("nizel-plugin-citations");
+  const { codeCopyPlugin } =
+    await importEsm<typeof import("nizel-plugin-code-copy")>("nizel-plugin-code-copy");
+  const { deflistPlugin } =
+    await importEsm<typeof import("nizel-plugin-deflist")>("nizel-plugin-deflist");
+  const { detailsPlugin } =
+    await importEsm<typeof import("nizel-plugin-details")>("nizel-plugin-details");
+  const { diagramsPlugin } =
+    await importEsm<typeof import("nizel-plugin-diagrams")>("nizel-plugin-diagrams");
+  const { emojiPlugin } =
+    await importEsm<typeof import("nizel-plugin-emoji")>("nizel-plugin-emoji");
+  const { footnotesPlugin } =
+    await importEsm<typeof import("nizel-plugin-footnotes")>("nizel-plugin-footnotes");
+  const { frontmatterUiPlugin } = await importEsm<typeof import("nizel-plugin-frontmatter-ui")>(
+    "nizel-plugin-frontmatter-ui",
+  );
+  const { headingAnchorsPlugin } = await importEsm<typeof import("nizel-plugin-heading-anchors")>(
+    "nizel-plugin-heading-anchors",
+  );
   const { kbdPlugin } = await importEsm<typeof import("nizel-plugin-kbd")>("nizel-plugin-kbd");
   const { mathPlugin } = await importEsm<typeof import("nizel-plugin-math")>("nizel-plugin-math");
-  const { mediaPlugin } = await importEsm<typeof import("nizel-plugin-media")>("nizel-plugin-media");
-  const { openIconPlugin } = await importEsm<typeof import("nizel-plugin-open-icon")>("nizel-plugin-open-icon");
-  const { printPlugin } = await importEsm<typeof import("nizel-plugin-print")>("nizel-plugin-print");
-  const { sanitizePlugin } = await importEsm<typeof import("nizel-plugin-sanitize")>("nizel-plugin-sanitize");
-  const { shikiPlugin } = await importEsm<typeof import("nizel-plugin-shiki")>("nizel-plugin-shiki");
-  const { taskListPlugin } = await importEsm<typeof import("nizel-plugin-task-list")>("nizel-plugin-task-list");
+  const { mediaPlugin } =
+    await importEsm<typeof import("nizel-plugin-media")>("nizel-plugin-media");
+  const { openIconPlugin } =
+    await importEsm<typeof import("nizel-plugin-open-icon")>("nizel-plugin-open-icon");
+  const { printPlugin } =
+    await importEsm<typeof import("nizel-plugin-print")>("nizel-plugin-print");
+  const { sanitizePlugin } =
+    await importEsm<typeof import("nizel-plugin-sanitize")>("nizel-plugin-sanitize");
+  const { shikiPlugin } =
+    await importEsm<typeof import("nizel-plugin-shiki")>("nizel-plugin-shiki");
+  const { taskListPlugin } =
+    await importEsm<typeof import("nizel-plugin-task-list")>("nizel-plugin-task-list");
   const { tocPlugin } = await importEsm<typeof import("nizel-plugin-toc")>("nizel-plugin-toc");
-  const { typographyPlugin } = await importEsm<typeof import("nizel-plugin-typography")>("nizel-plugin-typography");
+  const { typographyPlugin } =
+    await importEsm<typeof import("nizel-plugin-typography")>("nizel-plugin-typography");
 
   _processor = useNizel({
     anchors: true,
@@ -74,7 +87,10 @@ const getProcessor = async (): Promise<NizelProcessor> => {
         },
         formats: {
           html(node: NizelBlockNode, ctx: NizelRenderContext) {
-            const customNode = node as { value?: { rawOptions: string }; children?: NizelBlockNode[] };
+            const customNode = node as {
+              value?: { rawOptions: string };
+              children?: NizelBlockNode[];
+            };
             const rawOptions = customNode.value?.rawOptions ?? "";
             const options = parseArticleOptions(rawOptions);
             const className = buildArticleClassName(options);
@@ -125,7 +141,7 @@ const getProcessor = async (): Promise<NizelProcessor> => {
  */
 const renderArticleHeader = (
   options: ReturnType<typeof parseArticleOptions>,
-  escape: (v: unknown) => string
+  escape: (v: unknown) => string,
 ): string => {
   const metaItems: string[] = [];
 
@@ -143,7 +159,9 @@ const renderArticleHeader = (
   }
 
   if (options.date) {
-    metaItems.push(`<time class="article-block__date" datetime="${escape(options.date)}">${escape(options.date)}</time>`);
+    metaItems.push(
+      `<time class="article-block__date" datetime="${escape(options.date)}">${escape(options.date)}</time>`,
+    );
   }
 
   const headerContent: string[] = [];
@@ -214,31 +232,28 @@ const fetchLocalFile = async (absolutePath: string): Promise<string> => {
  * @param content - Markdown body to process.
  */
 export const rewriteImportedLinks = (content: string): string => {
-  return content.replace(
-    /(\[[^\]]*\])\(([^)]+)\)/g,
-    (match, label, href) => {
-      // Leave absolute URLs, root-relative paths, and anchor-only hrefs alone
-      if (/^(https?:\/\/|\/|#|mailto:)/.test(href)) return match;
+  return content.replace(/(\[[^\]]*\])\(([^)]+)\)/g, (match, label, href) => {
+    // Leave absolute URLs, root-relative paths, and anchor-only hrefs alone
+    if (/^(https?:\/\/|\/|#|mailto:)/.test(href)) return match;
 
-      const hashIndex = href.indexOf("#");
-      const pathPart = hashIndex >= 0 ? href.slice(0, hashIndex) : href;
-      const anchor = hashIndex >= 0 ? href.slice(hashIndex) : "";
+    const hashIndex = href.indexOf("#");
+    const pathPart = hashIndex >= 0 ? href.slice(0, hashIndex) : href;
+    const anchor = hashIndex >= 0 ? href.slice(hashIndex) : "";
 
-      if (!pathPart.endsWith(".md")) return match;
+    if (!pathPart.endsWith(".md")) return match;
 
-      // README/index → trailing-slash directory URL
-      const fileName = pathPart.split("/").pop()!.toLowerCase();
-      if (fileName === "readme.md" || fileName === "index.md") {
-        const dir = pathPart.includes("/")
-          ? `${pathPart.slice(0, pathPart.lastIndexOf("/"))}/`
-          : "./";
-        return `${label}(${dir}${anchor})`;
-      }
-
-      // Other .md files → name/ directory URL
-      return `${label}(${pathPart.replace(/\.md$/, "/")}${anchor})`;
+    // README/index → trailing-slash directory URL
+    const fileName = pathPart.split("/").pop()!.toLowerCase();
+    if (fileName === "readme.md" || fileName === "index.md") {
+      const dir = pathPart.includes("/")
+        ? `${pathPart.slice(0, pathPart.lastIndexOf("/"))}/`
+        : "./";
+      return `${label}(${dir}${anchor})`;
     }
-  );
+
+    // Other .md files → name/ directory URL
+    return `${label}(${pathPart.replace(/\.md$/, "/")}${anchor})`;
+  });
 };
 
 /**
@@ -296,7 +311,10 @@ export const resolveImports = async (content: string, filePath: string): Promise
     }
   }
 
-  return content.replace(importPattern, (_, importPath: string) => cache.get(importPath.trim()) ?? "");
+  return content.replace(
+    importPattern,
+    (_, importPath: string) => cache.get(importPath.trim()) ?? "",
+  );
 };
 
 export const unp = (input: string): string => {
@@ -346,9 +364,7 @@ export const toHtml = async (input: string, filePath?: string): Promise<Markdown
 
       const imported = await Promise.all(importPaths.map((p) => loadImport(p, filePath)));
       const importedBody = imported.join("\n\n");
-      strippedData = strippedData.trim()
-        ? `${importedBody}\n\n${strippedData}`
-        : importedBody;
+      strippedData = strippedData.trim() ? `${importedBody}\n\n${strippedData}` : importedBody;
     }
 
     // Inline import: replace [import:path] markers in the body.
@@ -370,7 +386,8 @@ export const toHtml = async (input: string, filePath?: string): Promise<Markdown
       .replace(/<pre(?=[\s>])(?![^>]*\stabindex=)/g, '<pre tabindex="0"')
       .replace(
         /<table\b[\s\S]*?<\/table>/g,
-        (table) => `<div class="table-scroll" role="region" aria-label="Table" tabindex="0">${table}</div>`
+        (table) =>
+          `<div class="table-scroll" role="region" aria-label="Table" tabindex="0">${table}</div>`,
       ),
     meta: metaData,
   };

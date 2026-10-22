@@ -1,7 +1,5 @@
 const getNavigationItems = (navigation) =>
-  Array.from(
-    navigation.querySelectorAll(".navigation__item--has-children")
-  );
+  Array.from(navigation.querySelectorAll(".navigation__item--has-children"));
 
 const PANEL_TRANSITION_MS = 180;
 const DESKTOP_NAVIGATION_MEDIA = "(min-width: 961px)";

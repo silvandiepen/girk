@@ -1,13 +1,6 @@
 import { asyncForEach, fileExists, getFileData } from "@/libs/utils";
 import { camelCase } from "@sil/case";
-import {
-  Project,
-  Meta,
-  File,
-  Arguments,
-  ProjectScriptEntry,
-  ProjectScriptType,
-} from "../types";
+import { Project, Meta, File, Arguments, ProjectScriptEntry, ProjectScriptType } from "../types";
 import { flattenObject } from "./helpers";
 
 export const getConfig = async (): Promise<Arguments> => {
@@ -39,7 +32,10 @@ const fixProjectTypes = (input: Project): Project => {
       !/\r|\n/.exec(rawValue) &&
       rawValue.split(",").length > 1
     )
-      value = rawValue.split(",").map((entry) => entry.trim()).filter(Boolean);
+      value = rawValue
+        .split(",")
+        .map((entry) => entry.trim())
+        .filter(Boolean);
     else value = rawValue;
 
     fixedProject[key] = value;
@@ -50,7 +46,7 @@ const fixProjectTypes = (input: Project): Project => {
 
 const toScriptEntries = (
   value: Project["script"] | Project["scriptModule"],
-  type: ProjectScriptType
+  type: ProjectScriptType,
 ): ProjectScriptEntry[] => {
   if (!value) return [];
 

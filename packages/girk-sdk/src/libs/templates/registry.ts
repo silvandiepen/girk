@@ -582,7 +582,9 @@ export const scripts: Record<string, string> = {
     // Only the label changes, so the button keeps nizel's markup.
     const label = button.querySelector("[data-nizel-copy-label]") || button;
     const originalLabel = label.textContent || "Copy";
-    const language = container.querySelector("code[class*='language-']")?.className.match(/language-(\\S+)/)?.[1];
+    const language = container
+      .querySelector("code[class*='language-']")
+      ?.className.match(/language-(\\S+)/)?.[1];
     button.setAttribute("aria-label", language ? \`Copy \${language} code\` : "Copy code");
 
     button.addEventListener("click", async () => {
@@ -704,7 +706,7 @@ container.forEach((el) => {
       if (matches) {
         el.innerHTML = el.innerHTML.replace(
           matches[0],
-          \`<span class="color-preview" style="--color-preview:\${matches[0]}">\${matches[0]}</span>\`
+          \`<span class="color-preview" style="--color-preview:\${matches[0]}">\${matches[0]}</span>\`,
         );
       }
     }
@@ -727,9 +729,7 @@ urlTokens.forEach((token) => {
 });
 `,
   "navigation": `const getNavigationItems = (navigation) =>
-  Array.from(
-    navigation.querySelectorAll(".navigation__item--has-children")
-  );
+  Array.from(navigation.querySelectorAll(".navigation__item--has-children"));
 
 const PANEL_TRANSITION_MS = 180;
 const DESKTOP_NAVIGATION_MEDIA = "(min-width: 961px)";
@@ -935,7 +935,8 @@ initNavigation();
   if (!nodes.length) return;
 
   try {
-    const mermaid = await import("https://cdn.jsdelivr.net/npm/mermaid@11.16.0/dist/mermaid.esm.min.mjs");
+    const mermaid =
+      await import("https://cdn.jsdelivr.net/npm/mermaid@11.16.0/dist/mermaid.esm.min.mjs");
     mermaid.default.initialize({
       startOnLoad: false,
       securityLevel: "strict",
@@ -1211,9 +1212,7 @@ initMath();
             escapeHtml(result.title) +
             "</span>" +
             (result.excerpt
-              ? '<span class="search-results__excerpt">' +
-                escapeHtml(result.excerpt) +
-                "</span>"
+              ? '<span class="search-results__excerpt">' + escapeHtml(result.excerpt) + "</span>"
               : "") +
             "</a>" +
             "</li>"
@@ -1273,10 +1272,7 @@ initMath();
 
     setOpenState(false);
 
-    if (
-      state.lastFocusedElement &&
-      typeof state.lastFocusedElement.focus === "function"
-    ) {
+    if (state.lastFocusedElement && typeof state.lastFocusedElement.focus === "function") {
       state.lastFocusedElement.focus();
     }
   }
@@ -1292,16 +1288,11 @@ initMath();
       var shards = await Promise.all(
         getLanguageShards(manifest).map(function (descriptor) {
           return getShard(descriptor);
-        })
+        }),
       );
       var allowDocument = getScopePredicate();
 
-      renderResults(
-        query,
-        rankResults(query, shards, 24)
-          .filter(allowDocument)
-          .slice(0, 8)
-      );
+      renderResults(query, rankResults(query, shards, 24).filter(allowDocument).slice(0, 8));
     } catch {
       renderResults(query, [], true);
     }
@@ -1370,11 +1361,9 @@ initMath();
     state.form = document.querySelector("[data-search-form]");
     state.input = document.querySelector("[data-search-input]");
     state.results = document.querySelector("[data-search-results]");
-    state.openButtons = Array.prototype.slice.call(
-      document.querySelectorAll("[data-search-open]")
-    );
+    state.openButtons = Array.prototype.slice.call(document.querySelectorAll("[data-search-open]"));
     state.closeButtons = Array.prototype.slice.call(
-      document.querySelectorAll("[data-search-close]")
+      document.querySelectorAll("[data-search-close]"),
     );
 
     if (!state.shell || !state.dialog || !state.input || !state.results) return;

@@ -12,14 +12,7 @@ import { resolveFileIcons } from "@/libs/icon";
 import { getThumbnail } from "@/libs/media";
 import { flattenObject } from "@/libs/helpers";
 import { camelCase } from "@sil/case";
-import {
-  GirkBuildInput,
-  File,
-  Payload,
-  Project,
-  Settings,
-  FileType,
-} from "@/types";
+import { GirkBuildInput, File, Payload, Project, Settings, FileType } from "@/types";
 import { languageKeys } from "@/data/language";
 
 /**
@@ -29,10 +22,7 @@ import { languageKeys } from "@/data/language";
 const parseVirtualPath = (path: string) => {
   const extension = extname(path);
   const rawFileName = basename(path, extension);
-  const lang =
-    rawFileName.indexOf(":") > 0
-      ? getLangFromFilename(rawFileName)
-      : "en";
+  const lang = rawFileName.indexOf(":") > 0 ? getLangFromFilename(rawFileName) : "en";
   const fileName = rawFileName.split(":")[0];
   const name = (
     fileName.toLowerCase() === "index" || fileName.toLowerCase() === "readme"
@@ -42,9 +32,8 @@ const parseVirtualPath = (path: string) => {
 
   const pathSegments = path.split("/").filter(Boolean);
   // parent is the directory name (second to last segment, or empty for root)
-  const parent = pathSegments.length > 1
-    ? pathSegments[pathSegments.length - 2].toLowerCase()
-    : undefined;
+  const parent =
+    pathSegments.length > 1 ? pathSegments[pathSegments.length - 2].toLowerCase() : undefined;
 
   const relativePath = path;
 
@@ -110,12 +99,11 @@ const buildProjectData = (files: File[], config?: Record<string, unknown>): Proj
     let value: any = project[key];
     if (value === "false" || value === false) value = false;
     else if (value === "true" || value === true) value = true;
-    else if (
-      typeof value === "string" &&
-      !/\r|\n/.exec(value) &&
-      value.split(",").length > 1
-    ) {
-      value = value.split(",").map((entry: string) => entry.trim()).filter(Boolean);
+    else if (typeof value === "string" && !/\r|\n/.exec(value) && value.split(",").length > 1) {
+      value = value
+        .split(",")
+        .map((entry: string) => entry.trim())
+        .filter(Boolean);
     }
     fixedProject[key] = value;
   });
@@ -126,9 +114,7 @@ const buildProjectData = (files: File[], config?: Record<string, unknown>): Proj
 /**
  * Convert GirkBuildInput files to internal File[] with rendered HTML and metadata.
  */
-const inputFilesToFiles = async (
-  inputFiles: GirkBuildInput["files"]
-): Promise<File[]> => {
+const inputFilesToFiles = async (inputFiles: GirkBuildInput["files"]): Promise<File[]> => {
   const files: File[] = inputFiles.map((inputFile) => {
     const parsed = parseVirtualPath(inputFile.path);
     return {
@@ -197,10 +183,7 @@ const processFiles = async (files: File[]): Promise<{ files: File[]; languages: 
 /**
  * Normalize GirkBuildInput into an internal Payload object.
  */
-export const normalize = async (
-  input: GirkBuildInput,
-  version: string
-): Promise<Payload> => {
+export const normalize = async (input: GirkBuildInput, version: string): Promise<Payload> => {
   // Convert input files to internal format
   let files = await inputFilesToFiles(input.files);
 
@@ -216,7 +199,7 @@ export const normalize = async (
   // Filter ignored files
   if (project.ignore) {
     processed.files = processed.files.filter(
-      (file) => !project.ignore.some((ignore) => file.path.includes(ignore))
+      (file) => !project.ignore.some((ignore) => file.path.includes(ignore)),
     );
   }
 

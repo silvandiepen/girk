@@ -17,7 +17,9 @@
     min-height: calc(var(--space) * 1.9);
     padding: calc(var(--space-xxs) + 0.1em) calc(var(--space-s) + 0.1em);
     border-radius: var(--border-radius-m);
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
   }
 
   &__mobile-toggle {
@@ -62,7 +64,9 @@
     opacity: 0.92;
     font-weight: 600;
     line-height: 1.2;
-    transition: color 0.2s ease, opacity 0.2s ease;
+    transition:
+      color 0.2s ease,
+      opacity 0.2s ease;
   }
 
   &__link:hover {
@@ -76,11 +80,7 @@
 
   &__item:hover > &__entry > &__link,
   &__item:focus-within > &__entry > &__link {
-    color: color-mix(
-      in srgb,
-      var(--color-secondary),
-      var(--color-foreground) 50%
-    );
+    color: color-mix(in srgb, var(--color-secondary), var(--color-foreground) 50%);
   }
 
   &__item--current > &__entry,
@@ -93,11 +93,7 @@
   &__item--parent > &__entry > &__link,
   &__item--open > &__entry > &__link {
     opacity: 1;
-    color: color-mix(
-      in srgb,
-      var(--color-secondary),
-      var(--color-foreground) 50%
-    );
+    color: color-mix(in srgb, var(--color-secondary), var(--color-foreground) 50%);
   }
 
   &__toggle {
@@ -116,7 +112,9 @@
     color: inherit;
     cursor: pointer;
     opacity: 0.72;
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
   }
 
   &__toggle:hover,
@@ -173,17 +171,16 @@
     border-radius: var(--border-radius-s);
     opacity: 0.88;
     font-weight: 500;
-    transition: opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+    transition:
+      opacity 0.2s ease,
+      background-color 0.2s ease,
+      color 0.2s ease;
   }
 
   &__group-link:hover {
     opacity: 1;
     background-color: color-mix(in srgb, var(--color-secondary) 18%, transparent);
-    color: color-mix(
-      in srgb,
-      var(--color-secondary),
-      var(--color-foreground) 50%
-    );
+    color: color-mix(in srgb, var(--color-secondary), var(--color-foreground) 50%);
   }
 
   &__group-link--heading,
@@ -195,11 +192,7 @@
   &__group--current > &__group-link,
   &__group--parent > &__group-link {
     background-color: color-mix(in srgb, var(--color-secondary) 24%, transparent);
-    color: color-mix(
-      in srgb,
-      var(--color-secondary),
-      var(--color-foreground) 50%
-    );
+    color: color-mix(in srgb, var(--color-secondary), var(--color-foreground) 50%);
   }
 
   &__group-link--heading {
@@ -282,7 +275,9 @@
     opacity: 0;
     transform: translateY(calc(var(--space-xs) * -1)) scale(0.98);
     transform-origin: top left;
-    transition: opacity 0.18s ease, transform 0.18s ease;
+    transition:
+      opacity 0.18s ease,
+      transform 0.18s ease;
   }
 
   .navigation__item--align-end > .navigation__panel {
@@ -419,7 +414,9 @@
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
-      transition: opacity 0.18s ease, visibility 0s linear 0.18s;
+      transition:
+        opacity 0.18s ease,
+        visibility 0s linear 0.18s;
       view-transition-name: none;
     }
 
@@ -566,17 +563,16 @@
     color: inherit;
     text-decoration: none;
     opacity: 0.78;
-    transition: opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+    transition:
+      opacity 0.2s ease,
+      background-color 0.2s ease,
+      color 0.2s ease;
   }
 
   .navigation__footer-link:hover {
     opacity: 1;
     background-color: color-mix(in srgb, var(--color-secondary) 18%, transparent);
-    color: color-mix(
-      in srgb,
-      var(--color-secondary),
-      var(--color-foreground) 50%
-    );
+    color: color-mix(in srgb, var(--color-secondary), var(--color-foreground) 50%);
   }
 
   .navigation__footer-link--heading {
@@ -588,11 +584,7 @@
   .navigation__footer-item--parent > .navigation__footer-link {
     opacity: 1;
     background-color: color-mix(in srgb, var(--color-secondary) 24%, transparent);
-    color: color-mix(
-      in srgb,
-      var(--color-secondary),
-      var(--color-foreground) 50%
-    );
+    color: color-mix(in srgb, var(--color-secondary), var(--color-foreground) 50%);
   }
 
   @media screen and (max-width: 960px) {

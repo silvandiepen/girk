@@ -3,7 +3,8 @@ const initDiagrams = async () => {
   if (!nodes.length) return;
 
   try {
-    const mermaid = await import("https://cdn.jsdelivr.net/npm/mermaid@11.16.0/dist/mermaid.esm.min.mjs");
+    const mermaid =
+      await import("https://cdn.jsdelivr.net/npm/mermaid@11.16.0/dist/mermaid.esm.min.mjs");
     mermaid.default.initialize({
       startOnLoad: false,
       securityLevel: "strict",

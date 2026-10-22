@@ -5,7 +5,7 @@ import { buildSectionStyle } from "./section-style";
 describe("section style helper", () => {
   it("maps a color token to section CSS variables", () => {
     expect(buildSectionStyle({ color: "blue" })).toBe(
-      "--section-background-color: var(--color-blue); --section-text-color: var(--color-blue-contrast)"
+      "--section-background-color: var(--color-blue); --section-text-color: var(--color-blue-contrast)",
     );
   });
 
@@ -14,9 +14,9 @@ describe("section style helper", () => {
       buildSectionStyle({
         color: "primary",
         style: "scroll-margin-top: 5rem;",
-      })
+      }),
     ).toBe(
-      "--section-background-color: var(--color-primary); --section-text-color: var(--color-primary-contrast); scroll-margin-top: 5rem"
+      "--section-background-color: var(--color-primary); --section-text-color: var(--color-primary-contrast); scroll-margin-top: 5rem",
     );
   });
 
@@ -25,7 +25,7 @@ describe("section style helper", () => {
       buildSectionStyle({
         color: "var(--color-blue)",
         style: "border-radius: 1rem",
-      })
+      }),
     ).toBe("border-radius: 1rem");
   });
 });

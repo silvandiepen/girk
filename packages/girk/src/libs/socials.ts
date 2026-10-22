@@ -1,11 +1,5 @@
 import { Payload } from "@/types";
-import {
-  blockLine,
-  blockLineError,
-  blockMid,
-  blue,
-  bold,
-} from "cli-block";
+import { blockLine, blockLineError, blockMid, blue, bold } from "cli-block";
 
 export interface Social {
   icon?: string;

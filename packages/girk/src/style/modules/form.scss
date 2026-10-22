@@ -85,12 +85,12 @@
   --form-checkmark-stroke: 0.14em;
   --form-checkmark-color: var(--color-primary);
   --form-checkmark-offset-y: -0.03em;
-  --form-checkmark-transition:
-    transform var(--form-control-transition-duration) var(--form-control-transition-easing);
+  --form-checkmark-transition: transform var(--form-control-transition-duration)
+    var(--form-control-transition-easing);
   --form-radio-dot-size: 0.5em;
   --form-radio-dot-color: var(--color-primary);
-  --form-radio-transition:
-    transform var(--form-control-transition-duration) var(--form-control-transition-easing);
+  --form-radio-transition: transform var(--form-control-transition-duration)
+    var(--form-control-transition-easing);
   --form-choice-checked-border-color: var(--color-primary);
   --form-choice-file-width: min(100%, 42em);
   --form-choice-file-padding: 0.3em;
@@ -180,37 +180,40 @@ label:not([class]) {
 }
 
 label:not([class]):has(
-  > :where(
+    > :where(
       input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
       select:not([class]),
       textarea:not([class]),
       output:not([class])
     )
-) {
+  ) {
   display: grid;
   gap: var(--form-label-gap);
 }
 
 label:not([class]):has(
-  + :where(
+    + :where(
       input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
       select:not([class]),
       textarea:not([class]),
       output:not([class])
     )
-) {
+  ) {
   display: block;
   margin-bottom: var(--form-label-inline-gap);
 }
 
 label:not([class]):has(
-  > span:first-child + :where(
-      input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]),
-      select:not([class]),
-      textarea:not([class]),
-      output:not([class])
-    )
-) {
+    > span:first-child
+      + :where(
+        input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+            [type="color"]
+          ):not([type="hidden"]),
+        select:not([class]),
+        textarea:not([class]),
+        output:not([class])
+      )
+  ) {
   width: min(100%, var(--form-control-width));
   max-width: 100%;
   display: grid;
@@ -220,13 +223,17 @@ label:not([class]):has(
 }
 
 label:not([class]):has(
-  > span:first-child + :where(
-      input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]),
-      select:not([class]),
-      textarea:not([class]),
-      output:not([class])
-    )
-) > span:first-child {
+    > span:first-child
+      + :where(
+        input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+            [type="color"]
+          ):not([type="hidden"]),
+        select:not([class]),
+        textarea:not([class]),
+        output:not([class])
+      )
+  )
+  > span:first-child {
   min-inline-size: 0;
   overflow: hidden;
   white-space: nowrap;
@@ -234,14 +241,20 @@ label:not([class]):has(
 }
 
 label:not([class]):has(
-  > span:first-child + :where(
-      input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]),
-      select:not([class]),
-      textarea:not([class]),
-      output:not([class])
-    )
-) > :where(
-    input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]),
+    > span:first-child
+      + :where(
+        input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+            [type="color"]
+          ):not([type="hidden"]),
+        select:not([class]),
+        textarea:not([class]),
+        output:not([class])
+      )
+  )
+  > :where(
+    input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+        [type="color"]
+      ):not([type="hidden"]),
     select:not([class]),
     textarea:not([class]),
     output:not([class])
@@ -251,20 +264,20 @@ label:not([class]):has(
 }
 
 label:not([class]):has(
-  > span:first-child
-    + :where(
+    > span:first-child
+      + :where(
         input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
         select:not([class]),
         textarea:not([class]),
         output:not([class])
       )
-    + :where(
+      + :where(
         input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
         select:not([class]),
         textarea:not([class]),
         output:not([class])
       )
-) {
+  ) {
   width: min(100%, var(--form-control-width));
   max-width: 100%;
   display: flex;
@@ -274,20 +287,21 @@ label:not([class]):has(
 }
 
 label:not([class]):has(
-  > span:first-child
-    + :where(
+    > span:first-child
+      + :where(
         input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
         select:not([class]),
         textarea:not([class]),
         output:not([class])
       )
-    + :where(
+      + :where(
         input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
         select:not([class]),
         textarea:not([class]),
         output:not([class])
       )
-) > span:first-child {
+  )
+  > span:first-child {
   flex: 0 1 auto;
   min-inline-size: 0;
   overflow: hidden;
@@ -296,21 +310,24 @@ label:not([class]):has(
 }
 
 label:not([class]):has(
-  > span:first-child
-    + :where(
+    > span:first-child
+      + :where(
         input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
         select:not([class]),
         textarea:not([class]),
         output:not([class])
       )
-    + :where(
+      + :where(
         input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
         select:not([class]),
         textarea:not([class]),
         output:not([class])
       )
-) > :where(
-    input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]),
+  )
+  > :where(
+    input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+        [type="color"]
+      ):not([type="hidden"]),
     select:not([class]),
     textarea:not([class])
   ) {
@@ -320,80 +337,75 @@ label:not([class]):has(
 }
 
 label:not([class]):has(
-  > span:first-child
-    + :where(
+    > span:first-child
+      + :where(
         input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
         select:not([class]),
         textarea:not([class]),
         output:not([class])
       )
-    + :where(
+      + :where(
         input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
         select:not([class]),
         textarea:not([class]),
         output:not([class])
       )
-) > input[type="range"]:not([class]) {
+  )
+  > input[type="range"]:not([class]) {
   flex: 1 1 var(--form-inline-range-width);
   width: auto;
   min-inline-size: 0;
 }
 
 label:not([class]):has(
-  > span:first-child
-    + :where(
+    > span:first-child
+      + :where(
         input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
         select:not([class]),
         textarea:not([class]),
         output:not([class])
       )
-    + :where(
+      + :where(
         input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
         select:not([class]),
         textarea:not([class]),
         output:not([class])
       )
-) > :where(
-    output:not([class])
-  ) {
+  )
+  > :where(output:not([class])) {
   flex: 0 0 auto;
   width: auto;
 }
 
-label:not([class]):has(
-  > span:first-child
-    + input[type="color"]:not([class])
-    + output:not([class])
-) > input[type="color"]:not([class]) {
+label:not([class]):has(> span:first-child + input[type="color"]:not([class]) + output:not([class]))
+  > input[type="color"]:not([class]) {
   flex: 0 0 var(--form-color-input-size);
   width: var(--form-color-input-size);
   min-inline-size: var(--form-color-input-size);
 }
 
-label:not([class]):has(
-  > span:first-child
-    + input[type="color"]:not([class])
-    + output:not([class])
-) > output:not([class]) {
+label:not([class]):has(> span:first-child + input[type="color"]:not([class]) + output:not([class]))
+  > output:not([class]) {
   flex: 1 1 auto;
   min-inline-size: 0;
 }
 
 label:not([class]):has(
-  > span:first-child
-    + :where(
+    > span:first-child
+      + :where(
         input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
         select:not([class]),
         textarea:not([class]),
         output:not([class])
       )
-    + :where(
+      + :where(
         input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
         select:not([class]),
         textarea:not([class]),
         output:not([class])
       )
-) > input[type="number"]:not([class]) {
+  )
+  > input[type="number"]:not([class]) {
   flex: 0 0 min(100%, var(--form-number-width));
   width: min(100%, var(--form-number-width));
 }
@@ -414,7 +426,9 @@ label:not([class]):has(> input[type="radio"]:not([class])) > :not([class]):not(i
 }
 
 :where(
-  input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="hidden"]),
+  input:not([class]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+      [type="color"]
+    ):not([type="hidden"]),
   select:not([class]),
   textarea:not([class])
 ) {
@@ -454,8 +468,7 @@ select[multiple]:not([class]) {
 }
 
 select[multiple]:not([class]) option {
-  padding: var(--form-multiselect-option-padding-y)
-    var(--form-multiselect-option-padding-x);
+  padding: var(--form-multiselect-option-padding-y) var(--form-multiselect-option-padding-x);
   border-radius: var(--border-radius-s);
   background: transparent;
 }
@@ -503,108 +516,108 @@ input[type="color"]:not([class])::-moz-color-swatch {
   border-radius: inherit;
 }
 
-  input[type="range"]:not([class]) {
-    width: var(--form-control-width);
-    margin: 0;
-    padding: 0;
-    appearance: none;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-  }
+input[type="range"]:not([class]) {
+  width: var(--form-control-width);
+  margin: 0;
+  padding: 0;
+  appearance: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
 
-  input[type="range"]:not([class])::-webkit-slider-runnable-track {
-    height: var(--form-range-track-height);
-    border-radius: var(--border-radius-round);
-    background-color: var(--form-range-track-background);
-  }
+input[type="range"]:not([class])::-webkit-slider-runnable-track {
+  height: var(--form-range-track-height);
+  border-radius: var(--border-radius-round);
+  background-color: var(--form-range-track-background);
+}
 
-  input[type="range"]:not([class])::-webkit-slider-thumb {
-    appearance: none;
-    inline-size: var(--form-range-thumb-size);
-    block-size: var(--form-range-thumb-size);
-    margin-top: var(--form-range-thumb-offset);
-    border: var(--border-width-s) solid var(--form-range-thumb-border-color);
-    border-radius: 50%;
-    background-color: var(--form-range-thumb-background);
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary) 0%, transparent);
-    transition: var(--form-range-thumb-transition);
-  }
+input[type="range"]:not([class])::-webkit-slider-thumb {
+  appearance: none;
+  inline-size: var(--form-range-thumb-size);
+  block-size: var(--form-range-thumb-size);
+  margin-top: var(--form-range-thumb-offset);
+  border: var(--border-width-s) solid var(--form-range-thumb-border-color);
+  border-radius: 50%;
+  background-color: var(--form-range-thumb-background);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary) 0%, transparent);
+  transition: var(--form-range-thumb-transition);
+}
 
-  input[type="range"]:not([class])::-moz-range-track {
-    height: var(--form-range-track-height);
-    border: none;
-    border-radius: var(--border-radius-round);
-    background-color: var(--form-range-track-background);
-  }
+input[type="range"]:not([class])::-moz-range-track {
+  height: var(--form-range-track-height);
+  border: none;
+  border-radius: var(--border-radius-round);
+  background-color: var(--form-range-track-background);
+}
 
-  input[type="range"]:not([class])::-moz-range-thumb {
-    inline-size: var(--form-range-thumb-size);
-    block-size: var(--form-range-thumb-size);
-    border: var(--border-width-s) solid var(--form-range-thumb-border-color);
-    border-radius: 50%;
-    background-color: var(--form-range-thumb-background);
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary) 0%, transparent);
-    transition: var(--form-range-thumb-transition);
-  }
+input[type="range"]:not([class])::-moz-range-thumb {
+  inline-size: var(--form-range-thumb-size);
+  block-size: var(--form-range-thumb-size);
+  border: var(--border-width-s) solid var(--form-range-thumb-border-color);
+  border-radius: 50%;
+  background-color: var(--form-range-thumb-background);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary) 0%, transparent);
+  transition: var(--form-range-thumb-transition);
+}
 
-  input[type="checkbox"]:not([class]),
-  input[type="radio"]:not([class]) {
-    appearance: none;
-    -webkit-appearance: none;
-    inline-size: var(--form-choice-size);
-    block-size: var(--form-choice-size);
-    margin: 0;
-    border: var(--border-width-s) solid var(--form-choice-border-color);
-    background-color: var(--form-choice-background);
-    display: grid;
-    place-content: center;
-    cursor: pointer;
-    transition: var(--form-choice-transition);
-  }
+input[type="checkbox"]:not([class]),
+input[type="radio"]:not([class]) {
+  appearance: none;
+  -webkit-appearance: none;
+  inline-size: var(--form-choice-size);
+  block-size: var(--form-choice-size);
+  margin: 0;
+  border: var(--border-width-s) solid var(--form-choice-border-color);
+  background-color: var(--form-choice-background);
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+  transition: var(--form-choice-transition);
+}
 
-  input[type="checkbox"]:not([class]) {
-    border-radius: var(--form-checkbox-radius);
-  }
+input[type="checkbox"]:not([class]) {
+  border-radius: var(--form-checkbox-radius);
+}
 
-  input[type="radio"]:not([class]) {
-    border-radius: 50%;
-  }
+input[type="radio"]:not([class]) {
+  border-radius: 50%;
+}
 
-  input[type="checkbox"]:not([class])::before {
-    content: "";
-    width: var(--form-checkmark-width);
-    height: var(--form-checkmark-height);
-    border-left: var(--form-checkmark-stroke) solid var(--form-checkmark-color);
-    border-bottom: var(--form-checkmark-stroke) solid var(--form-checkmark-color);
-    transform: translateY(var(--form-checkmark-offset-y)) rotate(-45deg) scale(0);
-    transform-origin: center;
-    transition: var(--form-checkmark-transition);
-  }
+input[type="checkbox"]:not([class])::before {
+  content: "";
+  width: var(--form-checkmark-width);
+  height: var(--form-checkmark-height);
+  border-left: var(--form-checkmark-stroke) solid var(--form-checkmark-color);
+  border-bottom: var(--form-checkmark-stroke) solid var(--form-checkmark-color);
+  transform: translateY(var(--form-checkmark-offset-y)) rotate(-45deg) scale(0);
+  transform-origin: center;
+  transition: var(--form-checkmark-transition);
+}
 
-  input[type="radio"]:not([class])::before {
-    content: "";
-    width: var(--form-radio-dot-size);
-    height: var(--form-radio-dot-size);
-    border-radius: 50%;
-    background-color: var(--form-radio-dot-color);
-    transform: scale(0);
-    transition: var(--form-radio-transition);
-  }
+input[type="radio"]:not([class])::before {
+  content: "";
+  width: var(--form-radio-dot-size);
+  height: var(--form-radio-dot-size);
+  border-radius: 50%;
+  background-color: var(--form-radio-dot-color);
+  transform: scale(0);
+  transition: var(--form-radio-transition);
+}
 
-  input[type="checkbox"]:not([class]):checked,
-  input[type="radio"]:not([class]):checked {
-    border-color: var(--form-choice-checked-border-color);
-  }
+input[type="checkbox"]:not([class]):checked,
+input[type="radio"]:not([class]):checked {
+  border-color: var(--form-choice-checked-border-color);
+}
 
-  input[type="checkbox"]:not([class]):checked::before,
-  input[type="radio"]:not([class]):checked::before {
-    transform: translateY(var(--form-checkmark-offset-y)) rotate(-45deg) scale(1);
-  }
+input[type="checkbox"]:not([class]):checked::before,
+input[type="radio"]:not([class]):checked::before {
+  transform: translateY(var(--form-checkmark-offset-y)) rotate(-45deg) scale(1);
+}
 
-  input[type="radio"]:not([class]):checked::before {
-    transform: scale(1);
-  }
+input[type="radio"]:not([class]):checked::before {
+  transform: scale(1);
+}
 
 input[type="file"]:not([class]) {
   width: var(--form-choice-file-width);
@@ -615,32 +628,32 @@ input[type="file"]:not([class]) {
   color: var(--form-control-color);
 }
 
-  input[type="file"]:not([class])::file-selector-button,
-  :where(
-    button:not([class]),
-    input[type="submit"]:not([class]),
-    input[type="button"]:not([class]),
-    input[type="reset"]:not([class])
-  ) {
-    line-height: var(--form-button-line-height);
-    padding: var(--form-button-padding-y) var(--form-button-padding-x);
-    border: var(--border-width-s) solid var(--form-button-border-color);
-    border-radius: var(--form-button-radius);
-    background-color: var(--form-button-background);
-    color: var(--form-button-color);
-    font-weight: var(--form-button-font-weight);
-    cursor: pointer;
-    transition: var(--form-button-transition);
-  }
+input[type="file"]:not([class])::file-selector-button,
+:where(
+  button:not([class]),
+  input[type="submit"]:not([class]),
+  input[type="button"]:not([class]),
+  input[type="reset"]:not([class])
+) {
+  line-height: var(--form-button-line-height);
+  padding: var(--form-button-padding-y) var(--form-button-padding-x);
+  border: var(--border-width-s) solid var(--form-button-border-color);
+  border-radius: var(--form-button-radius);
+  background-color: var(--form-button-background);
+  color: var(--form-button-color);
+  font-weight: var(--form-button-font-weight);
+  cursor: pointer;
+  transition: var(--form-button-transition);
+}
 
-  :where(
-    button:not([class]),
-    input[type="submit"]:not([class]),
-    input[type="button"]:not([class]),
-    input[type="reset"]:not([class])
-  ) {
-    justify-self: start;
-  }
+:where(
+  button:not([class]),
+  input[type="submit"]:not([class]),
+  input[type="button"]:not([class]),
+  input[type="reset"]:not([class])
+) {
+  justify-self: start;
+}
 
 output:not([class]) {
   display: inline-flex;
@@ -654,32 +667,32 @@ output:not([class]) {
   font-weight: var(--form-output-font-weight);
 }
 
-  :where(
-    button:not([class]),
-    input:not([class]):not([type="hidden"]),
-    select:not([class]),
-    textarea:not([class]),
-    output:not([class])
-  ):focus-visible {
-    outline: none;
-    border-color: var(--form-focus-border-color);
-    box-shadow: 0 0 0 var(--form-focus-ring-width) var(--form-focus-ring-color);
-  }
+:where(
+  button:not([class]),
+  input:not([class]):not([type="hidden"]),
+  select:not([class]),
+  textarea:not([class]),
+  output:not([class])
+):focus-visible {
+  outline: none;
+  border-color: var(--form-focus-border-color);
+  box-shadow: 0 0 0 var(--form-focus-ring-width) var(--form-focus-ring-color);
+}
 
-  input[type="range"]:not([class]):focus-visible::-webkit-slider-thumb,
-  input[type="range"]:not([class]):focus-visible::-moz-range-thumb {
-    box-shadow: 0 0 0 var(--form-focus-ring-width) var(--form-focus-ring-color);
-  }
+input[type="range"]:not([class]):focus-visible::-webkit-slider-thumb,
+input[type="range"]:not([class]):focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 var(--form-focus-ring-width) var(--form-focus-ring-color);
+}
 
-  :where(
-    button:not([class]),
-    input:not([class]),
-    select:not([class]),
-    textarea:not([class])
-  )::placeholder {
-    color: var(--form-placeholder-color);
-    opacity: 1;
-  }
+:where(
+  button:not([class]),
+  input:not([class]),
+  select:not([class]),
+  textarea:not([class])
+)::placeholder {
+  color: var(--form-placeholder-color);
+  opacity: 1;
+}
 
 :where(
   button:not([class]),

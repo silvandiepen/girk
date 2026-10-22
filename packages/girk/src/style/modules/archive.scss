@@ -20,10 +20,7 @@
   &--blog {
     grid-template-columns: repeat(
       auto-fit,
-      minmax(
-        var(--archive-column-min-width, calc(var(--font-size) * 20)),
-        1fr
-      )
+      minmax(var(--archive-column-min-width, calc(var(--font-size) * 20)), 1fr)
     );
     gap: var(--space-xl);
   }
@@ -67,7 +64,9 @@
   overflow: hidden;
   box-shadow: 0 var(--space-xxs) var(--space-s)
     color-mix(in srgb, var(--color-foreground) 8%, transparent);
-  transition: background-color 0.2s ease, box-shadow 0.2s ease,
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
     transform 0.2s ease;
 
   &__link {
@@ -79,7 +78,9 @@
     padding: var(--card-padding, var(--space));
     text-decoration: none;
     color: var(--section-text-color);
-    transition: background-color 0.2s ease, opacity 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      opacity 0.2s ease;
   }
 
   &:hover {
@@ -102,11 +103,7 @@
       width: var(--card-icon-size, calc(var(--space) * 4.5));
       height: var(--card-icon-size, calc(var(--space) * 4.5));
       border-radius: var(--border-radius-m);
-      background-color: color-mix(
-        in srgb,
-        currentColor 12%,
-        transparent
-      );
+      background-color: color-mix(in srgb, currentColor 12%, transparent);
     }
 
     &--image {

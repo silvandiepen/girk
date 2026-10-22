@@ -1,9 +1,7 @@
 import { Payload, Style } from "@/types";
 import { buildCss, buildCssFromContent, ColorConfig } from "./compile";
 
-export const getConfigColors = (
-  config: Payload["settings"]["config"]
-): ColorConfig | null => {
+export const getConfigColors = (config: Payload["settings"]["config"]): ColorConfig | null => {
   if (!config) return null;
   const colors: ColorConfig = {};
   Object.keys(config).forEach((key: string) => {
@@ -28,13 +26,11 @@ export interface StyleResult {
  */
 export const generateStyles = async (
   payload: Payload,
-  baseCss?: string
+  baseCss?: string,
 ): Promise<Payload & { _sdkStyleResult?: StyleResult }> => {
   const colors = getConfigColors(payload.settings?.config);
 
-  const styleSheet = baseCss
-    ? buildCssFromContent(baseCss, colors)
-    : await buildCss(colors);
+  const styleSheet = baseCss ? buildCssFromContent(baseCss, colors) : await buildCss(colors);
 
   const style: Style = {
     path: "/style/app.css",
@@ -49,9 +45,7 @@ export const generateStyles = async (
   }
 
   if (payload.project?.styleOverrule) {
-    style.path = payload.project.styleOverrule
-      .toString()
-      .replace(".scss", ".css");
+    style.path = payload.project.styleOverrule.toString().replace(".scss", ".css");
   }
 
   return {

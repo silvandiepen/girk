@@ -107,7 +107,7 @@ function formatDate(value: string | Date, format?: string): string {
 function renderIcon(
   icon: { svg?: string; src?: string } | undefined,
   wrapperClass = "icon",
-  assetClass = "icon__asset"
+  assetClass = "icon__asset",
 ): string {
   if (!icon) return "";
   let out = `<span class="${wrapperClass}" aria-hidden="true">`;
@@ -146,7 +146,7 @@ export function uniqueSvgIds(html: string): string {
 export function renderEjs(
   data: Record<string, unknown>,
   templateName = "page",
-  customTemplates?: Record<string, string>
+  customTemplates?: Record<string, string>,
 ): string {
   const registry = getRegistry();
 
@@ -162,7 +162,10 @@ export function renderEjs(
   for (const [name, src] of Object.entries(allTemplates)) {
     if (name === "page") continue;
     partials[name] = (d) =>
-      getCompiled(name, src as string)({ ...d, data: d, partials, scripts, formatDate, renderIcon });
+      getCompiled(
+        name,
+        src as string,
+      )({ ...d, data: d, partials, scripts, formatDate, renderIcon });
   }
 
   const enhancedData = { ...data, data, partials, scripts, formatDate, renderIcon };

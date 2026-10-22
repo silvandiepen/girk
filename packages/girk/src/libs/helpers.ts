@@ -8,24 +8,20 @@ export const removeTitle = (input: string): string => removeTag(input, "h1");
 const stripGeneratedHeadingAnchors = (input: string): string =>
   input.replace(/<a\b[^>]*class="[^"]*\bheading-anchor\b[^"]*"[^>]*>.*?<\/a>/gi, "");
 
-const stripHtml = (input: string): string =>
-  input.replace(/<[^>]+>/g, "").trim();
+const stripHtml = (input: string): string => input.replace(/<[^>]+>/g, "").trim();
 
 export const getTitle = (input: string): string =>
   stripHtml(stripGeneratedHeadingAnchors(getStringFromTag(input, "h1")));
 
-export const fileTitle = (file: File): string =>
-  getTitle(file.html) || file.name;
+export const fileTitle = (file: File): string => getTitle(file.html) || file.name;
 
-export const getExcerpt = (file: File): string =>
-  getStringFromTag(file.html ? file.html : "", "p");
+export const getExcerpt = (file: File): string => getStringFromTag(file.html ? file.html : "", "p");
 
-export const isHidden = (meta?: Meta): boolean =>
-  meta?.hide === true || meta?.hide === "true";
+export const isHidden = (meta?: Meta): boolean => meta?.hide === true || meta?.hide === "true";
 
 export const flattenObject = (
   obj: Record<string, unknown>,
-  prevKey = ""
+  prevKey = "",
 ): Record<string, unknown> => {
   const flattened: Record<string, unknown> = {};
 
@@ -35,7 +31,7 @@ export const flattenObject = (
     if (typeof value === "object" && value !== null && !Array.isArray(value)) {
       Object.assign(
         flattened,
-        flattenObject(value as Record<string, unknown>, join(prevKey, key, "-"))
+        flattenObject(value as Record<string, unknown>, join(prevKey, key, "-")),
       );
     } else {
       flattened[camelCase(join(prevKey, key, "-"), { exclude: [":"] })] = value;

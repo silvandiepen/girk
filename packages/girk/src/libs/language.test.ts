@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  getLangFromFilename,
-  getLangFromPath,
-  fixLangInPath,
-} from "./language";
+import { getLangFromFilename, getLangFromPath, fixLangInPath } from "./language";
 
 describe("Language in fileName", () => {
   it("Should return the correct language", () => {

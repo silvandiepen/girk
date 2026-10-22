@@ -23,21 +23,19 @@ export const checkConnection = async (config: connectionConfig = {}): Promise<vo
   const hostname: string = urlInfo.hostname || urlInfo.pathname;
 
   for (let i = 0; i < retries; i++) {
-    const connectPromise = new Promise(
-      (resolve: (value: number) => void, reject) => {
-        const client = new net.Socket();
-        client.connect({ port: defaultPort, host: hostname }, () => {
-          client.destroy();
-          resolve(1);
-        });
-        // client.on("data", (): void => {});
-        client.on("error", (err) => {
-          client.destroy();
-          reject(err);
-        });
-        // client.on("close", () => {});
-      }
-    );
+    const connectPromise = new Promise((resolve: (value: number) => void, reject) => {
+      const client = new net.Socket();
+      client.connect({ port: defaultPort, host: hostname }, () => {
+        client.destroy();
+        resolve(1);
+      });
+      // client.on("data", (): void => {});
+      client.on("error", (err) => {
+        client.destroy();
+        reject(err);
+      });
+      // client.on("close", () => {});
+    });
     try {
       // @ts-ignoreL Connection should be typed
       await connectPromise.timeout(timeout);

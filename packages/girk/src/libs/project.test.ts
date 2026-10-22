@@ -24,7 +24,7 @@ describe("Project settings", () => {
           description: "Config Description",
         },
         projectGroupTags: false,
-      })
+      }),
     );
 
     const project = await getProjectData([
@@ -56,15 +56,14 @@ describe("Project settings", () => {
           script: "/assets/from-config.js",
           scriptModule: "/assets/from-config-module.js",
         },
-      })
+      }),
     );
 
     const project = await getProjectData([
       {
         meta: {
           projectScript: "/assets/from-markdown.js",
-          projectScriptModule:
-            "/assets/component-one.js, /assets/component-two.js",
+          projectScriptModule: "/assets/component-one.js, /assets/component-two.js",
         },
       } as any,
     ]);
@@ -88,7 +87,7 @@ describe("Project settings", () => {
         projectSearch: "true",
         projectSearchSharding: "section",
         projectSearchBodyLimit: "1400",
-      })
+      }),
     );
 
     const project = await getProjectData([]);

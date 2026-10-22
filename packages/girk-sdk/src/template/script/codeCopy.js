@@ -12,7 +12,9 @@ const initCodeCopy = () => {
     // Only the label changes, so the button keeps nizel's markup.
     const label = button.querySelector("[data-nizel-copy-label]") || button;
     const originalLabel = label.textContent || "Copy";
-    const language = container.querySelector("code[class*='language-']")?.className.match(/language-(\S+)/)?.[1];
+    const language = container
+      .querySelector("code[class*='language-']")
+      ?.className.match(/language-(\S+)/)?.[1];
     button.setAttribute("aria-label", language ? `Copy ${language} code` : "Copy code");
 
     button.addEventListener("click", async () => {

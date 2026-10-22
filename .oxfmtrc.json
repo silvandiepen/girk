@@ -1,3 +1,9 @@
 {
-  "ignorePatterns": ["**/dist/**", "**/public/**", "**/CHANGELOG.md", "packages/girk-sdk/src/libs/templates/registry.ts"]
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/public/**",
+    "**/CHANGELOG.md",
+    "packages/girk-sdk/src/libs/templates/registry.ts",
+    "**/wrangler.jsonc"
+  ]
 }

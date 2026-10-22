@@ -51,10 +51,7 @@ const stringifyValue = (value: unknown): string => {
   return String(value);
 };
 
-const interpolateValues = (
-  template: string,
-  context: Record<string, unknown>
-): string =>
+const interpolateValues = (template: string, context: Record<string, unknown>): string =>
   template.replace(VALUE_PATTERN, (match, path: string) => {
     const value = getValueByPath(context, path);
     return value === undefined ? "" : stringifyValue(value);
@@ -62,15 +59,13 @@ const interpolateValues = (
 
 export const interpolateDataTemplate = (
   template: string,
-  context: Record<string, unknown>
+  context: Record<string, unknown>,
 ): string => {
   const repeated = template.replace(EACH_PATTERN, (_match, block: string) => {
     const result = context.result;
     if (!Array.isArray(result)) return "";
 
-    return result
-      .map((entry) => interpolateValues(block, { ...context, result: entry }))
-      .join("");
+    return result.map((entry) => interpolateValues(block, { ...context, result: entry })).join("");
   });
 
   return interpolateValues(repeated, context);
@@ -126,12 +121,12 @@ const getSourceData = async (source: string): Promise<unknown> => {
 
         if (!response.ok) {
           throw new Error(
-            `[girky] Failed to load dataSource ${source}: ${response.status} ${response.statusText}`
+            `[girky] Failed to load dataSource ${source}: ${response.status} ${response.statusText}`,
           );
         }
 
         return response.json();
-      })()
+      })(),
     );
   }
 
@@ -142,9 +137,7 @@ const getResolvedResult = async (definition: DataDefinition): Promise<unknown> =
   if (!definition.source) return undefined;
 
   const sourceData = await getSourceData(definition.source);
-  const result = definition.items
-    ? getValueByPath(sourceData, definition.items)
-    : sourceData;
+  const result = definition.items ? getValueByPath(sourceData, definition.items) : sourceData;
 
   return result;
 };
@@ -169,19 +162,18 @@ const getParentFromPath = (relativePath: string): string => {
 };
 
 const buildGeneratedPath = (file: File, slug: unknown): string => {
-  const rawSlug = stringifyValue(slug).trim().replace(/^\/+|\/+$/g, "");
+  const rawSlug = stringifyValue(slug)
+    .trim()
+    .replace(/^\/+|\/+$/g, "");
 
   if (!rawSlug) {
-    throw new Error(
-      `[girky] dataSlug did not resolve to a usable value for ${file.relativePath}`
-    );
+    throw new Error(`[girky] dataSlug did not resolve to a usable value for ${file.relativePath}`);
   }
 
   const extension = extname(file.path) || ".md";
   const segments = rawSlug.split("/").filter(Boolean);
   const leaf = segments.pop();
-  const languageSuffix =
-    file.language === getDefaultLanguage() ? "" : `:${file.language}`;
+  const languageSuffix = file.language === getDefaultLanguage() ? "" : `:${file.language}`;
 
   return join(dirname(file.path), ...segments, `${leaf}${languageSuffix}${extension}`);
 };
@@ -194,7 +186,7 @@ const createGeneratedFile = async (file: File, item: unknown): Promise<File> => 
   const renderedData = stripDataMeta(
     interpolateDataTemplate(file.data || "", {
       result: item,
-    })
+    }),
   );
 
   return {
@@ -225,9 +217,7 @@ export const prepareDataFiles = async (files: File[]): Promise<File[]> => {
 
     if (definition.slug) {
       if (!Array.isArray(result)) {
-        throw new Error(
-          `[girky] dataSlug requires an array result for ${file.relativePath}`
-        );
+        throw new Error(`[girky] dataSlug requires an array result for ${file.relativePath}`);
       }
 
       for (const item of result) {
@@ -242,7 +232,7 @@ export const prepareDataFiles = async (files: File[]): Promise<File[]> => {
       data: stripDataMeta(
         interpolateDataTemplate(file.data || "", {
           result,
-        })
+        }),
       ),
     });
   }

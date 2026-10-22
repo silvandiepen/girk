@@ -1,11 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import {
-  buildCss,
-  buildModeColorVariables,
-  getContrastReference,
-  getTextVariant,
-} from "./compile";
+import { buildCss, buildModeColorVariables, getContrastReference, getTextVariant } from "./compile";
 
 const toRgb = (hex: string): [number, number, number] => {
   const value = hex.replace("#", "");
@@ -123,7 +118,7 @@ describe("buildStyle compile", () => {
     expect(compactCss).not.toContain("text-indent:100%");
     expect(compactCss).not.toContain(".header:has(.navigation--mobile-open)");
     expect(compactCss).toContain(
-      ".header::before{content:\"\";position:absolute;inset:0;z-index:-1;background-color:var(--color-background);backdrop-filter:blur(18px)}",
+      '.header::before{content:"";position:absolute;inset:0;z-index:-1;background-color:var(--color-background);backdrop-filter:blur(18px)}',
     );
     expect(compactCss).toContain("display:flex;overflow-y:auto;-webkit-overflow-scrolling:touch");
     expect(compactCss).toContain("opacity:0;visibility:hidden;pointer-events:none");
@@ -171,16 +166,13 @@ describe("getContrastReference", () => {
     expect(getContrastReference(value, DARK, LIGHT)).toBe(expected);
   });
 
-  it.each(Object.entries(palette))(
-    "gives %s (%s) text of at least 4.5:1",
-    (_name, value) => {
-      const text = getContrastReference(value, DARK, LIGHT) === "var(--color-dark)" ? DARK : LIGHT;
-      const other = text === DARK ? LIGHT : DARK;
+  it.each(Object.entries(palette))("gives %s (%s) text of at least 4.5:1", (_name, value) => {
+    const text = getContrastReference(value, DARK, LIGHT) === "var(--color-dark)" ? DARK : LIGHT;
+    const other = text === DARK ? LIGHT : DARK;
 
-      expect(contrast(value, text)).toBeGreaterThanOrEqual(4.5);
-      expect(contrast(value, text)).toBeGreaterThanOrEqual(contrast(value, other));
-    },
-  );
+    expect(contrast(value, text)).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(value, text)).toBeGreaterThanOrEqual(contrast(value, other));
+  });
 
   it("uses the configured dark and light colours", () => {
     expect(getContrastReference("#767676", "#000000", "#bbbbbb")).toBe("var(--color-dark)");
@@ -219,7 +211,9 @@ describe("getTextVariant", () => {
   it("emits text variants for primary and secondary per mode", () => {
     const dark = buildModeColorVariables(null, "dark");
 
-    expect(dark).toMatch(/--color-primary-text: color-mix\(in srgb, var\(--color-primary\) \d+%, var\(--color-foreground\)\);/);
+    expect(dark).toMatch(
+      /--color-primary-text: color-mix\(in srgb, var\(--color-primary\) \d+%, var\(--color-foreground\)\);/,
+    );
     expect(dark).toContain("--color-secondary-text:");
   });
 });

@@ -224,9 +224,7 @@
             escapeHtml(result.title) +
             "</span>" +
             (result.excerpt
-              ? '<span class="search-results__excerpt">' +
-                escapeHtml(result.excerpt) +
-                "</span>"
+              ? '<span class="search-results__excerpt">' + escapeHtml(result.excerpt) + "</span>"
               : "") +
             "</a>" +
             "</li>"
@@ -286,10 +284,7 @@
 
     setOpenState(false);
 
-    if (
-      state.lastFocusedElement &&
-      typeof state.lastFocusedElement.focus === "function"
-    ) {
+    if (state.lastFocusedElement && typeof state.lastFocusedElement.focus === "function") {
       state.lastFocusedElement.focus();
     }
   }
@@ -305,16 +300,11 @@
       var shards = await Promise.all(
         getLanguageShards(manifest).map(function (descriptor) {
           return getShard(descriptor);
-        })
+        }),
       );
       var allowDocument = getScopePredicate();
 
-      renderResults(
-        query,
-        rankResults(query, shards, 24)
-          .filter(allowDocument)
-          .slice(0, 8)
-      );
+      renderResults(query, rankResults(query, shards, 24).filter(allowDocument).slice(0, 8));
     } catch {
       renderResults(query, [], true);
     }
@@ -383,11 +373,9 @@
     state.form = document.querySelector("[data-search-form]");
     state.input = document.querySelector("[data-search-input]");
     state.results = document.querySelector("[data-search-results]");
-    state.openButtons = Array.prototype.slice.call(
-      document.querySelectorAll("[data-search-open]")
-    );
+    state.openButtons = Array.prototype.slice.call(document.querySelectorAll("[data-search-open]"));
     state.closeButtons = Array.prototype.slice.call(
-      document.querySelectorAll("[data-search-close]")
+      document.querySelectorAll("[data-search-close]"),
     );
 
     if (!state.shell || !state.dialog || !state.input || !state.results) return;

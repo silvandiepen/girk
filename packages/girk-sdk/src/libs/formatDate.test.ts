@@ -28,8 +28,18 @@ describe("formatDate", () => {
 
   it("handles all month abbreviations", () => {
     const months = [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
     ];
     months.forEach((expected, idx) => {
       const d = new Date(2026, idx, 15);

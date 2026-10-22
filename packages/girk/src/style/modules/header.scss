@@ -21,8 +21,7 @@
     position: static;
     width: min(100%, var(--layout-width));
     margin: 0 auto;
-    padding: var(--header-padding-y, var(--space-s))
-      var(--header-padding-x, var(--space));
+    padding: var(--header-padding-y, var(--space-s)) var(--header-padding-x, var(--space));
     display: flex;
     justify-content: space-between;
     align-items: center;

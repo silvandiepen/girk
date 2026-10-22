@@ -160,7 +160,9 @@ title: Projects
 ---
 
 {{#each result}}
+
 ## [{{result.title}}](/projects/{{result.slug}}/)
+
 {{result.summary}}
 {{/each}}
 ```
@@ -172,7 +174,7 @@ Use `dataSlug` when one template file should generate many real pages:
 dataSource: data/projects.json
 dataItems: items
 dataSlug: slug
-title: {{result.title}}
+title: { { result.title } }
 ---
 
 # {{result.title}}
@@ -189,7 +191,9 @@ title: Posts
 ---
 
 {{#each result}}
+
 ## {{result.title}}
+
 {{result.body}}
 {{/each}}
 ```

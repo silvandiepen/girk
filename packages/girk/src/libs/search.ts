@@ -82,12 +82,8 @@ const stripHtml = (input: string): string =>
     .replace(/<style[\s\S]*?<\/style>/gi, " ")
     .replace(/<[^>]+>/g, " ")
     .replace(/&(amp|lt|gt|quot|nbsp);|&#39;/g, decodeHtmlEntity)
-    .replace(/&#x([0-9a-f]+);/gi, (_, value) =>
-      String.fromCodePoint(Number.parseInt(value, 16))
-    )
-    .replace(/&#([0-9]+);/g, (_, value) =>
-      String.fromCodePoint(Number.parseInt(value, 10))
-    )
+    .replace(/&#x([0-9a-f]+);/gi, (_, value) => String.fromCodePoint(Number.parseInt(value, 16)))
+    .replace(/&#([0-9]+);/g, (_, value) => String.fromCodePoint(Number.parseInt(value, 10)))
     .replace(/\s+/g, " ")
     .trim();
 
@@ -158,11 +154,7 @@ const getSearchHeadings = (html: string): string[] =>
     .map(([, heading]) => stripHtml(heading))
     .filter(Boolean);
 
-const addWeightedTokens = (
-  input: string,
-  weight: number,
-  terms: Map<string, number>
-): void => {
+const addWeightedTokens = (input: string, weight: number, terms: Map<string, number>): void => {
   const counts = new Map<string, number>();
 
   tokenize(input).forEach((token) => {
@@ -192,7 +184,7 @@ const isSearchableFile = (file: File, files: File[]): boolean => {
 
 const createSearchDocument = (
   file: File,
-  payload: Payload
+  payload: Payload,
 ): { document: SearchDocument; terms: Map<string, number> } => {
   const title = getSearchTitle(file);
   const excerpt = getSearchExcerpt(file);
@@ -226,7 +218,7 @@ const createSearchDocument = (
 
 const buildSearchGroups = (
   documents: Array<{ document: SearchDocument; terms: Map<string, number> }>,
-  project: Project
+  project: Project,
 ): SearchShardGroup[] => {
   const groupedByLanguage = new Map<
     SearchDocument["language"],
@@ -255,7 +247,7 @@ const buildSearchGroups = (
 
     const sharding = project.searchSharding || "auto";
     const hasMultiDocSection = Array.from(groupedBySection.values()).some(
-      (entries) => entries.length >= SEARCH_SECTION_MIN_DOCUMENTS
+      (entries) => entries.length >= SEARCH_SECTION_MIN_DOCUMENTS,
     );
     const useSectionShards =
       sharding === "section" ||
@@ -311,7 +303,7 @@ const buildSearchGroups = (
 
 const buildSearchShard = (
   group: SearchShardGroup,
-  entries: Array<{ document: SearchDocument; terms: Map<string, number> }>
+  entries: Array<{ document: SearchDocument; terms: Map<string, number> }>,
 ): SearchIndexShard => {
   const docs: Record<string, SearchDocument> = {};
   const terms = new Map<string, Array<[string, number]>>();
@@ -354,7 +346,7 @@ const getSearchClientSource = (): string => {
 };
 
 const getSearchDocuments = (
-  payload: Payload
+  payload: Payload,
 ): Array<{ document: SearchDocument; terms: Map<string, number> }> =>
   payload.files
     .filter((file) => isSearchableFile(file, payload.files))

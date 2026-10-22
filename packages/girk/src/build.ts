@@ -53,7 +53,11 @@ export const isIgnoredPath = (relativePath: string, ignore: string[] = []): bool
   const stem = fileName.split(".")[0].split(":")[0];
 
   return ignore.some((entry) => {
-    const rule = entry.trim().replace(/\\/g, "/").replace(/^\/+|\/+$/g, "").toLowerCase();
+    const rule = entry
+      .trim()
+      .replace(/\\/g, "/")
+      .replace(/^\/+|\/+$/g, "")
+      .toLowerCase();
     if (!rule) return false;
     if (rule.includes("/")) return normalized === rule || normalized.startsWith(`${rule}/`);
     return segments.includes(rule) || stem === rule;
@@ -137,7 +141,8 @@ const loadFiles = async (payload: Payload): Promise<Payload> => {
    * Project settings can be set from any file, so ignored files can only be
    * filtered once every file has been read.
    */
-  if (project?.ignore) files = files.filter((file) => !isIgnoredPath(file.relativePath, project.ignore));
+  if (project?.ignore)
+    files = files.filter((file) => !isIgnoredPath(file.relativePath, project.ignore));
 
   if (Object.keys(project).length) {
     blockMid("Project settings");

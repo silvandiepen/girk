@@ -9,10 +9,7 @@ const filterHomePage = (payload: Payload, item: MenuItem) => {
   return !langUrls.includes(item.link);
 };
 
-export const generateMenu = async (
-  payload: Payload,
-  virtualRoot = ""
-): Promise<Payload> => {
+export const generateMenu = async (payload: Payload, virtualRoot = ""): Promise<Payload> => {
   let menu: MenuItem[] = payload.files
     .map((file) => {
       const hidden = isHidden(file.meta);

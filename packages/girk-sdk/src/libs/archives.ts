@@ -11,15 +11,10 @@ import { buildSectionStyle } from "@/libs/section-style";
 export const isSectionsArchiveParent = (file: File | undefined): boolean =>
   !!file?.home && file?.meta?.archive === ArchiveType.SECTIONS;
 
-export const getArchiveParent = (
-  file: File,
-  files: File[]
-): File | undefined =>
+export const getArchiveParent = (file: File, files: File[]): File | undefined =>
   files.find(
     (candidate) =>
-      candidate.home &&
-      candidate.name === file.parent &&
-      candidate.language === file.language
+      candidate.home && candidate.name === file.parent && candidate.language === file.language,
   );
 
 export const isSectionsArchiveChild = (file: File, files: File[]): boolean => {
@@ -79,8 +74,7 @@ export const generateArchives = async (payload: Payload): Promise<Payload> => {
           const parent = payload.files.find((parentFile) => {
             if (!parentFile.home) return false;
             return (
-              parentFile.path.toLowerCase() ==
-              (parentPath(file.path) + "/readme.md").toLowerCase()
+              parentFile.path.toLowerCase() == (parentPath(file.path) + "/readme.md").toLowerCase()
             );
           });
 

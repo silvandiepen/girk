@@ -54,13 +54,20 @@ const trimText = (input: string, maxLength: number): string => {
 
 const decodeHtmlEntity = (entity: string): string => {
   switch (entity) {
-    case "&amp;": return "&";
-    case "&lt;": return "<";
-    case "&gt;": return ">";
-    case "&quot;": return '"';
-    case "&#39;": return "'";
-    case "&nbsp;": return " ";
-    default: return entity;
+    case "&amp;":
+      return "&";
+    case "&lt;":
+      return "<";
+    case "&gt;":
+      return ">";
+    case "&quot;":
+      return '"';
+    case "&#39;":
+      return "'";
+    case "&nbsp;":
+      return " ";
+    default:
+      return entity;
   }
 };
 
@@ -70,12 +77,8 @@ const stripHtml = (input: string): string =>
     .replace(/<style[\s\S]*?<\/style>/gi, " ")
     .replace(/<[^>]+>/g, " ")
     .replace(/&(amp|lt|gt|quot|nbsp);|&#39;/g, decodeHtmlEntity)
-    .replace(/&#x([0-9a-f]+);/gi, (_, value) =>
-      String.fromCodePoint(Number.parseInt(value, 16))
-    )
-    .replace(/&#([0-9]+);/g, (_, value) =>
-      String.fromCodePoint(Number.parseInt(value, 10))
-    )
+    .replace(/&#x([0-9a-f]+);/gi, (_, value) => String.fromCodePoint(Number.parseInt(value, 16)))
+    .replace(/&#([0-9]+);/g, (_, value) => String.fromCodePoint(Number.parseInt(value, 10)))
     .replace(/\s+/g, " ")
     .trim();
 
@@ -137,11 +140,7 @@ const getSearchHeadings = (html: string): string[] =>
     .map(([, heading]) => stripHtml(heading))
     .filter(Boolean);
 
-const addWeightedTokens = (
-  input: string,
-  weight: number,
-  terms: Map<string, number>
-): void => {
+const addWeightedTokens = (input: string, weight: number, terms: Map<string, number>): void => {
   const counts = new Map<string, number>();
   tokenize(input).forEach((token) => {
     counts.set(token, Math.min((counts.get(token) || 0) + 1, 3));
@@ -167,7 +166,7 @@ const isSearchableFile = (file: File, files: File[]): boolean => {
 
 const createSearchDocument = (
   file: File,
-  payload: Payload
+  payload: Payload,
 ): { document: SearchDocument; terms: Map<string, number> } => {
   const title = getSearchTitle(file);
   const excerpt = getSearchExcerpt(file);
@@ -201,7 +200,7 @@ const createSearchDocument = (
 
 const buildSearchGroups = (
   documents: Array<{ document: SearchDocument; terms: Map<string, number> }>,
-  project: Project
+  project: Project,
 ): SearchShardGroup[] => {
   const groupedByLanguage = new Map<
     SearchDocument["language"],
@@ -230,7 +229,7 @@ const buildSearchGroups = (
 
     const sharding = project.searchSharding || "auto";
     const hasMultiDocSection = Array.from(groupedBySection.values()).some(
-      (entries) => entries.length >= SEARCH_SECTION_MIN_DOCUMENTS
+      (entries) => entries.length >= SEARCH_SECTION_MIN_DOCUMENTS,
     );
     const useSectionShards =
       sharding === "section" ||
@@ -284,7 +283,7 @@ const buildSearchGroups = (
 
 const buildSearchShard = (
   group: SearchShardGroup,
-  entries: Array<{ document: SearchDocument; terms: Map<string, number> }>
+  entries: Array<{ document: SearchDocument; terms: Map<string, number> }>,
 ): SearchIndexShard => {
   const docs: Record<string, SearchDocument> = {};
   const terms = new Map<string, Array<[string, number]>>();
@@ -320,7 +319,7 @@ const buildSearchShard = (
 const getSearchClientSource = (): string => scripts["search"] || "";
 
 const getSearchDocuments = (
-  payload: Payload
+  payload: Payload,
 ): Array<{ document: SearchDocument; terms: Map<string, number> }> =>
   payload.files
     .filter((file) => isSearchableFile(file, payload.files))
@@ -351,8 +350,11 @@ export const getSearchContext = (file: File, payload: Payload): SearchContext =>
 
 // SDK version: returns search files as data instead of writing to disk
 export const buildSearchIndex = async (
-  payload: Payload
-): Promise<{ payload: Payload; files: Array<{ path: string; content: string; contentType: string }> }> => {
+  payload: Payload,
+): Promise<{
+  payload: Payload;
+  files: Array<{ path: string; content: string; contentType: string }>;
+}> => {
   const files: Array<{ path: string; content: string; contentType: string }> = [];
   const shouldGenerateSearch = payload.files.some((file) => hasSearchEnabled(file, payload));
 

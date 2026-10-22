@@ -13,8 +13,7 @@ export const generateTags = async (payload: Payload): Promise<Payload> => {
 
   await asyncForEach(payload.files, (file: File) => {
     if (!isHidden(file.meta) && file.meta && file.meta?.tags) {
-      if (typeof file.meta?.tags === "string")
-        file.meta.tags = [file.meta.tags];
+      if (typeof file.meta?.tags === "string") file.meta.tags = [file.meta.tags];
 
       for (let i = 0; i < file.meta.tags.length; i++) {
         const parent = payload.files.find((f) => f.name == file.parent);
@@ -27,11 +26,7 @@ export const generateTags = async (payload: Payload): Promise<Payload> => {
         };
 
         if (payload.project?.groupTags) {
-          if (
-            !tags.some(
-              (item) => item.name === tag.name && item.parent === tag.parent
-            )
-          )
+          if (!tags.some((item) => item.name === tag.name && item.parent === tag.parent))
             tags.push(tag);
         } else {
           if (!tags.some((item) => item.name === tag.name)) tags.push(tag);
@@ -46,24 +41,22 @@ export const generateTags = async (payload: Payload): Promise<Payload> => {
  * Build tag page files in memory (SDK version).
  * Returns an array of File objects representing tag pages.
  */
-export const createTagPages = async (payload: Payload): Promise<Payload & { _sdkTagPages?: File[] }> => {
+export const createTagPages = async (
+  payload: Payload,
+): Promise<Payload & { _sdkTagPages?: File[] }> => {
   const tagPages: File[] = [];
 
   await asyncForEach(payload.tags, async (tag: Tag) => {
-    const path = `/tag/${payload.project?.groupTags ? `${tag.parent}/` : ``}${
-      tag.name
-    }/index.html`;
+    const path = `/tag/${payload.project?.groupTags ? `${tag.parent}/` : ``}${tag.name}/index.html`;
 
     const archive = payload.project?.groupTags
       ? payload.files.filter(
           (file) =>
             !isHidden(file.meta) &&
             file.meta?.tags?.includes(tag.name) &&
-            file.parent == tag.parent
+            file.parent == tag.parent,
         )
-      : payload.files.filter(
-          (file) => !isHidden(file.meta) && file.meta?.tags?.includes(tag.name)
-        );
+      : payload.files.filter((file) => !isHidden(file.meta) && file.meta?.tags?.includes(tag.name));
 
     const file: File = {
       id: fileId(path),

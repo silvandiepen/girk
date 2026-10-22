@@ -24,8 +24,7 @@ export const generateTags = async (payload: Payload): Promise<Payload> => {
 
   await asyncForEach(payload.files, (file: File) => {
     if (!isHidden(file.meta) && file.meta && file.meta?.tags) {
-      if (typeof file.meta?.tags === "string")
-        file.meta.tags = [file.meta.tags];
+      if (typeof file.meta?.tags === "string") file.meta.tags = [file.meta.tags];
 
       for (let i = 0; i < file.meta.tags.length; i++) {
         const parent = payload.files.find((f) => f.name == file.parent);
@@ -38,11 +37,7 @@ export const generateTags = async (payload: Payload): Promise<Payload> => {
         };
 
         if (payload.project.groupTags) {
-          if (
-            !tags.some(
-              (item) => item.name === tag.name && item.parent === tag.parent
-            )
-          )
+          if (!tags.some((item) => item.name === tag.name && item.parent === tag.parent))
             tags.push(tag);
         } else {
           if (!tags.some((item) => item.name === tag.name)) tags.push(tag);
@@ -53,13 +48,10 @@ export const generateTags = async (payload: Payload): Promise<Payload> => {
   return { ...payload, tags };
 };
 
-
-
 export const createTagPages = async (payload: Payload): Promise<Payload> => {
   if (payload.tags.length) blockMid("Tag pages");
 
   await asyncForEach(payload.tags, async (tag: Tag) => {
-
     const path = `${tagLink(tag.name, tag.parent, !!payload.project.groupTags)}/index.html`;
 
     const tagged = payload.project.groupTags
@@ -67,11 +59,9 @@ export const createTagPages = async (payload: Payload): Promise<Payload> => {
           (file) =>
             !isHidden(file.meta) &&
             file.meta?.tags?.includes(tag.name) &&
-            file.parent == tag.parent
+            file.parent == tag.parent,
         )
-      : payload.files.filter(
-          (file) => !isHidden(file.meta) && file.meta?.tags?.includes(tag.name)
-        );
+      : payload.files.filter((file) => !isHidden(file.meta) && file.meta?.tags?.includes(tag.name));
     const archive = tagged.map((item) => toArchiveChild(item, payload));
     const title = `#${tag.name}`;
 

@@ -1,6 +1,6 @@
 export async function asyncForEach<T>(
   array: T[],
-  callback: (item: T, index: number, original: T[]) => unknown | Promise<unknown>
+  callback: (item: T, index: number, original: T[]) => unknown | Promise<unknown>,
 ): Promise<void> {
   for (let index = 0; index < array.length; index += 1) {
     await callback(array[index], index, array);

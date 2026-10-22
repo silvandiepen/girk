@@ -25,14 +25,7 @@ describe("Local runtime utils", () => {
       values.push(`end-${item}`);
     });
 
-    expect(values).toEqual([
-      "start-1",
-      "end-1",
-      "start-2",
-      "end-2",
-      "start-3",
-      "end-3",
-    ]);
+    expect(values).toEqual(["start-1", "end-1", "start-2", "end-2", "start-3", "end-3"]);
   });
 
   it("removes matching tags", () => {
@@ -54,9 +47,7 @@ describe("Local runtime utils", () => {
   });
 
   it("renames the final folder segment", () => {
-    expect(renamePath("/docs/old-name/index.html", "new-name")).toBe(
-      "/docs/new-name/index.html"
-    );
+    expect(renamePath("/docs/old-name/index.html", "new-name")).toBe("/docs/new-name/index.html");
   });
 
   it("creates nested directories", async () => {

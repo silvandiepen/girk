@@ -55,9 +55,9 @@ describe("markdown plugins", () => {
     expect(html).not.toContain('target="_blank"');
     expect(html).toContain('<details class="details">');
     expect(html).toContain('<div class="mermaid">');
-    expect(html).toContain('data-nizel-code-copy');
-    expect(html).toContain('data-nizel-copy-source');
-    expect(html).toContain('data-nizel-copy-button');
+    expect(html).toContain("data-nizel-code-copy");
+    expect(html).toContain("data-nizel-copy-source");
+    expect(html).toContain("data-nizel-copy-button");
     expect(html).not.toContain("onclick=");
     expect(html).toContain('<figure class="media-figure">');
     expect(html).toContain('<section class="citations">');
@@ -65,7 +65,9 @@ describe("markdown plugins", () => {
   });
 
   it("keeps safe raw HTML while sanitizing risky attributes", async () => {
-    const result = await toHtml('<example-note onclick="alert(1)" data-text="Loaded"></example-note>');
+    const result = await toHtml(
+      '<example-note onclick="alert(1)" data-text="Loaded"></example-note>',
+    );
 
     expect(result.document).toContain('<example-note data-text="Loaded"></example-note>');
     expect(result.document).not.toContain("onclick");
@@ -117,6 +119,10 @@ Article body.
   });
 
   it("keeps generated heading anchors out of extracted titles", () => {
-    expect(getTitle('<h1 id="intro">Intro<a class="heading-anchor" href="#intro" aria-hidden="true">#</a></h1>')).toBe("Intro");
+    expect(
+      getTitle(
+        '<h1 id="intro">Intro<a class="heading-anchor" href="#intro" aria-hidden="true">#</a></h1>',
+      ),
+    ).toBe("Intro");
   });
 });

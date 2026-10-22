@@ -8,7 +8,7 @@ container.forEach((el) => {
       if (matches) {
         el.innerHTML = el.innerHTML.replace(
           matches[0],
-          `<span class="color-preview" style="--color-preview:${matches[0]}">${matches[0]}</span>`
+          `<span class="color-preview" style="--color-preview:${matches[0]}">${matches[0]}</span>`,
         );
       }
     }
