@@ -20,6 +20,8 @@
 
     <% if (meta.description) { %>
         <meta name="description" content="<%= meta.description %>">
+    <% } else if (typeof excerpt !== 'undefined' && excerpt) { %>
+        <meta name="description" content="<%= excerpt %>">
     <% } else if (project.description) { %>
         <meta name="description" content="<%= project.description %>">
     <% } %>

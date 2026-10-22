@@ -216,6 +216,8 @@ export interface buildHtmlArgs {
   contentOnly: boolean;
   tags?: Tag[];
   subtitle: string;
+  /** Plain-text first paragraph, the meta description fallback. */
+  excerpt: string;
   thumbnail?: string | null;
   meta?: Meta;
   showContentImage?: boolean;

@@ -5,7 +5,7 @@ import { blockLine, blockLineSuccess } from "cli-block";
 import { Payload, File, Page, Meta, buildHtmlArgs, MenuItem, Project, Language } from "../types";
 import { getLanguageMenu, getDefaultLanguage } from "../libs/language";
 import { makePath, buildHtml, getParentFile } from "./files";
-import { getExcerpt } from "./helpers";
+import { getDescription, getExcerpt } from "./helpers";
 import { isHidden } from "./helpers";
 import { getSearchContext, hasSearchEnabled } from "./search";
 import { buildSectionStyle } from "./section-style";
@@ -15,6 +15,12 @@ import kleur from "kleur";
 import { getThumbnail } from "./media";
 
 const simplifyUrl = (url: string): string => url.replace("/index.html", "") || "/";
+
+// The site root, or a language root such as /nl/.
+const isSiteHome = (link: string, languages: string[]): boolean => {
+  const url = simplifyUrl(link);
+  return url === "/" || languages.some((language) => url === `/${language}`);
+};
 
 const isActiveMenu = (link: string, current: string): boolean =>
   simplifyUrl(link) == simplifyUrl(current);
@@ -170,6 +176,8 @@ export const buildPage = async (payload: Payload, file: File): Promise<Page> => 
     langMenu: getLanguageMenu(payload, file),
     language: currentLanguage,
     subtitle: subtitle(file, payload),
+    // The home page is described by the project description instead.
+    excerpt: isSiteHome(currentLink, payload.languages) ? "" : getDescription(file),
     components: [],
     socials: payload.socials,
     parentPage,

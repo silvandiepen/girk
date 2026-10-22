@@ -17,6 +17,23 @@ export const fileTitle = (file: File): string => getTitle(file.html) || file.nam
 
 export const getExcerpt = (file: File): string => getStringFromTag(file.html ? file.html : "", "p");
 
+/*
+ * Plain-text summary of the page's first paragraph, for the meta description
+ * of pages that don't set one.
+ */
+export const getDescription = (file: File, length = 160): string => {
+  const text = getExcerpt(file)
+    .replace(/<[^>]*>/g, "")
+    // The template escapes the text again, so decode the entities first.
+    .replace(
+      /&(amp|lt|gt|quot|#39);/g,
+      (_, entity) => ({ amp: "&", lt: "<", gt: ">", quot: '"', "#39": "'" })[entity as string],
+    )
+    .replace(/\s+/g, " ")
+    .trim();
+  return text.length > length ? `${text.slice(0, length - 1).trimEnd()}…` : text;
+};
+
 export const isHidden = (meta?: Meta): boolean => meta?.hide === true || meta?.hide === "true";
 
 export const flattenObject = (
