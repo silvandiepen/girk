@@ -14,10 +14,8 @@ export const generateFavicon = async (payload: Payload): Promise<Payload> => {
 
   const fileExists = (p: string, f: string) => existsSync(join(p, f));
 
-  if (fileExists(assets, "favicon.png"))
-    favicon = `${assetFolder()}/favicon.png`;
-  else if (fileExists(assets, "logo.png"))
-    favicon = `${assetFolder()}/logo.png`;
+  if (fileExists(assets, "favicon.png")) favicon = `${assetFolder()}/favicon.png`;
+  else if (fileExists(assets, "logo.png")) favicon = `${assetFolder()}/logo.png`;
 
   if (favicon) {
     try {
@@ -33,12 +31,8 @@ export const generateFavicon = async (payload: Payload): Promise<Payload> => {
     favicon = "assets/favicon/favicon.ico";
   } else {
     favicon = fileExists(assets, "icon.svg") ? `${assetFolder()}/icon.svg` : "";
-    light = fileExists(assets, "icon-light.svg")
-      ? `${assetFolder()}/icon-light.svg`
-      : "";
-    dark = fileExists(assets, "icon-dark.svg")
-      ? `${assetFolder()}/icon-dark.svg`
-      : "";
+    light = fileExists(assets, "icon-light.svg") ? `${assetFolder()}/icon-light.svg` : "";
+    dark = fileExists(assets, "icon-dark.svg") ? `${assetFolder()}/icon-dark.svg` : "";
   }
 
   const favicons = {

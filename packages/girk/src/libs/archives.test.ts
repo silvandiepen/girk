@@ -86,7 +86,7 @@ describe("archives helpers", () => {
     const archiveChild = result.files[0].archives?.[0]?.children?.[0];
 
     expect(archiveChild?.meta.sectionStyle).toBe(
-      "--section-background-color: var(--color-blue); --section-text-color: var(--color-blue-contrast)"
+      "--section-background-color: var(--color-blue); --section-text-color: var(--color-blue-contrast)",
     );
   });
 

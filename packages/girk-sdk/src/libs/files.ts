@@ -12,11 +12,7 @@ import { renderEjs } from "./render";
 	Generate a unique id from a virtual path
 */
 export const fileId = (path: string): string =>
-  fixLangInPath(path, false)
-    .replace(/\//g, "-")
-    .substring(1)
-    .split(".")[0]
-    .toLowerCase();
+  fixLangInPath(path, false).replace(/\//g, "-").substring(1).split(".")[0].toLowerCase();
 
 export const isHomePath = (path: string): boolean => {
   const fileName = basename(path, extname(path)).split(":")[0].toLowerCase();
@@ -29,18 +25,10 @@ const filterArchive = (file: File): Archive[] => {
     if (!file.relativePath) {
       return file.archives;
     }
-    const parentUrl = file.relativePath
-      .split("/")
-      .filter(Boolean)
-      .slice(0, -1)
-      .join("-");
+    const parentUrl = file.relativePath.split("/").filter(Boolean).slice(0, -1).join("-");
 
     file.archives[0].children = file.archives[0].children.filter((child) => {
-      const childUrl = child.link
-        .split("/")
-        .filter(Boolean)
-        .slice(0, -2)
-        .join("-");
+      const childUrl = child.link.split("/").filter(Boolean).slice(0, -2).join("-");
       return childUrl == parentUrl;
     });
     return file.archives;
@@ -52,21 +40,15 @@ const filterArchive = (file: File): Archive[] => {
 export const buildHtml = async (
   file: File,
   args: buildHtmlArgs,
-  template = ""
+  template = "",
 ): Promise<string> => {
   const archives = filterArchive(file);
 
-  archives.map((archive) => {
+  // Blog archives list newest first; sort() reorders the children in place.
+  archives.forEach((archive) => {
     if (archive.type === "blog") {
-      archive.children;
-      return {
-        ...archive,
-        children: archive.children.sort((a, b) =>
-          b.created > a.created ? 1 : a.created > b.created ? -1 : 0
-        ),
-      };
+      archive.children.sort((a, b) => (b.created > a.created ? 1 : a.created > b.created ? -1 : 0));
     }
-    return archive;
   });
 
   const options = {
@@ -102,23 +84,19 @@ export const makeLink = (path: string, virtualRoot = ""): string => {
     path
       .replace(virtualRoot, "")
       .toLowerCase()
-      .replace("readme", "index")
-      .replace(".md", ".html")
+      // Only the file itself is renamed: readme.md, readme:nl.md -> index
+      .replace(/(^|\/)readme(?=(:[^/]*)?\.md$)/, "$1index")
+      .replace(/\.md$/, ".html"),
   );
 
-  return uri.split("/")[uri.split("/").length - 1].replace(".html", "") !==
-    "index"
-    ? uri.replace(".html", "/index.html")
+  return uri.split("/")[uri.split("/").length - 1].replace(/\.html$/, "") !== "index"
+    ? uri.replace(/\.html$/, "/index.html")
     : uri;
 };
 
 export const getParentFile = (child: File, files: File[]): File | undefined => {
   const file = files.find(
-    (f) =>
-      f.home &&
-      f.name == child.parent &&
-      f.id !== child.id &&
-      f.language === child.language
+    (f) => f.home && f.name == child.parent && f.id !== child.id && f.language === child.language,
   );
 
   return file;

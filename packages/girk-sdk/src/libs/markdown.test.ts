@@ -50,12 +50,14 @@ describe("markdown plugins", () => {
     expect(html).toContain('class="nizel-badge"');
     expect(html).toContain('class="nizel-kbd-group"');
     expect(html).toContain('class="nizel-open-icon"');
-    expect(html).toContain('href="https://example.com" target="_blank" rel="noopener"');
+    // Links open in the same tab; forcing new tabs breaks Back and surprises users.
+    expect(html).toContain('href="https://example.com"');
+    expect(html).not.toContain('target="_blank"');
     expect(html).toContain('<details class="details">');
     expect(html).toContain('<div class="mermaid">');
-    expect(html).toContain('data-nizel-code-copy');
-    expect(html).toContain('data-nizel-copy-source');
-    expect(html).toContain('data-nizel-copy-button');
+    expect(html).toContain("data-nizel-code-copy");
+    expect(html).toContain("data-nizel-copy-source");
+    expect(html).toContain("data-nizel-copy-button");
     expect(html).not.toContain("onclick=");
     expect(html).toContain('<figure class="media-figure">');
     expect(html).toContain('<section class="citations">');
@@ -63,7 +65,9 @@ describe("markdown plugins", () => {
   });
 
   it("keeps safe raw HTML while sanitizing risky attributes", async () => {
-    const result = await toHtml('<example-note onclick="alert(1)" data-text="Loaded"></example-note>');
+    const result = await toHtml(
+      '<example-note onclick="alert(1)" data-text="Loaded"></example-note>',
+    );
 
     expect(result.document).toContain('<example-note data-text="Loaded"></example-note>');
     expect(result.document).not.toContain("onclick");
@@ -77,7 +81,8 @@ describe("markdown plugins", () => {
     expect(result.document).toContain("data-nizel-task-checkbox");
     expect(result.document).toContain('type="checkbox"');
     expect(result.document).toContain('type="checkbox" checked');
-    expect(result.document).not.toContain("disabled");
+    // Published task lists are read-only: their state can't be saved.
+    expect(result.document).toContain("disabled");
   });
 
   it("renders print layout directives", async () => {
@@ -114,6 +119,10 @@ Article body.
   });
 
   it("keeps generated heading anchors out of extracted titles", () => {
-    expect(getTitle('<h1 id="intro">Intro<a class="heading-anchor" href="#intro" aria-hidden="true">#</a></h1>')).toBe("Intro");
+    expect(
+      getTitle(
+        '<h1 id="intro">Intro<a class="heading-anchor" href="#intro" aria-hidden="true">#</a></h1>',
+      ),
+    ).toBe("Intro");
   });
 });

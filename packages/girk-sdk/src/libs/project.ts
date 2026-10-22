@@ -1,13 +1,6 @@
 import { asyncForEach } from "@/libs/utils";
 import { camelCase } from "@sil/case";
-import {
-  Project,
-  Meta,
-  File,
-  Arguments,
-  ProjectScriptEntry,
-  ProjectScriptType,
-} from "@/types";
+import { Project, Meta, File, Arguments, ProjectScriptEntry, ProjectScriptType } from "@/types";
 import { flattenObject } from "./helpers";
 
 const fixProjectTypes = (input: Project): Project => {
@@ -24,7 +17,10 @@ const fixProjectTypes = (input: Project): Project => {
       !/\r|\n/.exec(rawValue) &&
       rawValue.split(",").length > 1
     )
-      value = rawValue.split(",").map((entry) => entry.trim()).filter(Boolean);
+      value = rawValue
+        .split(",")
+        .map((entry) => entry.trim())
+        .filter(Boolean);
     else value = rawValue;
 
     fixedProject[key] = value;
@@ -35,7 +31,7 @@ const fixProjectTypes = (input: Project): Project => {
 
 const toScriptEntries = (
   value: Project["script"] | Project["scriptModule"],
-  type: ProjectScriptType
+  type: ProjectScriptType,
 ): ProjectScriptEntry[] => {
   if (!value) return [];
 
@@ -96,10 +92,7 @@ const getProjectConfig = (meta: Meta): Project => {
  * Get project data from files and an optional pre-resolved config object.
  * In SDK mode, config comes from GirkBuildInput.config rather than the filesystem.
  */
-export const getProjectData = async (
-  files: File[],
-  config?: Arguments
-): Promise<Project> => {
+export const getProjectData = async (files: File[], config?: Arguments): Promise<Project> => {
   const project: Project = {};
 
   // First set the arguments from the config object (if provided)

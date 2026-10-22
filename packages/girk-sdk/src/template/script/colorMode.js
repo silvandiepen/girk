@@ -1,44 +1,40 @@
-const isDarkMode = window.matchMedia("prefers-color-scheme: dark").matches;
-let localMode = isDarkMode ? "dark" : "light";
+const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+
+const currentMode = () =>
+  document.documentElement.getAttribute("color-mode") || (systemDark.matches ? "dark" : "light");
 
 const updateColorModeToggle = () => {
   const toggle = document.querySelector("[data-color-mode-toggle]");
   if (!toggle) return;
 
-  toggle.dataset.colorMode = localMode;
-  toggle.setAttribute("aria-pressed", localMode === "dark" ? "true" : "false");
-  toggle.setAttribute(
-    "aria-label",
-    localMode === "dark" ? "Switch to light mode" : "Switch to dark mode"
-  );
+  const mode = currentMode();
+  toggle.dataset.colorMode = mode;
+  toggle.setAttribute("aria-pressed", mode === "dark" ? "true" : "false");
 };
 
-const initColorMode = () => {
-  localMode = localStorage.getItem("colorMode");
-  setCurrentMode(localMode ? localMode : isDarkMode ? "dark" : "light");
+const saveMode = (mode) => {
+  try {
+    localStorage.setItem("colorMode", mode);
+  } catch {
+    // Storage can be blocked; the choice then lasts for this page only.
+  }
 };
 
-const setCurrentMode = (mode) => {
-  localMode = mode;
-  localStorage.setItem("colorMode", localMode);
-  document.documentElement.setAttribute("color-mode", mode);
-  document.body.setAttribute("color-mode", mode);
-  updateColorModeToggle();
-};
-
+// Only an explicit choice is stored, so the system preference keeps applying until then.
 const switchMode = () => {
-  if (localMode == "dark") setCurrentMode("light");
-  else setCurrentMode("dark");
+  const mode = currentMode() === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("color-mode", mode);
+  saveMode(mode);
+  updateColorModeToggle();
 };
 
 const bindColorModeToggle = () => {
   const toggle = document.querySelector("[data-color-mode-toggle]");
   if (!toggle) return;
 
-  toggle.addEventListener("click", () => {
-    switchMode();
-  });
+  toggle.addEventListener("click", switchMode);
 };
 
-initColorMode();
+systemDark.addEventListener("change", updateColorModeToggle);
+updateColorModeToggle();
 bindColorModeToggle();

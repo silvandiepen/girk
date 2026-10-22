@@ -122,10 +122,10 @@ describe("Search index generation", () => {
     await generateSearchIndex(payload);
 
     const manifest = JSON.parse(
-      await readFile(join(root, "public", "assets", "search", "manifest.json"), "utf8")
+      await readFile(join(root, "public", "assets", "search", "manifest.json"), "utf8"),
     );
     const shard = JSON.parse(
-      await readFile(join(root, "public", "assets", "search", "en.json"), "utf8")
+      await readFile(join(root, "public", "assets", "search", "en.json"), "utf8"),
     );
     const client = await readFile(join(root, "public", "assets", "search", "client.js"), "utf8");
 
@@ -178,13 +178,13 @@ describe("Search index generation", () => {
       ],
       {
         searchSharding: "section",
-      }
+      },
     );
 
     await generateSearchIndex(payload);
 
     const manifest = JSON.parse(
-      await readFile(join(root, "public", "assets", "search", "manifest.json"), "utf8")
+      await readFile(join(root, "public", "assets", "search", "manifest.json"), "utf8"),
     );
 
     expect(manifest.shards).toEqual([
@@ -242,13 +242,13 @@ describe("Search index generation", () => {
       ],
       {
         search: false,
-      }
+      },
     );
 
     await generateSearchIndex(payload);
 
     const manifest = JSON.parse(
-      await readFile(join(root, "public", "assets", "search", "manifest.json"), "utf8")
+      await readFile(join(root, "public", "assets", "search", "manifest.json"), "utf8"),
     );
 
     expect(manifest.shards).toHaveLength(1);
@@ -300,7 +300,7 @@ describe("Search index generation", () => {
     await generateSearchIndex(payload);
 
     const shard = JSON.parse(
-      await readFile(join(root, "public", "assets", "search", "en.json"), "utf8")
+      await readFile(join(root, "public", "assets", "search", "en.json"), "utf8"),
     );
 
     expect(Object.keys(shard.docs)).toEqual(["home", "search-page"]);

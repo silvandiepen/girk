@@ -5,9 +5,7 @@ import { createDir } from "@/libs/utils";
 import { Payload, Style } from "../../types";
 import { buildCss, ColorConfig } from "./compile";
 
-export const getConfigColors = (
-  settings: Payload["settings"]
-): ColorConfig | null => {
+export const getConfigColors = (settings: Payload["settings"]): ColorConfig | null => {
   if (!settings.config) return null;
   const colors: ColorConfig = {};
   Object.keys(settings.config).forEach((key: string) => {
@@ -44,9 +42,7 @@ export const generateStyles = async (payload: Payload): Promise<Payload> => {
   }
 
   if (payload.project.styleOverrule) {
-    style.path = payload.project.styleOverrule
-      .toString()
-      .replace(".scss", ".css");
+    style.path = payload.project.styleOverrule.toString().replace(".scss", ".css");
   }
 
   return { ...payload, style };

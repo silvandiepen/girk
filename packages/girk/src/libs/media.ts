@@ -1,4 +1,4 @@
-import { join, extname, basename, resolve } from "path";
+import { join, extname, basename } from "path";
 import { copyFile, existsSync, lstatSync } from "fs";
 import { copy, writeFile, copySync } from "fs-extra";
 import { blockLineError, blockLineSuccess } from "cli-block";
@@ -42,11 +42,7 @@ export const resizeImage = async (image: string): Promise<void> => {
   }
   const ext = extname(image);
 
-  const path = join(
-    process.cwd(),
-    ".cache",
-    image.replace(ext, `.thumb${ext}`)
-  );
+  const path = join(process.cwd(), ".cache", image.replace(ext, `.thumb${ext}`));
 
   const thumbExists = existsSync(path);
   if (thumbExists) return;
@@ -84,10 +80,7 @@ export const getMedia = async (payload: Payload): Promise<File[]> => {
     const exists = existsSync(join(process.cwd(), folder));
 
     if (exists) {
-      await copy(
-        join(process.cwd(), folder),
-        join(payload.settings.output, folder)
-      )
+      await copy(join(process.cwd(), folder), join(payload.settings.output, folder))
         .then(() => blockLineSuccess(`Copied ${folder} folder`))
         .catch((err) => console.error(err));
 
@@ -110,10 +103,7 @@ export const getMedia = async (payload: Payload): Promise<File[]> => {
   return mediaFiles;
 };
 
-export const getLogo = async (
-  payload: Payload,
-  media: File[]
-): Promise<File | null> => {
+export const getLogo = async (payload: Payload, media: File[]): Promise<File | null> => {
   let logo: File;
 
   // Find Logo
@@ -133,9 +123,7 @@ export const getLogo = async (
       blockLineSuccess(`found logo ${logo.relativePath}`);
     }
   } else {
-    const logoFile = media.find((m) =>
-      m.relativePath.includes(payload.project.logo)
-    );
+    const logoFile = media.find((m) => m.relativePath.includes(payload.project.logo));
 
     if (logoFile) {
       logo = logoFile;

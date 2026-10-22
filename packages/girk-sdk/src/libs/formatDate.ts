@@ -23,8 +23,18 @@
  */
 
 const MONTH_SHORT = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ] as const;
 
 const pad2 = (n: number): string => String(n).padStart(2, "0");
@@ -43,22 +53,19 @@ const pad2 = (n: number): string => String(n).padStart(2, "0");
  * formatDate(new Date(2026, 0, 9), "d");             // "9"
  * ```
  */
-export const formatDate = (
-  dateInput: Date | string | number,
-  format: string,
-): string => {
+export const formatDate = (dateInput: Date | string | number, format: string): string => {
   const date = dateInput instanceof Date ? dateInput : new Date(dateInput);
 
   if (isNaN(date.getTime())) {
     return "";
   }
 
-  const year   = date.getFullYear();
-  const month  = date.getMonth();   // 0-based
-  const day    = date.getDate();
-  const hours  = date.getHours();
-  const mins   = date.getMinutes();
-  const secs   = date.getSeconds();
+  const year = date.getFullYear();
+  const month = date.getMonth(); // 0-based
+  const day = date.getDate();
+  const hours = date.getHours();
+  const mins = date.getMinutes();
+  const secs = date.getSeconds();
 
   // Walk the format string left-to-right, consuming known tokens first.
   let out = "";

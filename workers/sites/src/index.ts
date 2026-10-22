@@ -2,11 +2,7 @@ import { getAssetCandidates, getSiteKey } from "./host";
 import type { SiteKey } from "./host.model";
 import type { Env, WorkerHandler } from "./index.model";
 
-const fetchSiteAsset = async (
-  request: Request,
-  env: Env,
-  siteKey: SiteKey
-): Promise<Response> => {
+const fetchSiteAsset = async (request: Request, env: Env, siteKey: SiteKey): Promise<Response> => {
   const url = new URL(request.url);
 
   for (const candidate of getAssetCandidates(siteKey, url.pathname)) {

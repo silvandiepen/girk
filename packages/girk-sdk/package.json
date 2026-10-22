@@ -2,51 +2,53 @@
   "name": "girk-sdk",
   "version": "1.31.11",
   "description": "Girk SDK — build static sites from in-memory data",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "type": "module",
-  "engines": {
-    "node": "^20.19.0 || >=22.12.0 <26"
+  "keywords": [
+    "generator",
+    "markdown",
+    "sdk",
+    "static-site"
+  ],
+  "homepage": "https://github.com/silvandiepen/girk#readme",
+  "bugs": {
+    "url": "https://github.com/silvandiepen/girk/issues"
   },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
-  },
-  "scripts": {
-    "build": "tsc && tsc-alias",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "lint": "oxlint src --tsconfig tsconfig.json",
-    "fmt": "oxfmt",
-    "fmt:check": "oxfmt --check",
-    "prepublishOnly": "npm run build"
-  },
+  "license": "MIT",
+  "author": "Sil van Diepen",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/silvandiepen/girk.git",
     "directory": "packages/girk-sdk"
   },
-  "keywords": [
-    "static-site",
-    "generator",
-    "sdk",
-    "markdown"
-  ],
-  "author": "Sil van Diepen",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/silvandiepen/girk/issues"
-  },
-  "homepage": "https://github.com/silvandiepen/girk#readme",
   "files": [
     "dist",
     "README.md"
   ],
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./templates": {
+      "types": "./dist/libs/templates/registry.d.ts",
+      "default": "./dist/libs/templates/registry.js"
+    }
+  },
   "publishConfig": {
     "access": "public",
     "provenance": true
+  },
+  "scripts": {
+    "build:templates": "node scripts/build-templates.mjs",
+    "build": "npm run build:templates && tsc && tsc-alias",
+    "test": "node scripts/build-templates.mjs --check && vitest run",
+    "test:watch": "vitest",
+    "lint": "oxlint src --tsconfig tsconfig.json",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@sil/case": "^0.0.5",
@@ -86,5 +88,8 @@
     "typescript": "^5.9.3",
     "vite": "^8.0.1",
     "vitest": "^4.1.0"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0 <26"
   }
 }

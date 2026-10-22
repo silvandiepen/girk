@@ -1,10 +1,11 @@
 import { blockLine, blockLineSuccess } from "cli-block";
-import { readFile, writeFile } from "node:fs/promises";
+import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 import { getArchiveParent, isSectionsArchiveChild } from "@/libs/archives";
 import { getParentFile, makePath } from "@/libs/files";
 import { getExcerpt } from "@/libs/helpers";
+import { getRegistry } from "@/libs/render";
 import { createDir } from "@/libs/utils";
 import {
   File,
@@ -19,7 +20,6 @@ import {
 } from "@/types";
 
 const SEARCH_DIRECTORY = "assets/search";
-const SEARCH_CLIENT_SOURCE = "../../src/template/script/search.js";
 const SEARCH_BODY_LIMIT = 2000;
 const SEARCH_SECTION_MIN_DOCUMENTS = 2;
 const SEARCH_SECTION_AUTO_MIN_DOCUMENTS = 24;
@@ -82,12 +82,8 @@ const stripHtml = (input: string): string =>
     .replace(/<style[\s\S]*?<\/style>/gi, " ")
     .replace(/<[^>]+>/g, " ")
     .replace(/&(amp|lt|gt|quot|nbsp);|&#39;/g, decodeHtmlEntity)
-    .replace(/&#x([0-9a-f]+);/gi, (_, value) =>
-      String.fromCodePoint(Number.parseInt(value, 16))
-    )
-    .replace(/&#([0-9]+);/g, (_, value) =>
-      String.fromCodePoint(Number.parseInt(value, 10))
-    )
+    .replace(/&#x([0-9a-f]+);/gi, (_, value) => String.fromCodePoint(Number.parseInt(value, 16)))
+    .replace(/&#([0-9]+);/g, (_, value) => String.fromCodePoint(Number.parseInt(value, 10)))
     .replace(/\s+/g, " ")
     .trim();
 
@@ -158,11 +154,7 @@ const getSearchHeadings = (html: string): string[] =>
     .map(([, heading]) => stripHtml(heading))
     .filter(Boolean);
 
-const addWeightedTokens = (
-  input: string,
-  weight: number,
-  terms: Map<string, number>
-): void => {
+const addWeightedTokens = (input: string, weight: number, terms: Map<string, number>): void => {
   const counts = new Map<string, number>();
 
   tokenize(input).forEach((token) => {
@@ -192,7 +184,7 @@ const isSearchableFile = (file: File, files: File[]): boolean => {
 
 const createSearchDocument = (
   file: File,
-  payload: Payload
+  payload: Payload,
 ): { document: SearchDocument; terms: Map<string, number> } => {
   const title = getSearchTitle(file);
   const excerpt = getSearchExcerpt(file);
@@ -226,7 +218,7 @@ const createSearchDocument = (
 
 const buildSearchGroups = (
   documents: Array<{ document: SearchDocument; terms: Map<string, number> }>,
-  project: Project
+  project: Project,
 ): SearchShardGroup[] => {
   const groupedByLanguage = new Map<
     SearchDocument["language"],
@@ -255,7 +247,7 @@ const buildSearchGroups = (
 
     const sharding = project.searchSharding || "auto";
     const hasMultiDocSection = Array.from(groupedBySection.values()).some(
-      (entries) => entries.length >= SEARCH_SECTION_MIN_DOCUMENTS
+      (entries) => entries.length >= SEARCH_SECTION_MIN_DOCUMENTS,
     );
     const useSectionShards =
       sharding === "section" ||
@@ -311,7 +303,7 @@ const buildSearchGroups = (
 
 const buildSearchShard = (
   group: SearchShardGroup,
-  entries: Array<{ document: SearchDocument; terms: Map<string, number> }>
+  entries: Array<{ document: SearchDocument; terms: Map<string, number> }>,
 ): SearchIndexShard => {
   const docs: Record<string, SearchDocument> = {};
   const terms = new Map<string, Array<[string, number]>>();
@@ -347,11 +339,14 @@ const buildSearchShard = (
   };
 };
 
-const getSearchClientSource = async (): Promise<string> =>
-  readFile(join(__dirname, SEARCH_CLIENT_SOURCE), "utf8");
+const getSearchClientSource = (): string => {
+  const source = getRegistry().scripts.search;
+  if (!source) throw new Error("girk-sdk template registry has no search client script");
+  return source;
+};
 
 const getSearchDocuments = (
-  payload: Payload
+  payload: Payload,
 ): Array<{ document: SearchDocument; terms: Map<string, number> }> =>
   payload.files
     .filter((file) => isSearchableFile(file, payload.files))
@@ -425,7 +420,7 @@ export const generateSearchIndex = async (payload: Payload): Promise<Payload> =>
   };
 
   await writeFile(join(outputDirectory, "manifest.json"), JSON.stringify(manifest));
-  await writeFile(join(outputDirectory, "client.js"), await getSearchClientSource());
+  await writeFile(join(outputDirectory, "client.js"), getSearchClientSource());
 
   blockLineSuccess("Search");
   blockLine(`   ${shards.length} shard${shards.length === 1 ? "" : "s"}`);

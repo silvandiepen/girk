@@ -9,31 +9,20 @@ import { toHtml } from "@/libs/markdown";
 import { prepareDataFiles } from "@/libs/data";
 import { fileTitle } from "@/libs/helpers";
 import { resolveFileIcons } from "@/libs/icon";
-import { getThumbnail, getSvgThumbnail } from "@/libs/media";
-import { extractMeta } from "@/libs/markdown-meta";
+import { getThumbnail } from "@/libs/media";
 import { flattenObject } from "@/libs/helpers";
 import { camelCase } from "@sil/case";
-import {
-  GirkBuildInput,
-  File,
-  Payload,
-  Project,
-  Settings,
-  FileType,
-} from "@/types";
+import { GirkBuildInput, File, Payload, Project, Settings, FileType } from "@/types";
 import { languageKeys } from "@/data/language";
 
 /**
  * Parse a virtual path into file metadata.
  * e.g. "/blog/post:nl.md" → { fileName: "post", name: "post", language: "nl", parent: "blog", ext: ".md" }
  */
-const parseVirtualPath = (path: string, languages?: string[]) => {
+const parseVirtualPath = (path: string) => {
   const extension = extname(path);
   const rawFileName = basename(path, extension);
-  const lang =
-    rawFileName.indexOf(":") > 0
-      ? getLangFromFilename(rawFileName)
-      : "en";
+  const lang = rawFileName.indexOf(":") > 0 ? getLangFromFilename(rawFileName) : "en";
   const fileName = rawFileName.split(":")[0];
   const name = (
     fileName.toLowerCase() === "index" || fileName.toLowerCase() === "readme"
@@ -43,9 +32,8 @@ const parseVirtualPath = (path: string, languages?: string[]) => {
 
   const pathSegments = path.split("/").filter(Boolean);
   // parent is the directory name (second to last segment, or empty for root)
-  const parent = pathSegments.length > 1
-    ? pathSegments[pathSegments.length - 2].toLowerCase()
-    : undefined;
+  const parent =
+    pathSegments.length > 1 ? pathSegments[pathSegments.length - 2].toLowerCase() : undefined;
 
   const relativePath = path;
 
@@ -111,12 +99,11 @@ const buildProjectData = (files: File[], config?: Record<string, unknown>): Proj
     let value: any = project[key];
     if (value === "false" || value === false) value = false;
     else if (value === "true" || value === true) value = true;
-    else if (
-      typeof value === "string" &&
-      !/\r|\n/.exec(value) &&
-      value.split(",").length > 1
-    ) {
-      value = value.split(",").map((entry: string) => entry.trim()).filter(Boolean);
+    else if (typeof value === "string" && !/\r|\n/.exec(value) && value.split(",").length > 1) {
+      value = value
+        .split(",")
+        .map((entry: string) => entry.trim())
+        .filter(Boolean);
     }
     fixedProject[key] = value;
   });
@@ -127,12 +114,9 @@ const buildProjectData = (files: File[], config?: Record<string, unknown>): Proj
 /**
  * Convert GirkBuildInput files to internal File[] with rendered HTML and metadata.
  */
-const inputFilesToFiles = async (
-  inputFiles: GirkBuildInput["files"],
-  languages?: string[]
-): Promise<File[]> => {
+const inputFilesToFiles = async (inputFiles: GirkBuildInput["files"]): Promise<File[]> => {
   const files: File[] = inputFiles.map((inputFile) => {
-    const parsed = parseVirtualPath(inputFile.path, languages);
+    const parsed = parseVirtualPath(inputFile.path);
     return {
       id: parsed.id,
       fileName: parsed.fileName,
@@ -164,7 +148,7 @@ const processFiles = async (files: File[]): Promise<{ files: File[]; languages: 
 
   // Render markdown to HTML and extract metadata
   await asyncForEach(files, async (file: File, index: number) => {
-    const rendered = await toHtml(file.data || "", file.path);
+    const rendered = await toHtml(file.data || "", file.path, undefined, file.language);
     files[index] = {
       ...file,
       html: rendered.document,
@@ -188,10 +172,9 @@ const processFiles = async (files: File[]): Promise<{ files: File[]; languages: 
 
   // Set thumbnails
   await asyncForEach(resolvedFiles, async (file: File, index: number) => {
-    const thumbnail = getThumbnail(file);
-    const thumbnailSvg = thumbnail ? await getSvgThumbnail(thumbnail) : "";
-    resolvedFiles[index].thumbnail = thumbnail;
-    resolvedFiles[index].thumbnailSvg = thumbnailSvg;
+    resolvedFiles[index].thumbnail = getThumbnail(file);
+    // SVG thumbnails are inlined from disk by girky; the SDK has no filesystem.
+    resolvedFiles[index].thumbnailSvg = "";
   });
 
   return { files: resolvedFiles, languages };
@@ -200,12 +183,9 @@ const processFiles = async (files: File[]): Promise<{ files: File[]; languages: 
 /**
  * Normalize GirkBuildInput into an internal Payload object.
  */
-export const normalize = async (
-  input: GirkBuildInput,
-  version: string
-): Promise<Payload> => {
+export const normalize = async (input: GirkBuildInput, version: string): Promise<Payload> => {
   // Convert input files to internal format
-  let files = await inputFilesToFiles(input.files, input.languages);
+  let files = await inputFilesToFiles(input.files);
 
   // Process data files (interpolation, etc.)
   files = await prepareDataFiles(files);
@@ -219,7 +199,7 @@ export const normalize = async (
   // Filter ignored files
   if (project.ignore) {
     processed.files = processed.files.filter(
-      (file) => !project.ignore.some((ignore) => file.path.includes(ignore))
+      (file) => !project.ignore.some((ignore) => file.path.includes(ignore)),
     );
   }
 

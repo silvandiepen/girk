@@ -1,12 +1,8 @@
 /**
  * EJS template rendering for Girky CLI.
  *
- * Self-contained — reads templates from girk-sdk's compiled registry
- * using filesystem access (CLI only, not for Workers).
+ * Renders girk-sdk's compiled template registry (girk-sdk/templates).
  */
-
-import { existsSync } from "fs";
-import { join } from "path";
 
 /**
  * HTML-escape a string.
@@ -76,39 +72,18 @@ function getCompiled(name: string, source: string) {
 interface RegistryModule {
   templates: Record<string, string>;
   scripts: Record<string, string>;
-}
-
-/**
- * Resolve and load girk-sdk template registry.
- */
-function loadRegistryFromDisk(): RegistryModule {
-  const candidates = [
-    join(__dirname, "../../../girk-sdk/dist/libs/templates/registry.js"),
-    join(__dirname, "../../../node_modules/girk-sdk/dist/libs/templates/registry.js"),
-    join(__dirname, "../../../../node_modules/girk-sdk/dist/libs/templates/registry.js"),
-  ];
-
-  for (const candidate of candidates) {
-    if (existsSync(candidate)) {
-      try {
-        // Node 22+ supports require() for ESM (experimental)
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const mod = require(candidate) as RegistryModule;
-        if (mod.templates) return mod;
-      } catch {
-        continue;
-      }
-    }
-  }
-
-  throw new Error("Could not resolve girk-sdk template registry. Ensure girk-sdk is installed and built.");
+  ui: Record<string, Record<string, string>>;
 }
 
 let _registry: RegistryModule | null = null;
 
-function loadRegistry() {
-  if (_registry) return;
-  _registry = loadRegistryFromDisk();
+/**
+ * Load the girk-sdk template registry through its package export.
+ * girk-sdk is ESM; require() of ESM needs Node 20.19+ / 22.12+ (checked in the CLI).
+ */
+export function getRegistry(): RegistryModule {
+  if (!_registry) _registry = require("girk-sdk/templates") as RegistryModule;
+  return _registry;
 }
 
 /**
@@ -133,7 +108,7 @@ function formatDate(value: string | Date, format?: string): string {
 function renderIcon(
   icon: { svg?: string; src?: string } | undefined,
   wrapperClass = "icon",
-  assetClass = "icon__asset"
+  assetClass = "icon__asset",
 ): string {
   if (!icon) return "";
   let out = `<span class="${wrapperClass}" aria-hidden="true">`;
@@ -147,30 +122,62 @@ function renderIcon(
 }
 
 /**
+ * Give every id inside each inline <svg> a per-instance suffix, so a logo or
+ * icon inlined more than once doesn't produce duplicate ids, and point the
+ * svg's own references (url(#id), href="#id") at the renamed ids.
+ */
+export function uniqueSvgIds(html: string): string {
+  let instance = 0;
+  return html.replace(/<svg\b[\s\S]*?<\/svg>/g, (svg) => {
+    const ids = new Set(Array.from(svg.matchAll(/\sid="([^"]+)"/g), (match) => match[1]));
+    if (!ids.size) return svg;
+
+    instance += 1;
+    const rename = (id: string) => (ids.has(id) ? `${id}-${instance}` : id);
+    return svg
+      .replace(/(\sid=")([^"]+)"/g, (_, attr, id) => `${attr}${rename(id)}"`)
+      .replace(/url\(#([^)]+)\)/g, (_, id) => `url(#${rename(id)})`)
+      .replace(/(href=")#([^"]+)"/g, (_, attr, id) => `${attr}#${rename(id)}"`);
+  });
+}
+
+/**
+ * UI strings for a page language, English for anything not translated.
+ */
+export function getUiStrings(language: string): Record<string, string> {
+  const { ui } = getRegistry();
+  return { ...ui.en, ...ui[language] };
+}
+
+/**
  * Render a full page using EJS templates.
  */
 export function renderEjs(
   data: Record<string, unknown>,
   templateName = "page",
-  customTemplates?: Record<string, string>
+  customTemplates?: Record<string, string>,
 ): string {
-  loadRegistry();
+  const registry = getRegistry();
 
-  const allTemplates = { ..._registry!.templates, ...customTemplates };
+  const allTemplates = { ...registry.templates, ...customTemplates };
   const source = allTemplates[templateName];
 
   if (!source) throw new Error(`Template "${templateName}" not found`);
 
-  const scripts = _registry!.scripts;
+  const scripts = registry.scripts;
+  const ui = getUiStrings(String(data.language));
 
   // Build partials
   const partials: Record<string, (d: Record<string, unknown>) => string> = {};
   for (const [name, src] of Object.entries(allTemplates)) {
     if (name === "page") continue;
     partials[name] = (d) =>
-      getCompiled(name, src as string)({ ...d, data: d, partials, scripts, formatDate, renderIcon });
+      getCompiled(
+        name,
+        src as string,
+      )({ ...d, data: d, partials, scripts, ui, formatDate, renderIcon });
   }
 
-  const enhancedData = { ...data, data, partials, scripts, formatDate, renderIcon };
-  return getCompiled(templateName, source)(enhancedData);
+  const enhancedData = { ...data, data, partials, scripts, ui, formatDate, renderIcon };
+  return uniqueSvgIds(getCompiled(templateName, source)(enhancedData));
 }

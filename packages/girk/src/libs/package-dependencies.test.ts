@@ -12,14 +12,14 @@ const readPackage = (path: string) =>
   };
 
 describe("published package dependencies", () => {
-  it("keeps CLI packages on the latest SDK template version", () => {
-    for (const packagePath of [
-      "packages/girk/package.json",
-      "packages/girk-cli/package.json",
-    ]) {
+  it("pins CLI packages to the girk-sdk version released alongside them", () => {
+    const sdk = readPackage("packages/girk-sdk/package.json");
+
+    for (const packagePath of ["packages/girk/package.json", "packages/girk-cli/package.json"]) {
       const packageJson = readPackage(packagePath);
 
-      expect(packageJson.dependencies?.["girk-sdk"]).toBe("latest");
+      expect(packageJson.version).toBe(sdk.version);
+      expect(packageJson.dependencies?.["girk-sdk"]).toBe(sdk.version);
     }
   });
 });

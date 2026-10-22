@@ -38,7 +38,9 @@ describe("CLI search index generation", () => {
     expect(manifest.shards.length).toBeGreaterThan(0);
     expect(manifest.shards[0]?.path).toContain("/assets/search/");
     expect(manifest.shards[0]?.documents).toBeGreaterThan(0);
-    expect(Object.values(shard.docs).some((document) => document.title.includes("Page One"))).toBe(true);
+    expect(Object.values(shard.docs).some((document) => document.title.includes("Page One"))).toBe(
+      true,
+    );
     expect(Object.keys(shard.terms).length).toBeGreaterThan(0);
   });
 });

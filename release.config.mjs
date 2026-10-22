@@ -19,12 +19,6 @@ export default {
     [
       "@semantic-release/npm",
       {
-        pkgRoot: "packages/girk-cli",
-      },
-    ],
-    [
-      "@semantic-release/npm",
-      {
         pkgRoot: "packages/girk",
       },
     ],
@@ -37,6 +31,7 @@ export default {
           "packages/girk-sdk/package.json",
           "packages/girk-cli/package.json",
           "packages/girk/CHANGELOG.md",
+          "package-lock.json",
           "apps/docs/release-notes/*.md",
         ],
         message:

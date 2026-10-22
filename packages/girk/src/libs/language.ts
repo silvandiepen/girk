@@ -5,33 +5,23 @@ import { makePath } from "@/libs/files";
 export const getDefaultLanguage = (): Language => "en";
 
 export const getLangFromPath = (pathName: string): Language => {
-  const langPath = pathName
-    .split("/")
-    .find((partial) => partial.indexOf(":") > 0);
+  const langPath = pathName.split("/").find((partial) => partial.indexOf(":") > 0);
   if (!langPath) return getDefaultLanguage();
   return getLangFromFilename(langPath);
 };
 
-export const fixLangInPath = (
-  pathName: string,
-  removeDefault = true
-): string => {
+export const fixLangInPath = (pathName: string, removeDefault = true): string => {
   const language = getLangFromPath(pathName);
 
   const path = pathName.split("/").map((partial) => {
     const ext = partial.indexOf(".") > 0 ? partial.split(".")[1] : null;
-    return partial.indexOf(":") > 0
-      ? `${partial.split(":")[0]}${ext ? `.${ext}` : ``}`
-      : partial;
+    return partial.indexOf(":") > 0 ? `${partial.split(":")[0]}${ext ? `.${ext}` : ``}` : partial;
   });
 
   if (language == getDefaultLanguage() && removeDefault) {
     return path.join("/");
   }
-  return `${language ? `/${language}` : ""}/${path.join("/")}`.replace(
-    "//",
-    "/"
-  );
+  return `${language ? `/${language}` : ""}/${path.join("/")}`.replace("//", "/");
 };
 
 export const getLangFromFilename = (fileName: string): Language => {
@@ -53,29 +43,22 @@ const getLanguageForPage = (payload: Payload, file: File): Language => {
 
   return lang;
 };
-export const getLanguageNativeName = (lang: Language)=>{
+export const getLanguageNativeName = (lang: Language) => {
   return languages[lang].nativeName;
-}
-export const getLanguageName = (lang:Language)=>{
+};
+export const getLanguageName = (lang: Language) => {
   return languages[lang].name;
-}
+};
 
-export const getLanguageMenu = (
-  payload: Payload,
-  file: File
-): LanguageMenuItem[] => {
+export const getLanguageMenu = (payload: Payload, file: File): LanguageMenuItem[] => {
   const menu = [];
-
-
 
   payload.languages.forEach((lang: Language) => {
     const altPage = payload.files.find(
-      (f) => f.id == file.id.replace(`${file.language}-`, `${lang}-`)
+      (f) => f.id == file.id.replace(`${file.language}-`, `${lang}-`),
     );
 
-    const link = altPage
-      ? `${makePath(altPage)}`
-      : `/${lang == getDefaultLanguage() ? "" : lang}`;
+    const link = altPage ? `${makePath(altPage)}` : `/${lang == getDefaultLanguage() ? "" : lang}`;
 
     menu.push({
       code: lang,

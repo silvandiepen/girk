@@ -463,7 +463,7 @@ describe("Page navigation state", () => {
     expect(page.html.data).toContain('<svg viewBox="0 0 16 16"><path d="M2 8h12"/></svg>');
     expect(page.html.data).toContain('<svg viewBox="0 0 16 16"><path d="M1 1h14v14H1z"/></svg>');
     expect(page.html.data).toContain(
-      'style="--section-background-color: var(--color-primary); --section-text-color: var(--color-primary-contrast)"'
+      'style="--section-background-color: var(--color-primary); --section-text-color: var(--color-primary-contrast)"',
     );
   });
 });

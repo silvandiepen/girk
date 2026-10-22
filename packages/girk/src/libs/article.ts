@@ -1,6 +1,5 @@
 const ARTICLE_TOKEN = /^[a-z0-9-]+$/i;
-const ARTICLE_ATTRIBUTE_PATTERN =
-  /([a-zA-Z][\w-]*)(?:=(?:"([^"]*)"|'([^']*)'|([^\s]+)))?/g;
+const ARTICLE_ATTRIBUTE_PATTERN = /([a-zA-Z][\w-]*)(?:=(?:"([^"]*)"|'([^']*)'|([^\s]+)))?/g;
 
 export interface ArticleOptions {
   classes: string[];

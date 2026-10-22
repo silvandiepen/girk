@@ -21,9 +21,7 @@ const result = await build({
     { path: "/about.md", content: "# About\nSome about text." },
     { path: "/blog/post:nl.md", content: "# Blogpost\nDit is een blogpost." },
   ],
-  media: [
-    { path: "/media/photo.jpg", content: imageBuffer, contentType: "image/jpeg" },
-  ],
+  media: [{ path: "/media/photo.jpg", content: imageBuffer, contentType: "image/jpeg" }],
   config: {
     projectTitle: "My Site",
   },
@@ -40,13 +38,13 @@ const result = await build({
 
 `build()` takes a `GirkBuildInput` object:
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `files` | `GirkInputFile[]` | yes | Markdown files with `path` and `content` |
-| `media` | `GirkInputAsset[]` | no | Media assets — passed through as-is |
-| `assets` | `GirkInputAsset[]` | no | Static assets — passed through as-is |
-| `config` | `object` | no | Project configuration |
-| `languages` | `string[]` | no | Explicit languages; auto-detected from filenames if omitted |
+| Field       | Type               | Required | Description                                                 |
+| ----------- | ------------------ | -------- | ----------------------------------------------------------- |
+| `files`     | `GirkInputFile[]`  | yes      | Markdown files with `path` and `content`                    |
+| `media`     | `GirkInputAsset[]` | no       | Media assets — passed through as-is                         |
+| `assets`    | `GirkInputAsset[]` | no       | Static assets — passed through as-is                        |
+| `config`    | `object`           | no       | Project configuration                                       |
+| `languages` | `string[]`         | no       | Explicit languages; auto-detected from filenames if omitted |
 
 ## Output
 

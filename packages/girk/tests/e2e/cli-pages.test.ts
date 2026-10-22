@@ -48,8 +48,8 @@ describe("CLI page generation", () => {
     ).length;
 
     expect(headerNavigationCount).toBe(1);
-    expect(homeHtml).toContain('<nav class="navigation navigation--footer">');
-    expect(homeHtml).toContain('navigation__footer-list');
+    expect(homeHtml).toContain('<nav class="navigation navigation--footer" aria-label="Footer">');
+    expect(homeHtml).toContain("navigation__footer-list");
     expect(homeHtml).not.toContain(
       '<div class="footer__navigation">\n                  <nav class="navigation navigation--header',
     );
@@ -60,14 +60,10 @@ describe("CLI page generation", () => {
     cleanups.push(result.cleanup);
 
     const homeHtml = await readOutput(result.outputDir, "index.html");
-    const toggleMatch = homeHtml.match(
-      /<button class="color-mode-toggle"[\s\S]*?<\/button>/,
-    );
+    const toggleMatch = homeHtml.match(/<button class="color-mode-toggle"[\s\S]*?<\/button>/);
 
     expect(toggleMatch?.[0]).toBeDefined();
-    expect(toggleMatch?.[0].match(/color-mode-toggle__option/g) || []).toHaveLength(
-      2,
-    );
+    expect(toggleMatch?.[0].match(/color-mode-toggle__option/g) || []).toHaveLength(2);
     const compactToggle = toggleMatch?.[0].replace(/\s+/g, "") || "";
 
     expect(compactToggle).toContain(

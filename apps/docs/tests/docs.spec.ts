@@ -202,7 +202,7 @@ test.describe("generated docs", () => {
 
     await page
       .getByRole("banner")
-      .getByRole("button", { name: "Toggle Features submenu" })
+      .getByRole("button", { name: "Features submenu" })
       .click();
 
     await expect(
@@ -215,7 +215,7 @@ test.describe("generated docs", () => {
 
     const toggle = page
       .getByRole("banner")
-      .getByRole("button", { name: "Toggle How to Use submenu" });
+      .getByRole("button", { name: "How to Use submenu" });
     const panelId = await toggle.getAttribute("aria-controls");
 
     expect(panelId).toBeTruthy();
@@ -241,7 +241,7 @@ test.describe("generated docs", () => {
 
     const toggle = page
       .getByRole("banner")
-      .getByRole("button", { name: "Toggle How to Use submenu" });
+      .getByRole("button", { name: "How to Use submenu" });
     const panelId = await toggle.getAttribute("aria-controls");
 
     expect(panelId).toBeTruthy();
@@ -270,7 +270,7 @@ test.describe("generated docs", () => {
 
     const toggle = page
       .getByRole("banner")
-      .getByRole("button", { name: "Toggle navigation menu" });
+      .getByRole("button", { name: "Menu", exact: true });
 
     await expect(toggle).toBeVisible();
     await toggle.click();
@@ -419,7 +419,8 @@ test.describe("generated docs", () => {
 
     await expect(main.locator(".toc")).toBeVisible();
     await expect(typography.locator(".nizel-task-list__checkbox")).toHaveCount(2);
-    await expect(typography.locator(".nizel-task-list__checkbox").first()).toBeEnabled();
+    // Published task lists are read-only: their state cannot be saved.
+    await expect(typography.locator(".nizel-task-list__checkbox").first()).toBeDisabled();
     await expect(typography.locator('abbr[title="HyperText Markup Language"]').first()).toBeVisible();
     await expect(typography.locator("mark")).toContainText("marked text");
     await expect(typography.locator("sub")).toContainText("2");

@@ -3,11 +3,16 @@ const initDiagrams = async () => {
   if (!nodes.length) return;
 
   try {
-    const mermaid = await import("https://cdn.jsdelivr.net/npm/mermaid@11.16.0/dist/mermaid.esm.min.mjs");
+    const mermaid =
+      await import("https://cdn.jsdelivr.net/npm/mermaid@11.16.0/dist/mermaid.esm.min.mjs");
     mermaid.default.initialize({
       startOnLoad: false,
       securityLevel: "strict",
-      theme: document.documentElement.getAttribute("color-mode") === "dark" ? "dark" : "default",
+      theme:
+        (document.documentElement.getAttribute("color-mode") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")) === "dark"
+          ? "dark"
+          : "default",
     });
     await mermaid.default.run({ nodes });
   } catch (error) {

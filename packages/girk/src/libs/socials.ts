@@ -1,13 +1,5 @@
 import { Payload } from "@/types";
-import {
-  blockLine,
-  blockLineError,
-  blockMid,
-  blockRowLine,
-  blockTable,
-  blue,
-  bold,
-} from "cli-block";
+import { blockLine, blockLineError, blockMid, blue, bold } from "cli-block";
 
 export interface Social {
   icon?: string;
@@ -22,7 +14,7 @@ export const generateSocials = async (payload: Payload): Promise<Payload> => {
   if (socials.length) {
     blockMid("Socials");
 
-    socials.forEach((social: Social, idx) => {
+    socials.forEach((social: Social) => {
       blockLine(bold(social.title));
       blockLine(blue(social.link));
       blockLine("");

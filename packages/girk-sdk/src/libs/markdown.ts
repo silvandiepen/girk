@@ -23,26 +23,25 @@ import { taskListPlugin } from "nizel-plugin-task-list";
 import { tocPlugin } from "nizel-plugin-toc";
 import { typographyPlugin } from "nizel-plugin-typography";
 
-import {
-  parseArticleOptions,
-  buildArticleClassName,
-  buildArticleStyle,
-} from "@/libs/article";
+import { parseArticleOptions, buildArticleClassName, buildArticleStyle } from "@/libs/article";
 import { extractMeta, removeMeta } from "@/libs/markdown-meta";
 import { MarkdownData } from "@/types";
 import type { NizelBlockNode, NizelRenderContext } from "nizel";
 import { getGist } from "@/libs/download";
 import { asyncForEach } from "@/libs/utils";
 import { getFetch } from "./fetch";
+import { ui as uiStrings } from "./templates/registry";
 import { dirname, resolve } from "@/libs/path-utils";
 
 /**
  * Lazily-initialized Nizel processor with JS-engine Shiki for Worker compatibility.
  */
-let _processor: ReturnType<typeof useNizel> | null = null;
+// One processor per page language, so generated labels are localised.
+const processors = new Map<string, ReturnType<typeof useNizel>>();
 
-async function getProcessor() {
-  if (_processor) return _processor;
+async function getProcessor(language = "en") {
+  const cached = processors.get(language);
+  if (cached) return cached;
 
   // Use Shiki's JavaScript regex engine (no WASM) for Worker compatibility.
   // This import is safe in both Node and Workers.
@@ -59,7 +58,18 @@ async function getProcessor() {
 
   const highlighter = await createHighlighter({
     themes: ["github-dark"],
-    langs: ["javascript", "typescript", "html", "css", "json", "bash", "markdown", "python", "rust", "go"],
+    langs: [
+      "javascript",
+      "typescript",
+      "html",
+      "css",
+      "json",
+      "bash",
+      "markdown",
+      "python",
+      "rust",
+      "go",
+    ],
   });
 
   const highlightFn = (code: string, input: { lang?: string; theme?: string; meta?: string }) => {
@@ -70,7 +80,8 @@ async function getProcessor() {
     });
   };
 
-  _processor = useNizel({
+  const ui = { ...uiStrings.en, ...uiStrings[language] };
+  const processor = useNizel({
     anchors: true,
     safe: false,
     elements: {
@@ -86,7 +97,10 @@ async function getProcessor() {
         },
         formats: {
           html(node: NizelBlockNode, ctx: NizelRenderContext) {
-            const customNode = node as { value?: { rawOptions: string }; children?: NizelBlockNode[] };
+            const customNode = node as {
+              value?: { rawOptions: string };
+              children?: NizelBlockNode[];
+            };
             const rawOptions = customNode.value?.rawOptions ?? "";
             const options = parseArticleOptions(rawOptions);
             const className = buildArticleClassName(options);
@@ -105,7 +119,7 @@ async function getProcessor() {
     plugins: [
       abbrPlugin(),
       alertPlugin(),
-      autolinkPlugin({ target: "_blank", rel: "noopener" }),
+      autolinkPlugin(),
       badgePlugin(),
       citationsPlugin(),
       deflistPlugin(),
@@ -114,7 +128,7 @@ async function getProcessor() {
       emojiPlugin(),
       frontmatterUiPlugin(),
       footnotesPlugin(),
-      headingAnchorsPlugin(),
+      headingAnchorsPlugin({ ariaLabel: ui.linkToSection }),
       kbdPlugin(),
       mathPlugin(),
       mediaPlugin(),
@@ -122,14 +136,15 @@ async function getProcessor() {
       printPlugin({ injectCss: false }),
       shikiPlugin({ highlighter: highlightFn }),
       codeCopyPlugin({ mode: "button" }),
-      taskListPlugin({ mode: "edit" }),
+      taskListPlugin({ mode: "view" }),
       tocPlugin(),
       typographyPlugin(),
       sanitizePlugin({ allowRawHtml: true }),
     ],
   });
 
-  return _processor;
+  processors.set(language, processor);
+  return processor;
 }
 
 /**
@@ -137,7 +152,7 @@ async function getProcessor() {
  */
 const renderArticleHeader = (
   options: ReturnType<typeof parseArticleOptions>,
-  escape: (v: unknown) => string
+  escape: (v: unknown) => string,
 ): string => {
   const metaItems: string[] = [];
 
@@ -155,7 +170,9 @@ const renderArticleHeader = (
   }
 
   if (options.date) {
-    metaItems.push(`<time class="article-block__date" datetime="${escape(options.date)}">${escape(options.date)}</time>`);
+    metaItems.push(
+      `<time class="article-block__date" datetime="${escape(options.date)}">${escape(options.date)}</time>`,
+    );
   }
 
   const headerContent: string[] = [];
@@ -194,7 +211,7 @@ const fetchUrl = async (url: string): Promise<string> => {
 const fetchFromMap = async (
   importPath: string,
   basePath: string,
-  importFileMap?: Map<string, string>
+  importFileMap?: Map<string, string>,
 ): Promise<string> => {
   if (!importFileMap) return "";
   const absolutePath = resolve(dirname(basePath), importPath);
@@ -205,28 +222,25 @@ const fetchFromMap = async (
  * Rewrite .md file links in markdown content to girk's URL format.
  */
 export const rewriteImportedLinks = (content: string): string => {
-  return content.replace(
-    /(\[[^\]]*\])\(([^)]+)\)/g,
-    (match, label, href) => {
-      if (/^(https?:\/\/|\/|#|mailto:)/.test(href)) return match;
+  return content.replace(/(\[[^\]]*\])\(([^)]+)\)/g, (match, label, href) => {
+    if (/^(https?:\/\/|\/|#|mailto:)/.test(href)) return match;
 
-      const hashIndex = href.indexOf("#");
-      const pathPart = hashIndex >= 0 ? href.slice(0, hashIndex) : href;
-      const anchor = hashIndex >= 0 ? href.slice(hashIndex) : "";
+    const hashIndex = href.indexOf("#");
+    const pathPart = hashIndex >= 0 ? href.slice(0, hashIndex) : href;
+    const anchor = hashIndex >= 0 ? href.slice(hashIndex) : "";
 
-      if (!pathPart.endsWith(".md")) return match;
+    if (!pathPart.endsWith(".md")) return match;
 
-      const fileName = pathPart.split("/").pop()!.toLowerCase();
-      if (fileName === "readme.md" || fileName === "index.md") {
-        const dir = pathPart.includes("/")
-          ? `${pathPart.slice(0, pathPart.lastIndexOf("/"))}/`
-          : "./";
-        return `${label}(${dir}${anchor})`;
-      }
-
-      return `${label}(${pathPart.replace(/\.md$/, "/")}${anchor})`;
+    const fileName = pathPart.split("/").pop()!.toLowerCase();
+    if (fileName === "readme.md" || fileName === "index.md") {
+      const dir = pathPart.includes("/")
+        ? `${pathPart.slice(0, pathPart.lastIndexOf("/"))}/`
+        : "./";
+      return `${label}(${dir}${anchor})`;
     }
-  );
+
+    return `${label}(${pathPart.replace(/\.md$/, "/")}${anchor})`;
+  });
 };
 
 /**
@@ -236,7 +250,7 @@ export const rewriteImportedLinks = (content: string): string => {
 export const loadImport = async (
   importPath: string,
   basePath: string,
-  importFileMap?: Map<string, string>
+  importFileMap?: Map<string, string>,
 ): Promise<string> => {
   let raw = "";
 
@@ -256,7 +270,7 @@ export const loadImport = async (
 export const resolveImports = async (
   content: string,
   filePath: string,
-  importFileMap?: Map<string, string>
+  importFileMap?: Map<string, string>,
 ): Promise<string> => {
   const importPattern = /\[import:(.*?)\]/g;
   const matches = Array.from(content.matchAll(importPattern));
@@ -270,7 +284,10 @@ export const resolveImports = async (
     }
   }
 
-  return content.replace(importPattern, (_, importPath: string) => cache.get(importPath.trim()) ?? "");
+  return content.replace(
+    importPattern,
+    (_, importPath: string) => cache.get(importPath.trim()) ?? "",
+  );
 };
 
 export const unp = (input: string): string => {
@@ -302,7 +319,8 @@ export const replaceData = async (input: string): Promise<string> => {
 export const toHtml = async (
   input: string,
   filePath?: string,
-  importFileMap?: Map<string, string>
+  importFileMap?: Map<string, string>,
+  language?: string,
 ): Promise<MarkdownData> => {
   const metaData = await extractMeta(input);
   let strippedData = await removeMeta(input);
@@ -313,18 +331,18 @@ export const toHtml = async (
         ? (metaData.import as string[])
         : [metaData.import as string];
 
-      const imported = await Promise.all(importPaths.map((p) => loadImport(p, filePath, importFileMap)));
+      const imported = await Promise.all(
+        importPaths.map((p) => loadImport(p, filePath, importFileMap)),
+      );
       const importedBody = imported.join("\n\n");
-      strippedData = strippedData.trim()
-        ? `${importedBody}\n\n${strippedData}`
-        : importedBody;
+      strippedData = strippedData.trim() ? `${importedBody}\n\n${strippedData}` : importedBody;
     }
 
     strippedData = await resolveImports(strippedData, filePath, importFileMap);
   }
 
   const replacedData = await replaceData(strippedData);
-  const nizel = await getProcessor();
+  const nizel = await getProcessor(language);
   const result = await nizel(replacedData);
 
   return {

@@ -94,6 +94,8 @@ You can map semantic roles to palette tokens:
 }
 ```
 
+`background` and `foreground` set the light theme. To change the dark theme too, add `backgroundDark` and `foregroundDark`; without them dark mode keeps its default colors, so the color-mode toggle always switches between two distinct themes.
+
 You can also override palette values directly:
 
 ```json

@@ -12,6 +12,15 @@
     lastFocusedElement: null,
   };
 
+  // UI strings for the page language, rendered onto <body> by page.ejs.
+  var ui = (function () {
+    try {
+      return JSON.parse(document.body.dataset.girkUi || "{}");
+    } catch {
+      return {};
+    }
+  })();
+
   function normalize(input) {
     return String(input || "")
       .normalize("NFKD")
@@ -176,12 +185,18 @@
     };
   }
 
+  function announce(message) {
+    var status = state.shell && state.shell.querySelector("[data-search-status]");
+    if (status) status.textContent = message;
+  }
+
   function renderResults(query, results, error) {
     if (!state.results) return;
 
     if (!normalize(query)) {
       state.results.innerHTML = "";
       state.results.hidden = true;
+      announce("");
       return;
     }
 
@@ -189,17 +204,29 @@
 
     if (error) {
       state.results.innerHTML =
-        '<p class="search-results__empty">Search is unavailable right now.</p>';
+        '<p class="search-results__empty">' +
+        escapeHtml(ui.searchUnavailable || "Search is unavailable right now.") +
+        "</p>";
+      announce(ui.searchUnavailable || "Search is unavailable right now.");
       return;
     }
 
     if (!results.length) {
       state.results.innerHTML =
-        '<p class="search-results__empty">No results for <strong>' +
+        '<p class="search-results__empty">' +
+        escapeHtml(ui.noResultsFor || "No results for") +
+        " <strong>" +
         escapeHtml(query) +
         "</strong>.</p>";
+      announce(ui.noResults || "No results");
       return;
     }
+
+    announce(
+      results.length === 1
+        ? ui.oneResult || "1 result"
+        : (ui.results || "{count} results").replace("{count}", String(results.length)),
+    );
 
     state.results.innerHTML =
       '<ul class="search-results__list">' +
@@ -214,9 +241,7 @@
             escapeHtml(result.title) +
             "</span>" +
             (result.excerpt
-              ? '<span class="search-results__excerpt">' +
-                escapeHtml(result.excerpt) +
-                "</span>"
+              ? '<span class="search-results__excerpt">' + escapeHtml(result.excerpt) + "</span>"
               : "") +
             "</a>" +
             "</li>"
@@ -248,6 +273,12 @@
     if (state.shell) {
       state.shell.hidden = !isOpen;
       state.shell.classList.toggle("search-shell--open", isOpen);
+
+      // The dialog is modal: the page behind it leaves the tab order.
+      Array.prototype.forEach.call(document.body.children, function (element) {
+        if (element === state.shell || element.tagName === "SCRIPT") return;
+        element.inert = isOpen;
+      });
     }
 
     document.documentElement.classList.toggle("search-open", isOpen);
@@ -270,10 +301,7 @@
 
     setOpenState(false);
 
-    if (
-      state.lastFocusedElement &&
-      typeof state.lastFocusedElement.focus === "function"
-    ) {
+    if (state.lastFocusedElement && typeof state.lastFocusedElement.focus === "function") {
       state.lastFocusedElement.focus();
     }
   }
@@ -289,17 +317,12 @@
       var shards = await Promise.all(
         getLanguageShards(manifest).map(function (descriptor) {
           return getShard(descriptor);
-        })
+        }),
       );
       var allowDocument = getScopePredicate();
 
-      renderResults(
-        query,
-        rankResults(query, shards, 24)
-          .filter(allowDocument)
-          .slice(0, 8)
-      );
-    } catch (_) {
+      renderResults(query, rankResults(query, shards, 24).filter(allowDocument).slice(0, 8));
+    } catch {
       renderResults(query, [], true);
     }
   }
@@ -367,11 +390,9 @@
     state.form = document.querySelector("[data-search-form]");
     state.input = document.querySelector("[data-search-input]");
     state.results = document.querySelector("[data-search-results]");
-    state.openButtons = Array.prototype.slice.call(
-      document.querySelectorAll("[data-search-open]")
-    );
+    state.openButtons = Array.prototype.slice.call(document.querySelectorAll("[data-search-open]"));
     state.closeButtons = Array.prototype.slice.call(
-      document.querySelectorAll("[data-search-close]")
+      document.querySelectorAll("[data-search-close]"),
     );
 
     if (!state.shell || !state.dialog || !state.input || !state.results) return;

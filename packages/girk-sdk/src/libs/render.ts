@@ -8,7 +8,7 @@
  * Custom templates can be passed via the `customTemplates` config option.
  */
 
-import { templates, scripts } from "./templates/registry";
+import { templates, scripts, ui as uiStrings } from "./templates/registry";
 import { formatDate } from "./formatDate";
 import { renderIcon } from "./renderIcon";
 
@@ -106,16 +106,38 @@ function getCompiled(name: string, source: string) {
  * Each key is a template name, each value is a render function.
  */
 function buildPartials(
-  allTemplates: Record<string, string>
+  allTemplates: Record<string, string>,
+  ui: Record<string, string>,
 ): Record<string, (data: Record<string, unknown>) => string> {
   const partials: Record<string, (data: Record<string, unknown>) => string> = {};
 
   for (const [name, source] of Object.entries(allTemplates)) {
     if (name === "page") continue; // page is the top-level template, not a partial
-    partials[name] = (data) => getCompiled(name, source)({ ...data, data, partials, scripts, formatDate, renderIcon });
+    partials[name] = (data) =>
+      getCompiled(name, source)({ ...data, data, partials, scripts, ui, formatDate, renderIcon });
   }
 
   return partials;
+}
+
+/**
+ * Give every id inside each inline <svg> a per-instance suffix, so a logo or
+ * icon inlined more than once doesn't produce duplicate ids, and point the
+ * svg's own references (url(#id), href="#id") at the renamed ids.
+ */
+export function uniqueSvgIds(html: string): string {
+  let instance = 0;
+  return html.replace(/<svg\b[\s\S]*?<\/svg>/g, (svg) => {
+    const ids = new Set(Array.from(svg.matchAll(/\sid="([^"]+)"/g), (match) => match[1]));
+    if (!ids.size) return svg;
+
+    instance += 1;
+    const rename = (id: string) => (ids.has(id) ? `${id}-${instance}` : id);
+    return svg
+      .replace(/(\sid=")([^"]+)"/g, (_, attr, id) => `${attr}${rename(id)}"`)
+      .replace(/url\(#([^)]+)\)/g, (_, id) => `url(#${rename(id)})`)
+      .replace(/(href=")#([^"]+)"/g, (_, attr, id) => `${attr}#${rename(id)}"`);
+  });
 }
 
 /**
@@ -128,7 +150,7 @@ function buildPartials(
 export function renderEjs(
   data: Record<string, unknown>,
   templateName = "page",
-  customTemplates?: Record<string, string>
+  customTemplates?: Record<string, string>,
 ): string {
   const allTemplates = { ...templates, ...customTemplates };
   const source = allTemplates[templateName];
@@ -137,16 +159,19 @@ export function renderEjs(
     throw new Error(`Template "${templateName}" not found`);
   }
 
-  const partials = buildPartials(allTemplates);
+  // UI strings for the page language, English for anything not translated.
+  const ui = { ...uiStrings.en, ...uiStrings[String(data.language)] };
+  const partials = buildPartials(allTemplates, ui);
 
   const enhancedData = {
     ...data,
     data,
     partials,
     scripts,
+    ui,
     formatDate,
     renderIcon,
   };
 
-  return getCompiled(templateName, source)(enhancedData);
+  return uniqueSvgIds(getCompiled(templateName, source)(enhancedData));
 }

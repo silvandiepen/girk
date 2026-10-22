@@ -1,18 +1,9 @@
 import { join } from "@/libs/path-utils";
 
-import {
-  Payload,
-  File,
-  Page,
-  Meta,
-  buildHtmlArgs,
-  MenuItem,
-  Project,
-  Language,
-} from "@/types";
+import { Payload, File, Page, Meta, buildHtmlArgs, MenuItem, Project, Language } from "@/types";
 import { getLanguageMenu, getDefaultLanguage } from "@/libs/language";
 import { makePath, buildHtml, getParentFile } from "./files";
-import { getExcerpt } from "./helpers";
+import { getDescription, getExcerpt } from "./helpers";
 import { isHidden } from "./helpers";
 import { getSearchContext, hasSearchEnabled } from "./search";
 import { buildSectionStyle } from "./section-style";
@@ -20,6 +11,12 @@ import { buildSectionStyle } from "./section-style";
 import { getThumbnail } from "./media";
 
 const simplifyUrl = (url: string): string => url.replace("/index.html", "") || "/";
+
+// The site root, or a language root such as /nl/.
+const isSiteHome = (link: string, languages: string[]): boolean => {
+  const url = simplifyUrl(link);
+  return url === "/" || languages.some((language) => url === `/${language}`);
+};
 
 const isActiveMenu = (link: string, current: string): boolean =>
   simplifyUrl(link) == simplifyUrl(current);
@@ -30,10 +27,7 @@ export const isActiveMenuParent = (link: string, current: string): boolean => {
 
   if (normalizedLink === "/" || normalizedCurrent === "/") return false;
 
-  return (
-    normalizedCurrent.startsWith(`${normalizedLink}/`) &&
-    normalizedCurrent !== normalizedLink
-  );
+  return normalizedCurrent.startsWith(`${normalizedLink}/`) && normalizedCurrent !== normalizedLink;
 };
 
 const getArchiveHtml = (file: File): string =>
@@ -43,29 +37,23 @@ const getArchiveHtml = (file: File): string =>
     .join("\n");
 
 const getPageFeatureHtml = (file: File, relatedPages: File[]): string =>
-  [
-    file.html || "",
-    getArchiveHtml(file),
-    ...relatedPages.map((page) => page.excerpt || ""),
-  ].join("\n");
+  [file.html || "", getArchiveHtml(file), ...relatedPages.map((page) => page.excerpt || "")].join(
+    "\n",
+  );
 
 const hasTable = (html: string) => html.includes("<table>");
 
-const hasUrlToken = (html: string) =>
-  html.includes('<span class="token url">http');
+const hasUrlToken = (html: string) => html.includes('<span class="token url">http');
 
 const hasHeader = (menu: MenuItem[]) => menu.length > 0;
 
-const hasColors = (html: string) =>
-  !!html.match(/#[a-fA-F0-9]{6}|#[a-fA-F0-9]{3}/i);
+const hasColors = (html: string) => !!html.match(/#[a-fA-F0-9]{6}|#[a-fA-F0-9]{3}/i);
 
 const hasLanguages = (languages: Language[]) => !!(languages.length > 1);
 
-const hasMath = (html: string) =>
-  /\bclass="[^"]*\bmath(?:-inline|-display)?\b/.test(html);
+const hasMath = (html: string) => /\bclass="[^"]*\bmath(?:-inline|-display)?\b/.test(html);
 
-const hasDiagrams = (html: string) =>
-  /\bclass="[^"]*\bmermaid\b/.test(html);
+const hasDiagrams = (html: string) => /\bclass="[^"]*\bmermaid\b/.test(html);
 
 const getParentPage = (file: File, files: File[]): File | undefined =>
   files.find(
@@ -73,7 +61,7 @@ const getParentPage = (file: File, files: File[]): File | undefined =>
       candidate.home &&
       candidate.name == file.parent &&
       candidate.id !== file.id &&
-      candidate.language === file.language
+      candidate.language === file.language,
   );
 
 const getRelatedPages = (file: File, files: File[]): File[] => {
@@ -89,7 +77,7 @@ const getRelatedPages = (file: File, files: File[]): File[] => {
         candidate.id !== file.id &&
         !candidate.home &&
         candidate.language === file.language &&
-        !isHidden(candidate.meta)
+        !isHidden(candidate.meta),
     )
     .map((candidate): File => {
       const meta: Meta = candidate.meta || {};
@@ -116,10 +104,7 @@ const subtitle = (file: File, payload: Payload): string => {
   }
 };
 
-const getProjectByLanguage = (
-  project: Project,
-  language: Language
-): Project => {
+const getProjectByLanguage = (project: Project, language: Language): Project => {
   const langProject = {};
   Object.entries(project || {}).filter((value) => {
     if (value[0].includes(":")) {
@@ -138,11 +123,7 @@ const getProjectByLanguage = (
  * Build a page from the payload and file, returning page data in memory.
  * No filesystem writes — the caller receives the Page object.
  */
-export const buildPage = async (
-  payload: Payload,
-  file: File,
-  outputDir = ""
-): Promise<Page> => {
+export const buildPage = async (payload: Payload, file: File, outputDir = ""): Promise<Page> => {
   const currentLink = makePath(file);
   const currentLanguage = file.language;
 
@@ -171,9 +152,7 @@ export const buildPage = async (
   const relatedPages = getRelatedPages(file, payload.files);
   const pageFeatureHtml = getPageFeatureHtml(file, relatedPages);
   const favicons = payload.favicons;
-  const tags = payload.tags
-    ? payload.tags.filter((tag) => tag.parent == file.parent)
-    : [];
+  const tags = payload.tags ? payload.tags.filter((tag) => tag.parent == file.parent) : [];
 
   const style = {
     ...payload.style,
@@ -197,6 +176,8 @@ export const buildPage = async (
     langMenu: getLanguageMenu(payload, file),
     language: currentLanguage,
     subtitle: subtitle(file, payload),
+    // The home page is described by the project description instead.
+    excerpt: isSiteHome(currentLink, payload.languages) ? "" : getDescription(file),
     components: [],
     socials: payload.socials,
     parentPage,
@@ -225,13 +206,10 @@ export const buildPage = async (
    */
   return {
     dir: outputDir
-      ? join(
-          outputDir,
-          currentLink.split("/").slice(0, -1).join("/")
-        )
+      ? join(outputDir, currentLink.split("/").slice(0, -1).join("/"))
       : currentLink.split("/").slice(0, -1).join("/"),
     css: {
-      data: '',
+      data: "",
       file: customCssFilePath,
     },
     html: {

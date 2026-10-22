@@ -17,5 +17,8 @@
   },
   "lib": ["es2022"],
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "src/**/*.test.ts", "vite.config.mts"]
+  "exclude": ["node_modules", "dist", "src/**/*.test.ts", "vite.config.mts"],
+  "tsc-alias": {
+    "resolveFullPaths": true
+  }
 }

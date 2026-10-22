@@ -1,5 +1,5 @@
 import { readdir } from "fs/promises";
-import { extname, resolve, basename, join } from "path";
+import { extname, resolve, basename } from "path";
 import { statSync } from "fs";
 import { renderEjs } from "@/libs/render";
 
@@ -15,11 +15,7 @@ import { buildSectionStyle } from "@/libs/section-style";
 	Get all files and folders from the input
 */
 export const fileId = (path: string): string =>
-  fixLangInPath(path, false)
-    .replace(/\//g, "-")
-    .substring(1)
-    .split(".")[0]
-    .toLowerCase();
+  fixLangInPath(path, false).replace(/\//g, "-").substring(1).split(".")[0].toLowerCase();
 
 export const isHomePath = (path: string): boolean => {
   const fileName = basename(path, extname(path)).split(":")[0].toLowerCase();
@@ -27,15 +23,14 @@ export const isHomePath = (path: string): boolean => {
   return fileName === "readme" || fileName === "index";
 };
 
-export const getFileTree = async (
-  dir: string,
-  filter: string[] = null
-): Promise<File[]> => {
-  // Do not search the following folders;
-  const excludes = ["node_modules", ".git"];
-  if (excludes.some((sub) => dir.includes(sub))) return;
+// Never scanned for content: dependencies and hidden folders (.git, .github, .cache, ...).
+const isSkippedDirectory = (name: string): boolean =>
+  name === "node_modules" || name.startsWith(".");
 
-  const direntGroup = await readdir(dir, { withFileTypes: true });
+export const getFileTree = async (dir: string, filter: string[] = null): Promise<File[]> => {
+  const direntGroup = (await readdir(dir, { withFileTypes: true })).filter(
+    (dirent: Dirent) => !(dirent.isDirectory() && isSkippedDirectory(dirent.name)),
+  );
 
   const files = await Promise.all(
     direntGroup.map(async (dirent: Dirent) => {
@@ -44,8 +39,7 @@ export const getFileTree = async (
       const fileName = basename(result).replace(extension, "");
       const relativePath = result.replace(process.cwd(), "");
 
-      const lang =
-        fileName.indexOf(":") > 0 ? getLangFromFilename(fileName) : "en";
+      const lang = fileName.indexOf(":") > 0 ? getLangFromFilename(fileName) : "en";
 
       const name = (
         fileName.toLowerCase() == "index" || fileName.toLowerCase() == "readme"
@@ -69,16 +63,14 @@ export const getFileTree = async (
           language: lang,
         };
       }
-    })
+    }),
   );
 
   return Array.prototype
     .concat(...files)
     .filter((r) => r !== null)
     .filter((file) => file)
-    .filter((file) =>
-      filter ? (filter as string[]).includes(file.ext) : true
-    );
+    .filter((file) => (filter ? (filter as string[]).includes(file.ext) : true));
 };
 
 export const getFiles = async (dir: string, ext: string): Promise<File[]> => {
@@ -87,11 +79,11 @@ export const getFiles = async (dir: string, ext: string): Promise<File[]> => {
   const files = [];
 
   const getParentId = (file: File) => {
-    const parentPath = file.relativePath.toLowerCase().replace('/readme.md','');
-   const parentId =  parentPath.split("/")[parentPath.split("/").length - 2];
-  
-  return parentId;
- }
+    const parentPath = file.relativePath.toLowerCase().replace("/readme.md", "");
+    const parentId = parentPath.split("/")[parentPath.split("/").length - 2];
+
+    return parentId;
+  };
 
   await asyncForEach(fileTree, async (file: File) => {
     const data = await getFileData(file.path);
@@ -111,18 +103,10 @@ const filterArchive = (file: File): Archive[] => {
     if (!file.relativePath) {
       return file.archives;
     }
-    const parentUrl = file.relativePath
-      .split("/")
-      .filter(Boolean)
-      .slice(0, -1)
-      .join("-");
+    const parentUrl = file.relativePath.split("/").filter(Boolean).slice(0, -1).join("-");
 
     file.archives[0].children = file.archives[0].children.filter((child) => {
-      const childUrl = child.link
-        .split("/")
-        .filter(Boolean)
-        .slice(0, -2)
-        .join("-");
+      const childUrl = child.link.split("/").filter(Boolean).slice(0, -2).join("-");
       return childUrl == parentUrl;
     });
     return file.archives;
@@ -134,21 +118,15 @@ const filterArchive = (file: File): Archive[] => {
 export const buildHtml = async (
   file: File,
   args: buildHtmlArgs,
-  template = ""
+  template = "",
 ): Promise<string> => {
   const archives = filterArchive(file);
 
-  archives.map((archive) => {
+  // Blog archives list newest first; sort() reorders the children in place.
+  archives.forEach((archive) => {
     if (archive.type === "blog") {
-      archive.children;
-      return {
-        ...archive,
-        children: archive.children.sort((a, b) =>
-          b.created > a.created ? 1 : a.created > b.created ? -1 : 0
-        ),
-      };
+      archive.children.sort((a, b) => (b.created > a.created ? 1 : a.created > b.created ? -1 : 0));
     }
-    return archive;
   });
 
   const options = {
@@ -183,23 +161,19 @@ export const makeLink = (path: string): string => {
     path
       .replace(process.cwd(), "")
       .toLowerCase()
-      .replace("readme", "index")
-      .replace(".md", ".html")
+      // Only the file itself is renamed: readme.md, readme:nl.md -> index
+      .replace(/(^|\/)readme(?=(:[^/]*)?\.md$)/, "$1index")
+      .replace(/\.md$/, ".html"),
   );
 
-  return uri.split("/")[uri.split("/").length - 1].replace(".html", "") !==
-    "index"
-    ? uri.replace(".html", "/index.html")
+  return uri.split("/")[uri.split("/").length - 1].replace(/\.html$/, "") !== "index"
+    ? uri.replace(/\.html$/, "/index.html")
     : uri;
 };
 
 export const getParentFile = (child: File, files: File[]): File | undefined => {
   const file = files.find(
-    (f) =>
-      f.home &&
-      f.name == child.parent &&
-      f.id !== child.id &&
-      f.language === child.language
+    (f) => f.home && f.name == child.parent && f.id !== child.id && f.language === child.language,
   );
 
   return file;

@@ -30,6 +30,13 @@
   transform: translateY(-1px);
 }
 
+// Search needs JavaScript; without it the button would do nothing.
+@media (scripting: none) {
+  .search-toggle {
+    display: none;
+  }
+}
+
 .search-toggle__icon {
   width: 0.9rem;
   height: 0.9rem;
@@ -100,10 +107,10 @@
   background: color-mix(in srgb, var(--color-background) 96%, transparent);
 }
 
+// The input itself has no outline; the whole field carries the focus ring.
 .search-shell__field:focus-within {
-  border-color: color-mix(in srgb, var(--color-primary) 26%, transparent);
-  box-shadow: 0 0 0 calc(var(--border-width-m) + 1px)
-    color-mix(in srgb, var(--color-primary) 16%, transparent);
+  outline: var(--border-width-m) solid var(--color-foreground);
+  outline-offset: var(--border-width-m);
 }
 
 .search-shell__field-icon {
@@ -147,13 +154,20 @@
   background: transparent;
   color: color-mix(in srgb, currentColor 62%, transparent);
   cursor: pointer;
-  transition: background-color 160ms ease, color 160ms ease;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
 }
 
 .search-shell__close:hover,
 .search-shell__close:focus-visible {
   background: color-mix(in srgb, currentColor 8%, transparent);
   color: inherit;
+}
+
+.search-shell__close:focus-visible {
+  outline: var(--border-width-m) solid currentColor;
+  outline-offset: calc(var(--border-width-m) * -1);
 }
 
 .search-shell__close-icon {

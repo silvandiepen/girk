@@ -26,14 +26,7 @@ describe("@girk/utils", () => {
       values.push(`end-${item}`);
     });
 
-    expect(values).toEqual([
-      "start-1",
-      "end-1",
-      "start-2",
-      "end-2",
-      "start-3",
-      "end-3",
-    ]);
+    expect(values).toEqual(["start-1", "end-1", "start-2", "end-2", "start-3", "end-3"]);
   });
 
   test("hello returns the provided value", async () => {
@@ -60,9 +53,7 @@ describe("@girk/utils", () => {
   });
 
   test("renamePath replaces the final folder segment", () => {
-    expect(renamePath("/docs/old-name/index.html", "new-name")).toBe(
-      "/docs/new-name/index.html"
-    );
+    expect(renamePath("/docs/old-name/index.html", "new-name")).toBe("/docs/new-name/index.html");
   });
 
   test("createDir creates nested directories", async () => {

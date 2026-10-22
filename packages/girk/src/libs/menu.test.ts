@@ -69,9 +69,7 @@ describe("Menu generation", () => {
       languages: ["en"],
     } as any);
 
-    expect(payload.menu[0].children?.map((item) => item.name)).toEqual([
-      "Page Frontmatter",
-    ]);
+    expect(payload.menu[0].children?.map((item) => item.name)).toEqual(["Page Frontmatter"]);
   });
 
   it("includes first-level section home pages without archive metadata", async () => {
@@ -113,11 +111,7 @@ describe("Menu generation", () => {
       languages: ["en"],
     } as any);
 
-    expect(payload.menu.map((item) => item.name)).toEqual([
-      "Icons",
-      "Packages",
-      "API",
-    ]);
+    expect(payload.menu.map((item) => item.name)).toEqual(["Icons", "Packages", "API"]);
   });
 
   it("keeps child folder landing pages visible in archive menus", async () => {

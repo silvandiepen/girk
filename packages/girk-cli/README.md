@@ -6,7 +6,7 @@ Part of the [Girk](https://github.com/silvandiepen/girk) static site generator.
 
 ## Status
 
-This is a skeleton package. The full CLI implementation still lives in the `girky` umbrella package and will be migrated here in a future release.
+This is a skeleton package and is not published. The CLI lives in the `girky` package (`npx girky`).
 
 ## What it will do
 
@@ -17,7 +17,6 @@ This is a skeleton package. The full CLI implementation still lives in the `girk
 - Call `girk-sdk` to build pages
 - Write output to `public/`
 - Show terminal output via `cli-block`
-- Optional dev server via `express`
 
 ## Install
 

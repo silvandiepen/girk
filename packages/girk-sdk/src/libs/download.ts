@@ -21,11 +21,9 @@ export const getGist = async (id: string): Promise<string> => {
     const response: DownloadResponse = await getFetch()(url, {
       headers: GITHUB_HEADERS,
     });
-    const res =
-      typeof response.json === "function" ? await response.json() : undefined;
+    const res = typeof response.json === "function" ? await response.json() : undefined;
     const files = res?.files;
-    const [file] =
-      files && typeof files === "object" ? (Object.values(files) as any[]) : [];
+    const [file] = files && typeof files === "object" ? (Object.values(files) as any[]) : [];
 
     if (response.ok === false || !file) {
       const reason =

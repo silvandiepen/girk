@@ -4,6 +4,10 @@
     ? variant
     : (typeof navigationVariant !== 'undefined' ? navigationVariant : 'header');
 
+  function currentAttr(item) {
+    return item.current ? ' aria-current="page"' : '';
+  }
+
   function renderPanelGroups(items, level) {
     const compactColumnClass = level === 1 && items.length <= 5 ? ' navigation__groups--compact-column' : '';
     let out = '<ul class="navigation__groups navigation__groups--level-' + level + compactColumnClass + '">';
@@ -13,7 +17,7 @@
         (hasChildren ? ' navigation__group--branch' : ' navigation__group--leaf') +
         (item.current ? ' navigation__group--current' : '') +
         (item.isParent ? ' navigation__group--parent' : '') + '">';
-      out += '<a class="navigation__group-link' + (hasChildren ? ' navigation__group-link--heading' : '') + '" href="' + item.link + '">';
+      out += '<a class="navigation__group-link' + (hasChildren ? ' navigation__group-link--heading' : '') + '" href="' + item.link + '"' + currentAttr(item) + '>';
       out += renderIcon(item.icon, 'navigation__icon', 'navigation__icon-asset');
       out += '<span class="navigation__text">' + item.name + '</span></a>';
       if (hasChildren) {
@@ -41,11 +45,11 @@
         (hasChildren ? ' navigation__item--has-children' : '') +
         (isOpen ? ' navigation__item--open' : '') + '">';
       out += '<div class="navigation__entry"' + (entryAnchors ? ' style="anchor-name: ' + entryAnchors + ';"' : '') + '>';
-      out += '<a class="navigation__link" href="' + item.link + '">';
+      out += '<a class="navigation__link" href="' + item.link + '"' + currentAttr(item) + '>';
       out += renderIcon(item.icon, 'navigation__icon', 'navigation__icon-asset');
       out += '<span class="navigation__text">' + item.name + '</span></a>';
       if (hasChildren) {
-        out += '<button class="navigation__toggle" type="button" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="' + panelId + '" aria-haspopup="true" aria-label="Toggle ' + item.name + ' submenu"></button>';
+        out += '<button class="navigation__toggle" type="button" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="' + panelId + '" aria-label="' + ui.submenu.replace('{name}', item.name) + '"></button>';
       }
       out += '</div>';
       if (hasChildren) {
@@ -68,7 +72,7 @@
         (item.current ? ' navigation__footer-item--current' : '') +
         (item.isParent ? ' navigation__footer-item--parent' : '') +
         (hasChildren ? ' navigation__footer-item--branch' : '') + '">';
-      out += '<a class="navigation__footer-link' + (level === 0 ? ' navigation__footer-link--heading' : '') + '" href="' + item.link + '">';
+      out += '<a class="navigation__footer-link' + (level === 0 ? ' navigation__footer-link--heading' : '') + '" href="' + item.link + '"' + currentAttr(item) + '>';
       out += renderIcon(item.icon, 'navigation__icon', 'navigation__icon-asset');
       out += '<span class="navigation__text">' + item.name + '</span></a>';
       if (hasChildren) {
@@ -81,7 +85,7 @@
   }
 %>
 <% if (navVariant === 'footer') { %>
-  <nav class="navigation navigation--footer">
+  <nav class="navigation navigation--footer" aria-label="<%= ui.footerNavigation %>">
     <%- renderFooterTree(menu, 0) %>
   </nav>
 <% } else { %>
@@ -90,11 +94,11 @@
     const useMobilePanel = menu.length > 2 || hasNestedChildren;
     const mobileMode = useMobilePanel ? 'panel' : 'inline';
   %>
-  <nav class="navigation navigation--header<%= useMobilePanel ? ' navigation--mobile-panel' : ' navigation--mobile-inline' %>" data-mobile-mode="<%= mobileMode %>">
+  <nav class="navigation navigation--header<%= useMobilePanel ? ' navigation--mobile-panel' : ' navigation--mobile-inline' %>" data-mobile-mode="<%= mobileMode %>" aria-label="<%= ui.mainNavigation %>">
     <% if (useMobilePanel) { %>
-      <button class="navigation__mobile-toggle" type="button" aria-expanded="false" aria-controls="<%= navigationRoot %>-list" aria-label="Toggle navigation menu" style="anchor-name: --<%= navigationRoot %>-mobile-toggle;">
+      <button class="navigation__mobile-toggle" type="button" aria-expanded="false" aria-controls="<%= navigationRoot %>-list" style="anchor-name: --<%= navigationRoot %>-mobile-toggle;">
         <span class="navigation__mobile-toggle-icon" aria-hidden="true"></span>
-        <span class="navigation__mobile-toggle-label">Menu</span>
+        <span class="navigation__mobile-toggle-label"><%= ui.menu %></span>
       </button>
     <% } %>
     <%- renderHeaderNavigation(menu) %>

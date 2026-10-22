@@ -8,10 +8,7 @@ const GITHUB_HEADERS: Record<string, string> = {
   "User-Agent": "girky",
 };
 
-export const download = async (
-  url: string,
-  destination: string
-): Promise<void> => {
+export const download = async (url: string, destination: string): Promise<void> => {
   const res = await fetch(url);
   await createDir(dirname(destination));
   if (!res.body) throw new Error(`No response body for ${url}`);
@@ -31,10 +28,9 @@ export const getGist = async (id: string): Promise<string> => {
     const response = await fetch(url, {
       headers: GITHUB_HEADERS,
     });
-    const res = await response.json() as any;
+    const res = (await response.json()) as any;
     const files = res?.files;
-    const [file] =
-      files && typeof files === "object" ? (Object.values(files) as any[]) : [];
+    const [file] = files && typeof files === "object" ? (Object.values(files) as any[]) : [];
 
     if (!response.ok || !file) {
       const reason =

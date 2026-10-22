@@ -20,16 +20,14 @@ describe("getSiteKey", () => {
 
   it("uses the preview query parameter for localhost development", () => {
     expect(getSiteKey("localhost", new URLSearchParams("site=example-basic"))).toBe(
-      "example-basic"
+      "example-basic",
     );
-    expect(getSiteKey("localhost", new URLSearchParams("site=example-data"))).toBe(
-      "example-data"
-    );
+    expect(getSiteKey("localhost", new URLSearchParams("site=example-data"))).toBe("example-data");
     expect(getSiteKey("localhost", new URLSearchParams("site=example-config"))).toBe(
-      "example-config"
+      "example-config",
     );
     expect(getSiteKey("localhost", new URLSearchParams("site=example-recipes"))).toBe(
-      "example-recipes"
+      "example-recipes",
     );
   });
 
@@ -41,10 +39,7 @@ describe("getSiteKey", () => {
 
 describe("getAssetCandidates", () => {
   it("builds root candidates for a site", () => {
-    expect(getAssetCandidates("docs", "/")).toEqual([
-      "/__sites/docs/index.html",
-      "/__sites/docs/",
-    ]);
+    expect(getAssetCandidates("docs", "/")).toEqual(["/__sites/docs/index.html", "/__sites/docs/"]);
   });
 
   it("builds asset candidates for directory paths", () => {

@@ -17,7 +17,9 @@
     min-height: calc(var(--space) * 1.9);
     padding: calc(var(--space-xxs) + 0.1em) calc(var(--space-s) + 0.1em);
     border-radius: var(--border-radius-m);
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
   }
 
   &__mobile-toggle {
@@ -62,7 +64,9 @@
     opacity: 0.92;
     font-weight: 600;
     line-height: 1.2;
-    transition: color 0.2s ease, opacity 0.2s ease;
+    transition:
+      color 0.2s ease,
+      opacity 0.2s ease;
   }
 
   &__link:hover {
@@ -76,11 +80,7 @@
 
   &__item:hover > &__entry > &__link,
   &__item:focus-within > &__entry > &__link {
-    color: color-mix(
-      in srgb,
-      var(--color-secondary),
-      var(--color-foreground) 50%
-    );
+    color: color-mix(in srgb, var(--color-secondary), var(--color-foreground) 50%);
   }
 
   &__item--current > &__entry,
@@ -93,11 +93,7 @@
   &__item--parent > &__entry > &__link,
   &__item--open > &__entry > &__link {
     opacity: 1;
-    color: color-mix(
-      in srgb,
-      var(--color-secondary),
-      var(--color-foreground) 50%
-    );
+    color: color-mix(in srgb, var(--color-secondary), var(--color-foreground) 50%);
   }
 
   &__toggle {
@@ -105,20 +101,30 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: var(--space-s);
-    height: var(--space-s);
+    // Hit area of at least 24×24 (WCAG 2.5.8); the chevron glyph stays small.
+    width: max(24px, 1.5em);
+    height: max(24px, 1.5em);
+    flex: 0 0 auto;
     padding: 0;
     border: none;
+    border-radius: var(--border-radius-s);
     background: transparent;
     color: inherit;
     cursor: pointer;
-    opacity: 0.55;
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    opacity: 0.72;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
   }
 
   &__toggle:hover,
   &__toggle:focus-visible {
     opacity: 1;
+  }
+
+  &__toggle:focus-visible {
+    outline: var(--border-width-m) solid var(--color-foreground);
+    outline-offset: var(--border-width-s);
   }
 
   &__toggle::before {
@@ -165,17 +171,16 @@
     border-radius: var(--border-radius-s);
     opacity: 0.88;
     font-weight: 500;
-    transition: opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+    transition:
+      opacity 0.2s ease,
+      background-color 0.2s ease,
+      color 0.2s ease;
   }
 
   &__group-link:hover {
     opacity: 1;
     background-color: color-mix(in srgb, var(--color-secondary) 18%, transparent);
-    color: color-mix(
-      in srgb,
-      var(--color-secondary),
-      var(--color-foreground) 50%
-    );
+    color: color-mix(in srgb, var(--color-secondary), var(--color-foreground) 50%);
   }
 
   &__group-link--heading,
@@ -187,11 +192,7 @@
   &__group--current > &__group-link,
   &__group--parent > &__group-link {
     background-color: color-mix(in srgb, var(--color-secondary) 24%, transparent);
-    color: color-mix(
-      in srgb,
-      var(--color-secondary),
-      var(--color-foreground) 50%
-    );
+    color: color-mix(in srgb, var(--color-secondary), var(--color-foreground) 50%);
   }
 
   &__group-link--heading {
@@ -274,7 +275,9 @@
     opacity: 0;
     transform: translateY(calc(var(--space-xs) * -1)) scale(0.98);
     transform-origin: top left;
-    transition: opacity 0.18s ease, transform 0.18s ease;
+    transition:
+      opacity 0.18s ease,
+      transform 0.18s ease;
   }
 
   .navigation__item--align-end > .navigation__panel {
@@ -411,7 +414,9 @@
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
-      transition: opacity 0.18s ease, visibility 0s linear 0.18s;
+      transition:
+        opacity 0.18s ease,
+        visibility 0s linear 0.18s;
       view-transition-name: none;
     }
 
@@ -452,6 +457,49 @@
       width: 100%;
       padding: 0;
       font-size: var(--font-size-l);
+    }
+
+    .navigation__toggle {
+      width: max(44px, 2.5em);
+      height: max(44px, 2.5em);
+      margin: calc(var(--space-xs) * -1) calc((var(--space-s) + 0.1em) * -1)
+        calc(var(--space-xs) * -1) 0;
+    }
+  }
+
+  // Without JavaScript the menu toggle cannot open the panel, so the list is
+  // shown inline in the header instead and the submenu toggles are hidden.
+  @media screen and (max-width: 960px) and (scripting: none) {
+    .navigation__mobile-toggle,
+    .navigation__toggle {
+      display: none;
+    }
+
+    .navigation__list {
+      position: static;
+      inset: auto;
+      z-index: auto;
+      overflow: visible;
+      padding: 0;
+      background-color: transparent;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: center;
+      gap: var(--space-xs);
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .navigation__item,
+    .navigation__entry,
+    .navigation__link {
+      width: auto;
+    }
+
+    .navigation__link {
+      font-size: var(--font-size);
     }
   }
 }
@@ -515,17 +563,16 @@
     color: inherit;
     text-decoration: none;
     opacity: 0.78;
-    transition: opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+    transition:
+      opacity 0.2s ease,
+      background-color 0.2s ease,
+      color 0.2s ease;
   }
 
   .navigation__footer-link:hover {
     opacity: 1;
     background-color: color-mix(in srgb, var(--color-secondary) 18%, transparent);
-    color: color-mix(
-      in srgb,
-      var(--color-secondary),
-      var(--color-foreground) 50%
-    );
+    color: color-mix(in srgb, var(--color-secondary), var(--color-foreground) 50%);
   }
 
   .navigation__footer-link--heading {
@@ -537,11 +584,7 @@
   .navigation__footer-item--parent > .navigation__footer-link {
     opacity: 1;
     background-color: color-mix(in srgb, var(--color-secondary) 24%, transparent);
-    color: color-mix(
-      in srgb,
-      var(--color-secondary),
-      var(--color-foreground) 50%
-    );
+    color: color-mix(in srgb, var(--color-secondary), var(--color-foreground) 50%);
   }
 
   @media screen and (max-width: 960px) {

@@ -21,7 +21,10 @@ export const isSiteKey = (value: string | null): value is SiteKey =>
   value === "example-blog" ||
   value === "example-recipes";
 
-export const getSiteKey = (hostname: string, searchParams = new URLSearchParams()): SiteKey | null => {
+export const getSiteKey = (
+  hostname: string,
+  searchParams = new URLSearchParams(),
+): SiteKey | null => {
   const normalizedHost = hostname.split(":")[0].toLowerCase();
   const previewSite = searchParams.get("site");
 

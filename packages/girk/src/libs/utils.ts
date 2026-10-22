@@ -3,15 +3,11 @@ import { access, mkdir, readFile } from "node:fs/promises";
 
 export async function asyncForEach<T>(
   array: T[],
-  callback: (item: T, index: number, original: T[]) => unknown | Promise<unknown>
+  callback: (item: T, index: number, original: T[]) => unknown | Promise<unknown>,
 ): Promise<void> {
   for (let index = 0; index < array.length; index += 1) {
     await callback(array[index], index, array);
   }
-}
-
-export async function hello(args: unknown = {}): Promise<unknown> {
-  return args;
 }
 
 export function removeTag(input: string, tag: string): string {

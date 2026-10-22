@@ -1,14 +1,14 @@
-<main class="main<%= meta.type ? ' content--' + meta.type : '' %>">
+<main class="main<%= meta.type ? ' content--' + meta.type : '' %>" id="main" tabindex="-1">
     <section class="section" style="<%= meta.sectionStyle || '' %>">
         <div class="container">
             <div class="content nizel-content" data-nizel-content>
                 <% if (subtitle) { %>
-                    <h6><%= subtitle %></h6>
+                    <p class="eyebrow"><%= subtitle %></p>
                 <% } %>
                 <% if (showContentImage) { %>
                     <h1><%= title %></h1>
                     <figure>
-                        <img src="<%= meta.image %>">
+                        <img src="<%= meta.image %>" alt="<%= meta.imageAlt || '' %>">
                     </figure>
                     <%- removeTitle(content) %>
                 <% } else { %>
@@ -23,9 +23,9 @@
             <div class="container">
                 <div class="content nizel-content" data-nizel-content>
                     <% if (parentPage) { %>
-                        <h6><%= parentPage.title %></h6>
+                        <p class="eyebrow"><%= parentPage.title %></p>
                     <% } %>
-                    <h2>More Pages</h2>
+                    <h2><%= ui.morePages %></h2>
                 </div>
                 <ul class="archive-grid">
                     <% relatedPages.forEach(function(item) { %>

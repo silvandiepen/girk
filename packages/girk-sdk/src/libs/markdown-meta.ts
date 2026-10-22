@@ -31,16 +31,11 @@ export const extractMeta = async (input: string): Promise<Meta> => {
           value = fixType(value);
 
           // If the value has commas, convert it to an array
-          if (
-            typeof value === "string" &&
-            value.indexOf(",") > -1 &&
-            value.indexOf("http") < 0
-          )
+          if (typeof value === "string" && value.indexOf(",") > -1 && value.indexOf("http") < 0)
             value = value.split(",").map((val: string) => fixType(val.trim()));
 
           // If they key has date in the name, auto convert to a date.
-          if (key.toLowerCase().indexOf("date") > -1)
-            value = new Date(value as string);
+          if (key.toLowerCase().indexOf("date") > -1) value = new Date(value as string);
 
           // Set the meta data;
           meta[key] = value;
@@ -54,7 +49,6 @@ export const extractMeta = async (input: string): Promise<Meta> => {
 export const removeMeta = async (input: string): Promise<string> => {
   const startLine = nthIndex(input, "---", 0);
   const endLine = nthIndex(input, "---", 1);
-  if (endLine > -1 && startLine < 10)
-    return input.substring(endLine + 3, input.length);
+  if (endLine > -1 && startLine < 10) return input.substring(endLine + 3, input.length);
   else return input.trim();
 };

@@ -1,7 +1,7 @@
 import { parentPath } from "@/libs/utils";
 
 import { makePath } from "@/libs/files";
-import { ArchiveType, Payload, File } from "@/types";
+import { ArchiveType, Payload, File, Tag } from "@/types";
 import { getExcerpt, isHidden } from "@/libs/helpers";
 import { buildSectionStyle } from "@/libs/section-style";
 /*
@@ -11,15 +11,10 @@ import { buildSectionStyle } from "@/libs/section-style";
 export const isSectionsArchiveParent = (file: File | undefined): boolean =>
   !!file?.home && file?.meta?.archive === ArchiveType.SECTIONS;
 
-export const getArchiveParent = (
-  file: File,
-  files: File[]
-): File | undefined =>
+export const getArchiveParent = (file: File, files: File[]): File | undefined =>
   files.find(
     (candidate) =>
-      candidate.home &&
-      candidate.name === file.parent &&
-      candidate.language === file.language
+      candidate.home && candidate.name === file.parent && candidate.language === file.language,
   );
 
 export const isSectionsArchiveChild = (file: File, files: File[]): boolean => {
@@ -28,6 +23,27 @@ export const isSectionsArchiveChild = (file: File, files: File[]): boolean => {
   const parent = getArchiveParent(file, files);
   return isSectionsArchiveParent(parent);
 };
+
+/*
+ * Enrich an archive child with the meta information, link and excerpt the
+ * archive cards render.
+ */
+export type ArchiveChild = File & { date?: string; redirect: string | null; tags: Tag[] };
+
+export const toArchiveChild = (item: File, payload: Payload): ArchiveChild => ({
+  ...item,
+  date: item?.meta?.date,
+  created: item?.meta?.date || item.created,
+  meta: {
+    ...item.meta,
+    hide: true,
+    sectionStyle: buildSectionStyle(item.meta),
+  },
+  link: makePath(item),
+  redirect: item.meta.redirect ? item.meta.redirect : null,
+  excerpt: getExcerpt(item),
+  tags: item?.meta.tags ? payload.tags.filter((tag) => item?.meta.tags.includes(tag.name)) : [],
+});
 
 export const generateArchives = async (payload: Payload): Promise<Payload> => {
   payload.files = payload.files
@@ -39,7 +55,7 @@ export const generateArchives = async (payload: Payload): Promise<Payload> => {
 
       let children = [];
 
-      const isParent = (item: File, file: File) => {
+      const isParent = (item: File) => {
         return item.parent == archiveName;
       };
 
@@ -51,25 +67,9 @@ export const generateArchives = async (payload: Payload): Promise<Payload> => {
       if (file.home && !!archiveType) {
         children = payload.files
 
-          .filter((item) => isParent(item, file) && !item.home && !isHidden(item.meta))
+          .filter((item) => isParent(item) && !item.home && !isHidden(item.meta))
 
-          //  Enrich each child with meta information, a link and the excerpt
-          .map((item) => ({
-            ...item,
-            date: item?.meta?.date,
-            created: item?.meta?.date || item.created,
-            meta: {
-              ...item.meta,
-              hide: true,
-              sectionStyle: buildSectionStyle(item.meta),
-            },
-            link: makePath(item),
-            redirect: item.meta.redirect ? item.meta.redirect : null,
-            excerpt: getExcerpt(item),
-            tags: item?.meta.tags
-              ? payload.tags.filter((tag) => item?.meta.tags.includes(tag.name))
-              : [],
-          }))
+          .map((item) => toArchiveChild(item, payload))
           .sort(order);
       } else {
         /*
@@ -79,8 +79,7 @@ export const generateArchives = async (payload: Payload): Promise<Payload> => {
           const parent = payload.files.find((parentFile) => {
             if (!parentFile.home) return false;
             return (
-              parentFile.path.toLowerCase() ==
-              (parentPath(file.path) + "/readme.md").toLowerCase()
+              parentFile.path.toLowerCase() == (parentPath(file.path) + "/readme.md").toLowerCase()
             );
           });
 

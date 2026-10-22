@@ -7,7 +7,7 @@
 export function renderIcon(
   icon: { svg?: string; src?: string } | undefined,
   wrapperClass: string,
-  assetClass: string
+  assetClass: string,
 ): string {
   if (!icon) return "";
   let out = `<span class="${wrapperClass}" aria-hidden="true">`;
