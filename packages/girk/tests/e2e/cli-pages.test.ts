@@ -48,7 +48,7 @@ describe("CLI page generation", () => {
     ).length;
 
     expect(headerNavigationCount).toBe(1);
-    expect(homeHtml).toContain('<nav class="navigation navigation--footer">');
+    expect(homeHtml).toContain('<nav class="navigation navigation--footer" aria-label="Footer">');
     expect(homeHtml).toContain('navigation__footer-list');
     expect(homeHtml).not.toContain(
       '<div class="footer__navigation">\n                  <nav class="navigation navigation--header',

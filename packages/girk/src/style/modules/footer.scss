@@ -134,9 +134,8 @@
   transition: box-shadow 0.2s ease;
 
   &:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 var(--border-width-m)
-      color-mix(in srgb, var(--color-primary) 24%, transparent);
+    outline: var(--border-width-m) solid var(--color-foreground);
+    outline-offset: var(--border-width-m);
   }
 
   &__option {

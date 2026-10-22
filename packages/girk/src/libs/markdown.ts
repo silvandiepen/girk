@@ -93,7 +93,7 @@ const getProcessor = async (): Promise<NizelProcessor> => {
     plugins: [
       abbrPlugin(),
       alertPlugin(),
-      autolinkPlugin({ target: "_blank", rel: "noopener" }),
+      autolinkPlugin(),
       badgePlugin(),
       citationsPlugin(),
       deflistPlugin(),
@@ -110,7 +110,7 @@ const getProcessor = async (): Promise<NizelProcessor> => {
       printPlugin({ injectCss: false }),
       shikiPlugin(),
       codeCopyPlugin({ mode: "button" }),
-      taskListPlugin({ mode: "edit" }),
+      taskListPlugin({ mode: "view" }),
       tocPlugin(),
       typographyPlugin(),
       sanitizePlugin({ allowRawHtml: true }),
@@ -364,7 +364,14 @@ export const toHtml = async (input: string, filePath?: string): Promise<Markdown
   const result = await processor(replacedData);
 
   return {
-    document: result.html,
+    // Code blocks and tables can be wider than the screen; they scroll inside
+    // a focusable region so the page doesn't, and keyboard users can scroll them.
+    document: result.html
+      .replace(/<pre(?=[\s>])(?![^>]*\stabindex=)/g, '<pre tabindex="0"')
+      .replace(
+        /<table\b[\s\S]*?<\/table>/g,
+        (table) => `<div class="table-scroll" role="region" aria-label="Table" tabindex="0">${table}</div>`
+      ),
     meta: metaData,
   };
 };

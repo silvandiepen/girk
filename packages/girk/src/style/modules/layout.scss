@@ -10,6 +10,23 @@ main .section {
   color: var(--section-text-color, currentColor);
 }
 
+// Brand link colours are not readable on arbitrary section colours, so links
+// in a coloured section use the section's contrast colour (still underlined).
+main .section[style*="--section-background-color"] {
+  --section-link-color: var(--section-text-color, currentColor);
+  // Muted text and code tints are dimmed or darkened versions of the section
+  // colour and drop below 4.5:1, so they use the section's contrast colour and
+  // code is outlined instead of filled.
+  --muted: var(--section-text-color, currentColor);
+  --code-background: transparent;
+  --nizel-code-block-background: transparent;
+
+  :not(pre) > code,
+  pre {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 40%, transparent);
+  }
+}
+
 .content {
   max-width: var(--content-width);
   margin: 0 auto;

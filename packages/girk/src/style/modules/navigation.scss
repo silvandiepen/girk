@@ -105,20 +105,28 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: var(--space-s);
-    height: var(--space-s);
+    // Hit area of at least 24×24 (WCAG 2.5.8); the chevron glyph stays small.
+    width: max(24px, 1.5em);
+    height: max(24px, 1.5em);
+    flex: 0 0 auto;
     padding: 0;
     border: none;
+    border-radius: var(--border-radius-s);
     background: transparent;
     color: inherit;
     cursor: pointer;
-    opacity: 0.55;
+    opacity: 0.72;
     transition: opacity 0.2s ease, transform 0.2s ease;
   }
 
   &__toggle:hover,
   &__toggle:focus-visible {
     opacity: 1;
+  }
+
+  &__toggle:focus-visible {
+    outline: var(--border-width-m) solid var(--color-foreground);
+    outline-offset: var(--border-width-s);
   }
 
   &__toggle::before {
@@ -452,6 +460,49 @@
       width: 100%;
       padding: 0;
       font-size: var(--font-size-l);
+    }
+
+    .navigation__toggle {
+      width: max(44px, 2.5em);
+      height: max(44px, 2.5em);
+      margin: calc(var(--space-xs) * -1) calc((var(--space-s) + 0.1em) * -1)
+        calc(var(--space-xs) * -1) 0;
+    }
+  }
+
+  // Without JavaScript the menu toggle cannot open the panel, so the list is
+  // shown inline in the header instead and the submenu toggles are hidden.
+  @media screen and (max-width: 960px) and (scripting: none) {
+    .navigation__mobile-toggle,
+    .navigation__toggle {
+      display: none;
+    }
+
+    .navigation__list {
+      position: static;
+      inset: auto;
+      z-index: auto;
+      overflow: visible;
+      padding: 0;
+      background-color: transparent;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: center;
+      gap: var(--space-xs);
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .navigation__item,
+    .navigation__entry,
+    .navigation__link {
+      width: auto;
+    }
+
+    .navigation__link {
+      font-size: var(--font-size);
     }
   }
 }

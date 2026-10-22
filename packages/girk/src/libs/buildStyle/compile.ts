@@ -49,6 +49,10 @@ const SEMANTIC_KEYS = [
   "success",
 ] as const;
 
+// Semantic colours that are also used as text (links, link hover) and get a
+// per-mode `--color-<key>-text` variant that is guaranteed to be readable.
+const TEXT_VARIANT_KEYS = ["primary", "secondary"] as const;
+
 type ThemeKey = keyof typeof DEFAULT_THEME;
 type PaletteKey = (typeof PALETTE_KEYS)[number];
 type SemanticKey = (typeof SEMANTIC_KEYS)[number];
@@ -168,7 +172,49 @@ const parseColor = (value: string): [number, number, number] | null => {
   );
 };
 
-const getContrastReference = (
+const MIN_TEXT_CONTRAST = 4.5;
+
+// Inline code inside a link is tinted with the link colour (nizel mixes 7% of
+// currentColor into the code background), so text variants are checked
+// against that tint as well as the plain background.
+const CODE_TINT = 0.07;
+
+const getRelativeLuminance = ([red, green, blue]: [number, number, number]): number => {
+  const [r, g, b] = [red, green, blue].map((channel) => {
+    const normalized = channel / 255;
+    return normalized <= 0.03928
+      ? normalized / 12.92
+      : ((normalized + 0.055) / 1.055) ** 2.4;
+  });
+
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+
+const getContrastRatio = (
+  first: [number, number, number],
+  second: [number, number, number]
+): number => {
+  const a = getRelativeLuminance(first);
+  const b = getRelativeLuminance(second);
+  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+};
+
+// Mirrors `color-mix(in srgb, first weight, second)`.
+const mixRgb = (
+  first: [number, number, number],
+  second: [number, number, number],
+  weight: number
+): [number, number, number] =>
+  first.map((channel, index) =>
+    Math.round(channel * weight + second[index] * (1 - weight))
+  ) as [number, number, number];
+
+const DEFAULT_DARK_RGB: [number, number, number] = [10, 10, 10];
+const DEFAULT_LIGHT_RGB: [number, number, number] = [255, 255, 255];
+
+// Picks whichever of the dark and light theme colours gives the higher WCAG
+// contrast ratio against `value`.
+export const getContrastReference = (
   value: string,
   darkColor: string,
   lightColor: string
@@ -176,19 +222,43 @@ const getContrastReference = (
   const rgb = parseColor(value);
   if (!rgb) return "var(--color-light)";
 
-  const [r, g, b] = rgb.map((channel) => {
-    const normalized = channel / 255;
-    return normalized <= 0.03928
-      ? normalized / 12.92
-      : ((normalized + 0.055) / 1.055) ** 2.4;
-  });
+  const dark = parseColor(darkColor) || DEFAULT_DARK_RGB;
+  const light = parseColor(lightColor) || DEFAULT_LIGHT_RGB;
 
-  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  return luminance > 0.55 || value === lightColor
+  return getContrastRatio(rgb, dark) > getContrastRatio(rgb, light)
     ? "var(--color-dark)"
-    : value === darkColor
-      ? "var(--color-light)"
-      : "var(--color-light)";
+    : "var(--color-light)";
+};
+
+// Returns a text-safe variant of a semantic colour for the given mode: the
+// colour itself when it reaches 4.5:1 against the background, otherwise the
+// smallest mix towards the foreground that does.
+export const getTextVariant = (
+  key: string,
+  value: string,
+  background: string,
+  foreground: string
+): string => {
+  const reference = `var(--color-${key})`;
+  const rgb = parseColor(value);
+  const backgroundRgb = parseColor(background);
+  const foregroundRgb = parseColor(foreground);
+  if (!rgb || !backgroundRgb || !foregroundRgb) return reference;
+
+  const passes = (candidate: [number, number, number]): boolean =>
+    getContrastRatio(candidate, backgroundRgb) >= MIN_TEXT_CONTRAST &&
+    getContrastRatio(candidate, mixRgb(candidate, backgroundRgb, CODE_TINT)) >=
+      MIN_TEXT_CONTRAST;
+
+  if (passes(rgb)) return reference;
+
+  for (let weight = 95; weight > 0; weight -= 5) {
+    if (passes(mixRgb(rgb, foregroundRgb, weight / 100))) {
+      return `color-mix(in srgb, ${reference} ${weight}%, var(--color-foreground))`;
+    }
+  }
+
+  return "var(--color-foreground)";
 };
 
 const buildPalette = (colors: ColorConfig | null): Record<ThemeKey | PaletteKey, string> => {
@@ -254,6 +324,24 @@ const resolveReference = (
   return resolved;
 };
 
+const SURFACE_DEFAULTS: Record<"background" | "foreground", Record<Mode, string>> = {
+  background: { light: "light", dark: "dark" },
+  foreground: { light: "dark", dark: "light" },
+};
+
+// The un-suffixed `background` / `foreground` overrides describe the light
+// theme. Dark mode only changes them through `backgroundDark` /
+// `foregroundDark`, otherwise both modes would resolve to the same colours and
+// the colour-mode toggle would do nothing.
+const resolveSurface = (
+  overrides: Record<string, string>,
+  key: "background" | "foreground",
+  mode: Mode
+): string =>
+  overrides[`${key}${mode}`] ||
+  (mode === "light" ? overrides[key] : "") ||
+  SURFACE_DEFAULTS[key][mode];
+
 const buildSemanticColors = (
   colors: ColorConfig | null,
   mode: Mode,
@@ -275,14 +363,8 @@ const buildSemanticColors = (
     info: overrides.info || "blue",
     warning: overrides.warning || "orange",
     success: overrides.success || "green",
-    background:
-      overrides[`background${mode}`] ||
-      overrides.background ||
-      (mode === "dark" ? "dark" : "light"),
-    foreground:
-      overrides[`foreground${mode}`] ||
-      overrides.foreground ||
-      (mode === "dark" ? "light" : "dark"),
+    background: resolveSurface(overrides, "background", mode),
+    foreground: resolveSurface(overrides, "foreground", mode),
   } as Record<string, string>;
 
   return Object.keys(raw).reduce<Record<string, string>>((result, key) => {
@@ -310,14 +392,8 @@ const buildSemanticAssignments = (
     info: overrides.info || "blue",
     warning: overrides.warning || "orange",
     success: overrides.success || "green",
-    background:
-      overrides[`background${mode}`] ||
-      overrides.background ||
-      (mode === "dark" ? "dark" : "light"),
-    foreground:
-      overrides[`foreground${mode}`] ||
-      overrides.foreground ||
-      (mode === "dark" ? "light" : "dark"),
+    background: resolveSurface(overrides, "background", mode),
+    foreground: resolveSurface(overrides, "foreground", mode),
   };
 };
 
@@ -352,7 +428,17 @@ export const createColorVariables = (
     return [`--color-${key}: ${variableValue};`, `--color-${key}-contrast: ${contrast};`];
   });
 
-  return [...paletteVariables, ...semanticVariables].join("");
+  const textVariables = TEXT_VARIANT_KEYS.map(
+    (key) =>
+      `--color-${key}-text: ${getTextVariant(
+        key,
+        colors[key],
+        colors.background,
+        colors.foreground
+      )};`
+  );
+
+  return [...paletteVariables, ...semanticVariables, ...textVariables].join("");
 };
 
 export const buildModeColorVariables = (

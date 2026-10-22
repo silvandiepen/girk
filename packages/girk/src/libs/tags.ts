@@ -2,6 +2,7 @@ import { asyncForEach } from "@/libs/utils";
 import { isHidden } from "@/libs/helpers";
 
 import { Payload, File, FileType, Tag, ArchiveType } from "../types";
+import { toArchiveChild } from "./archives";
 import { createPage } from "./page";
 import { fileId } from "./files";
 
@@ -10,6 +11,13 @@ import { blockMid } from "cli-block";
 /*
  *  Tags
  */
+
+/*
+ * Tag pages live under their section when tags are grouped, so links and
+ * output paths come from the same place.
+ */
+const tagLink = (name: string, parent: string, grouped: boolean): string =>
+  `/tag/${grouped ? `${parent}/` : ``}${name}`;
 
 export const generateTags = async (payload: Payload): Promise<Payload> => {
   const tags: Tag[] = [];
@@ -24,7 +32,7 @@ export const generateTags = async (payload: Payload): Promise<Payload> => {
 
         const tag = {
           name: file.meta.tags[i],
-          link: `/tag/${file.meta.tags[i]}`,
+          link: tagLink(file.meta.tags[i], file.parent, !!payload.project.groupTags),
           parent: file.parent,
           type: parent?.meta.type || "",
         };
@@ -52,11 +60,9 @@ export const createTagPages = async (payload: Payload): Promise<Payload> => {
 
   await asyncForEach(payload.tags, async (tag: Tag) => {
 
-    const path = `/tag/${payload.project.groupTags ? `${tag.parent}/` : ``}${
-      tag.name
-    }/index.html`;
+    const path = `${tagLink(tag.name, tag.parent, !!payload.project.groupTags)}/index.html`;
 
-    const archive = payload.project.groupTags
+    const tagged = payload.project.groupTags
       ? payload.files.filter(
           (file) =>
             !isHidden(file.meta) &&
@@ -66,17 +72,19 @@ export const createTagPages = async (payload: Payload): Promise<Payload> => {
       : payload.files.filter(
           (file) => !isHidden(file.meta) && file.meta?.tags?.includes(tag.name)
         );
+    const archive = tagged.map((item) => toArchiveChild(item, payload));
+    const title = `#${tag.name}`;
 
     const file: File = {
       id: fileId(path),
       name: tag.name,
-      title: `#${tag.name}`,
+      title,
       path,
       created: new Date(),
-      language: "en",
+      language: tagged[0]?.language || "en",
       fileName: "index.html",
       parent: tag.parent,
-      meta: { type: tag.type },
+      meta: { type: tag.type, title },
       archives: [
         {
           name: tag.name,
@@ -84,7 +92,7 @@ export const createTagPages = async (payload: Payload): Promise<Payload> => {
           children: archive,
         },
       ],
-      html: `<h1>#${tag.name}</h1>`,
+      html: `<h1>${title}</h1>`,
       type: FileType.TAG,
     };
 

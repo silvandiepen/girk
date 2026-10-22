@@ -48,6 +48,12 @@
     --section-background-color,
     var(--archive-card-background-default)
   );
+  // Secondary copy is only dimmed on the default card surface. On a coloured
+  // section the contrast colour is the only one guaranteed to reach 4.5:1.
+  --archive-card-muted-color: var(
+    --section-text-color,
+    color-mix(in srgb, var(--color-foreground) 78%, transparent)
+  );
   --archive-card-background-hover: color-mix(
     in srgb,
     var(--archive-card-background) 92%,
@@ -153,13 +159,12 @@
     font-size: var(--font-size-xs);
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    opacity: 0.6;
+    color: var(--archive-card-muted-color);
   }
 
   &__excerpt {
-    opacity: 0.84;
     max-width: var(--card-copy-width, 60ch);
-    color: color-mix(in srgb, currentColor, transparent 18%);
+    color: var(--archive-card-muted-color);
   }
 
   &--blog {
