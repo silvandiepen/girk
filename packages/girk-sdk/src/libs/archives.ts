@@ -39,7 +39,7 @@ export const generateArchives = async (payload: Payload): Promise<Payload> => {
 
       let children = [];
 
-      const isParent = (item: File, file: File) => {
+      const isParent = (item: File) => {
         return item.parent == archiveName;
       };
 
@@ -51,7 +51,7 @@ export const generateArchives = async (payload: Payload): Promise<Payload> => {
       if (file.home && !!archiveType) {
         children = payload.files
 
-          .filter((item) => isParent(item, file) && !item.home && !isHidden(item.meta))
+          .filter((item) => isParent(item) && !item.home && !isHidden(item.meta))
 
           //  Enrich each child with meta information, a link and the excerpt
           .map((item) => ({

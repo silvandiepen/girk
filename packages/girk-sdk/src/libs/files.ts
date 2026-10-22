@@ -56,17 +56,13 @@ export const buildHtml = async (
 ): Promise<string> => {
   const archives = filterArchive(file);
 
-  archives.map((archive) => {
+  // Blog archives list newest first; sort() reorders the children in place.
+  archives.forEach((archive) => {
     if (archive.type === "blog") {
-      archive.children;
-      return {
-        ...archive,
-        children: archive.children.sort((a, b) =>
-          b.created > a.created ? 1 : a.created > b.created ? -1 : 0
-        ),
-      };
+      archive.children.sort((a, b) =>
+        b.created > a.created ? 1 : a.created > b.created ? -1 : 0
+      );
     }
-    return archive;
   });
 
   const options = {
@@ -102,13 +98,13 @@ export const makeLink = (path: string, virtualRoot = ""): string => {
     path
       .replace(virtualRoot, "")
       .toLowerCase()
-      .replace("readme", "index")
-      .replace(".md", ".html")
+      // Only the file itself is renamed: readme.md, readme:nl.md -> index
+      .replace(/(^|\/)readme(?=(:[^/]*)?\.md$)/, "$1index")
+      .replace(/\.md$/, ".html")
   );
 
-  return uri.split("/")[uri.split("/").length - 1].replace(".html", "") !==
-    "index"
-    ? uri.replace(".html", "/index.html")
+  return uri.split("/")[uri.split("/").length - 1].replace(/\.html$/, "") !== "index"
+    ? uri.replace(/\.html$/, "/index.html")
     : uri;
 };
 

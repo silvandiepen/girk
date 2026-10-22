@@ -299,7 +299,7 @@
           .filter(allowDocument)
           .slice(0, 8)
       );
-    } catch (_) {
+    } catch {
       renderResults(query, [], true);
     }
   }

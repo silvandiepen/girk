@@ -12,10 +12,24 @@
     "skipLibCheck": true,
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "./*"
+      ]
     }
   },
-  "lib": ["es2022"],
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "src/**/*.test.ts", "vite.config.mts"]
+  "lib": [
+    "es2022"
+  ],
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/**/*.test.ts",
+    "vite.config.mts"
+  ],
+  "tsc-alias": {
+    "resolveFullPaths": true
+  }
 }

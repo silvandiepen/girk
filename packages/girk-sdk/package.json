@@ -12,11 +12,16 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./templates": {
+      "types": "./dist/libs/templates/registry.d.ts",
+      "default": "./dist/libs/templates/registry.js"
     }
   },
   "scripts": {
-    "build": "tsc && tsc-alias",
-    "test": "vitest run",
+    "build:templates": "node scripts/build-templates.mjs",
+    "build": "npm run build:templates && tsc && tsc-alias",
+    "test": "node scripts/build-templates.mjs --check && vitest run",
     "test:watch": "vitest",
     "lint": "oxlint src --tsconfig tsconfig.json",
     "fmt": "oxfmt",

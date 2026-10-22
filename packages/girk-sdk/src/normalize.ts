@@ -9,8 +9,7 @@ import { toHtml } from "@/libs/markdown";
 import { prepareDataFiles } from "@/libs/data";
 import { fileTitle } from "@/libs/helpers";
 import { resolveFileIcons } from "@/libs/icon";
-import { getThumbnail, getSvgThumbnail } from "@/libs/media";
-import { extractMeta } from "@/libs/markdown-meta";
+import { getThumbnail } from "@/libs/media";
 import { flattenObject } from "@/libs/helpers";
 import { camelCase } from "@sil/case";
 import {
@@ -27,7 +26,7 @@ import { languageKeys } from "@/data/language";
  * Parse a virtual path into file metadata.
  * e.g. "/blog/post:nl.md" → { fileName: "post", name: "post", language: "nl", parent: "blog", ext: ".md" }
  */
-const parseVirtualPath = (path: string, languages?: string[]) => {
+const parseVirtualPath = (path: string) => {
   const extension = extname(path);
   const rawFileName = basename(path, extension);
   const lang =
@@ -128,11 +127,10 @@ const buildProjectData = (files: File[], config?: Record<string, unknown>): Proj
  * Convert GirkBuildInput files to internal File[] with rendered HTML and metadata.
  */
 const inputFilesToFiles = async (
-  inputFiles: GirkBuildInput["files"],
-  languages?: string[]
+  inputFiles: GirkBuildInput["files"]
 ): Promise<File[]> => {
   const files: File[] = inputFiles.map((inputFile) => {
-    const parsed = parseVirtualPath(inputFile.path, languages);
+    const parsed = parseVirtualPath(inputFile.path);
     return {
       id: parsed.id,
       fileName: parsed.fileName,
@@ -188,10 +186,9 @@ const processFiles = async (files: File[]): Promise<{ files: File[]; languages: 
 
   // Set thumbnails
   await asyncForEach(resolvedFiles, async (file: File, index: number) => {
-    const thumbnail = getThumbnail(file);
-    const thumbnailSvg = thumbnail ? await getSvgThumbnail(thumbnail) : "";
-    resolvedFiles[index].thumbnail = thumbnail;
-    resolvedFiles[index].thumbnailSvg = thumbnailSvg;
+    resolvedFiles[index].thumbnail = getThumbnail(file);
+    // SVG thumbnails are inlined from disk by girky; the SDK has no filesystem.
+    resolvedFiles[index].thumbnailSvg = "";
   });
 
   return { files: resolvedFiles, languages };
@@ -205,7 +202,7 @@ export const normalize = async (
   version: string
 ): Promise<Payload> => {
   // Convert input files to internal format
-  let files = await inputFilesToFiles(input.files, input.languages);
+  let files = await inputFilesToFiles(input.files);
 
   // Process data files (interpolation, etc.)
   files = await prepareDataFiles(files);
