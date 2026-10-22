@@ -50,7 +50,9 @@ describe("markdown plugins", () => {
     expect(html).toContain('class="nizel-badge"');
     expect(html).toContain('class="nizel-kbd-group"');
     expect(html).toContain('class="nizel-open-icon"');
-    expect(html).toContain('href="https://example.com" target="_blank" rel="noopener"');
+    // Links open in the same tab; forcing new tabs breaks Back and surprises users.
+    expect(html).toContain('href="https://example.com"');
+    expect(html).not.toContain('target="_blank"');
     expect(html).toContain('<details class="details">');
     expect(html).toContain('<div class="mermaid">');
     expect(html).toContain('data-nizel-code-copy');
@@ -77,7 +79,8 @@ describe("markdown plugins", () => {
     expect(result.document).toContain("data-nizel-task-checkbox");
     expect(result.document).toContain('type="checkbox"');
     expect(result.document).toContain('type="checkbox" checked');
-    expect(result.document).not.toContain("disabled");
+    // Published task lists are read-only: their state can't be saved.
+    expect(result.document).toContain("disabled");
   });
 
   it("renders print layout directives", async () => {

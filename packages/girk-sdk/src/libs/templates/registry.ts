@@ -42,7 +42,8 @@ export const templates: Record<string, string> = {
                         <% } %>
                         <div class="archive-card__body">
                             <% if (item.date) { %>
-                                <p class="archive-card__meta"><%= formatDate(item.date, "dd MMM yyyy") %></p>
+                                <% const itemDate = new Date(item.date); %>
+                                <p class="archive-card__meta"><% if (isNaN(itemDate.getTime())) { %><%= formatDate(item.date, "dd MMM yyyy") %><% } else { %><time datetime="<%= itemDate.toISOString().slice(0, 10) %>"><%= formatDate(item.date, "dd MMM yyyy") %></time><% } %></p>
                             <% } %>
                             <h3 class="archive-card__title"><%= item.title %></h3>
                             <% if (item.excerpt) { %>
@@ -87,17 +88,17 @@ export const templates: Record<string, string> = {
     <% } %>
 <% }) %>
 `,
-  "content": `<main class="main<%= meta.type ? ' content--' + meta.type : '' %>">
+  "content": `<main class="main<%= meta.type ? ' content--' + meta.type : '' %>" id="main" tabindex="-1">
     <section class="section" style="<%= meta.sectionStyle || '' %>">
         <div class="container">
             <div class="content nizel-content" data-nizel-content>
                 <% if (subtitle) { %>
-                    <h6><%= subtitle %></h6>
+                    <p class="eyebrow"><%= subtitle %></p>
                 <% } %>
                 <% if (showContentImage) { %>
                     <h1><%= title %></h1>
                     <figure>
-                        <img src="<%= meta.image %>">
+                        <img src="<%= meta.image %>" alt="<%= meta.imageAlt || '' %>">
                     </figure>
                     <%- removeTitle(content) %>
                 <% } else { %>
@@ -112,7 +113,7 @@ export const templates: Record<string, string> = {
             <div class="container">
                 <div class="content nizel-content" data-nizel-content>
                     <% if (parentPage) { %>
-                        <h6><%= parentPage.title %></h6>
+                        <p class="eyebrow"><%= parentPage.title %></p>
                     <% } %>
                     <h2>More Pages</h2>
                 </div>
@@ -149,7 +150,7 @@ export const templates: Record<string, string> = {
   "footer": `<%
   function renderColorModeToggle() {
     return '<div class="footer__control">' +
-      '<button class="color-mode-toggle" type="button" data-color-mode-toggle aria-label="Toggle color mode" aria-pressed="false">' +
+      '<button class="color-mode-toggle" type="button" data-color-mode-toggle aria-label="Dark mode" aria-pressed="false">' +
         '<span class="color-mode-toggle__option" aria-hidden="true">' +
           '<span class="color-mode-toggle__icon">' +
             '<svg class="color-mode-toggle__icon-asset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
@@ -181,14 +182,15 @@ export const templates: Record<string, string> = {
 
   function renderLanguageMenu(langMenu) {
     if (!langMenu || langMenu.length <= 1) return '';
-    let out = '<div class="footer__control"><ul class="language">';
+    let out = '<nav class="footer__control" aria-label="Language"><ul class="language">';
     langMenu.forEach(function(language) {
       out += '<li class="language__item' + (language.active ? ' language__item--active' : '') + '">' +
-        '<a class="language__link" href="' + language.link + '" data-title="' + language.title + '" data-code="' + language.code + '" data-name="' + language.name + '">' +
-          '<span class="language__text">' + language.code + '</span>' +
+        '<a class="language__link" href="' + language.link + '" lang="' + language.code + '" hreflang="' + language.code + '"' + (language.active ? ' aria-current="page"' : '') + '>' +
+          '<span class="language__text" aria-hidden="true">' + language.code + '</span>' +
+          '<span class="visually-hidden">' + language.title + '</span>' +
         '</a></li>';
     });
-    out += '</ul></div>';
+    out += '</ul></nav>';
     return out;
   }
 %>
@@ -249,7 +251,7 @@ export const templates: Record<string, string> = {
 
 <% if (project.script) { %>
     <% (Array.isArray(project.script) ? project.script : [project.script]).forEach(function(script) { %>
-        <script lang="text/javascript"<% if (typeof script === 'object') { %> src="<%= script.src %>" type="<%= script.type %>"<% } else { %> src="<%= script %>"<% } %>></script>
+        <script<% if (typeof script === 'object') { %> src="<%= script.src %>" type="<%= script.type %>"<% } else { %> src="<%= script %>"<% } %>></script>
     <% }) %>
 <% } %>
 `,
@@ -257,6 +259,7 @@ export const templates: Record<string, string> = {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="view-transition" content="same-origin">
+    <script><%- scripts.colorModeInit %></script>
     <% if (generator && generator.name && generator.version) { %>
         <meta name="generator" content="<%= generator.name %> <%= generator.version %>">
     <% } %>
@@ -276,6 +279,12 @@ export const templates: Record<string, string> = {
         <meta name="description" content="<%= meta.description %>">
     <% } else if (project.description) { %>
         <meta name="description" content="<%= project.description %>">
+    <% } %>
+
+    <% if (langMenu && langMenu.length > 1) { %>
+        <% langMenu.forEach(function(language) { %>
+            <link rel="alternate" hreflang="<%= language.code %>" href="<%= language.link %>">
+        <% }) %>
     <% } %>
 
     <% if (meta.title && project.title) { %>
@@ -356,7 +365,7 @@ export const templates: Record<string, string> = {
     <% if (logo.data) { %>
       <a class="logo<%= variant %> logo--image-only" href="<%= homeLink %>" aria-label="<%= project.title %>"><%- logo.data %></a>
     <% } else if (logo.relativePath) { %>
-      <a class="logo<%= variant %>" href="<%= homeLink %>" aria-label="<%= project.title %>"><img src="<%= logo.relativePath %>"></a>
+      <a class="logo<%= variant %>" href="<%= homeLink %>" aria-label="<%= project.title %>"><img src="<%= logo.relativePath %>" alt=""></a>
     <% } %>
   <% } else if (project.title) { %>
     <a class="logo logo--title<%= variant %>" href="<%= homeLink %>"><span class="logo__text"><%= project.title %></span></a>
@@ -368,6 +377,10 @@ export const templates: Record<string, string> = {
     ? variant
     : (typeof navigationVariant !== 'undefined' ? navigationVariant : 'header');
 
+  function currentAttr(item) {
+    return item.current ? ' aria-current="page"' : '';
+  }
+
   function renderPanelGroups(items, level) {
     const compactColumnClass = level === 1 && items.length <= 5 ? ' navigation__groups--compact-column' : '';
     let out = '<ul class="navigation__groups navigation__groups--level-' + level + compactColumnClass + '">';
@@ -377,7 +390,7 @@ export const templates: Record<string, string> = {
         (hasChildren ? ' navigation__group--branch' : ' navigation__group--leaf') +
         (item.current ? ' navigation__group--current' : '') +
         (item.isParent ? ' navigation__group--parent' : '') + '">';
-      out += '<a class="navigation__group-link' + (hasChildren ? ' navigation__group-link--heading' : '') + '" href="' + item.link + '">';
+      out += '<a class="navigation__group-link' + (hasChildren ? ' navigation__group-link--heading' : '') + '" href="' + item.link + '"' + currentAttr(item) + '>';
       out += renderIcon(item.icon, 'navigation__icon', 'navigation__icon-asset');
       out += '<span class="navigation__text">' + item.name + '</span></a>';
       if (hasChildren) {
@@ -405,11 +418,11 @@ export const templates: Record<string, string> = {
         (hasChildren ? ' navigation__item--has-children' : '') +
         (isOpen ? ' navigation__item--open' : '') + '">';
       out += '<div class="navigation__entry"' + (entryAnchors ? ' style="anchor-name: ' + entryAnchors + ';"' : '') + '>';
-      out += '<a class="navigation__link" href="' + item.link + '">';
+      out += '<a class="navigation__link" href="' + item.link + '"' + currentAttr(item) + '>';
       out += renderIcon(item.icon, 'navigation__icon', 'navigation__icon-asset');
       out += '<span class="navigation__text">' + item.name + '</span></a>';
       if (hasChildren) {
-        out += '<button class="navigation__toggle" type="button" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="' + panelId + '" aria-haspopup="true" aria-label="Toggle ' + item.name + ' submenu"></button>';
+        out += '<button class="navigation__toggle" type="button" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="' + panelId + '" aria-label="' + item.name + ' submenu"></button>';
       }
       out += '</div>';
       if (hasChildren) {
@@ -432,7 +445,7 @@ export const templates: Record<string, string> = {
         (item.current ? ' navigation__footer-item--current' : '') +
         (item.isParent ? ' navigation__footer-item--parent' : '') +
         (hasChildren ? ' navigation__footer-item--branch' : '') + '">';
-      out += '<a class="navigation__footer-link' + (level === 0 ? ' navigation__footer-link--heading' : '') + '" href="' + item.link + '">';
+      out += '<a class="navigation__footer-link' + (level === 0 ? ' navigation__footer-link--heading' : '') + '" href="' + item.link + '"' + currentAttr(item) + '>';
       out += renderIcon(item.icon, 'navigation__icon', 'navigation__icon-asset');
       out += '<span class="navigation__text">' + item.name + '</span></a>';
       if (hasChildren) {
@@ -445,7 +458,7 @@ export const templates: Record<string, string> = {
   }
 %>
 <% if (navVariant === 'footer') { %>
-  <nav class="navigation navigation--footer">
+  <nav class="navigation navigation--footer" aria-label="Footer">
     <%- renderFooterTree(menu, 0) %>
   </nav>
 <% } else { %>
@@ -454,9 +467,9 @@ export const templates: Record<string, string> = {
     const useMobilePanel = menu.length > 2 || hasNestedChildren;
     const mobileMode = useMobilePanel ? 'panel' : 'inline';
   %>
-  <nav class="navigation navigation--header<%= useMobilePanel ? ' navigation--mobile-panel' : ' navigation--mobile-inline' %>" data-mobile-mode="<%= mobileMode %>">
+  <nav class="navigation navigation--header<%= useMobilePanel ? ' navigation--mobile-panel' : ' navigation--mobile-inline' %>" data-mobile-mode="<%= mobileMode %>" aria-label="Main">
     <% if (useMobilePanel) { %>
-      <button class="navigation__mobile-toggle" type="button" aria-expanded="false" aria-controls="<%= navigationRoot %>-list" aria-label="Toggle navigation menu" style="anchor-name: --<%= navigationRoot %>-mobile-toggle;">
+      <button class="navigation__mobile-toggle" type="button" aria-expanded="false" aria-controls="<%= navigationRoot %>-list" style="anchor-name: --<%= navigationRoot %>-mobile-toggle;">
         <span class="navigation__mobile-toggle-icon" aria-hidden="true"></span>
         <span class="navigation__mobile-toggle-label">Menu</span>
       </button>
@@ -470,6 +483,7 @@ export const templates: Record<string, string> = {
 <%- partials.head(data) %>
 
 <body class="page--<%= name %>">
+    <a class="skip-link" href="#main">Skip to content</a>
     <div class="page-container">
         <%- partials.header({ project: project, logo: logo, menu: menu, homeLink: homeLink, has: has, renderIcon: renderIcon, partials: partials }) %>
         <%- partials.content({ content: content, title: title, name: name, meta: meta, subtitle: subtitle, showContentImage: showContentImage, removeTitle: removeTitle, relatedPages: relatedPages, parentPage: parentPage, archives: archives, tags: tags, formatDate: formatDate, renderIcon: renderIcon, partials: partials }) %>
@@ -479,28 +493,19 @@ export const templates: Record<string, string> = {
 
     <%- partials.search({ has: has, searchContext: searchContext }) %>
 
-    <script>
-        <% if (has.header) { %>
-            <%- scripts.navigation %>
-        <% } %>
-        <%- scripts.colorMode %>
-        <%- scripts.codeCopy %>
-        <% if (has.colors) { %>
-            <%- scripts.findColors %>
-        <% } %>
-        <% if (has.table) { %>
-            <%- scripts.wrapTables %>
-        <% } %>
-        <% if (has.urlToken) { %>
-            <%- scripts.linkify %>
-        <% } %>
-        <% if (has.math) { %>
-            <%- scripts.renderMath %>
-        <% } %>
-        <% if (has.diagrams) { %>
-            <%- scripts.renderDiagrams %>
-        <% } %>
-    </script>
+    <%
+      // Each feature runs in its own script and scope, so one failing script
+      // cannot stop the others.
+      const inlineScript = (name) => '<script>(() => {\\n' + scripts[name] + '\\n})();</script>';
+    %>
+    <% if (has.header) { %><%- inlineScript('navigation') %><% } %>
+    <%- inlineScript('colorMode') %>
+    <%- inlineScript('codeCopy') %>
+    <% if (has.colors) { %><%- inlineScript('findColors') %><% } %>
+    <% if (has.table) { %><%- inlineScript('wrapTables') %><% } %>
+    <% if (has.urlToken) { %><%- inlineScript('linkify') %><% } %>
+    <% if (has.math) { %><%- inlineScript('renderMath') %><% } %>
+    <% if (has.diagrams) { %><%- inlineScript('renderDiagrams') %><% } %>
 </body>
 </html>
 `,
@@ -519,7 +524,8 @@ export const templates: Record<string, string> = {
         >
             <form class="search-shell__panel" role="search" novalidate data-search-form>
                 <h2 class="search-shell__title" id="site-search-title">Search</h2>
-                <label class="search-shell__field" for="site-search-input">
+                <label class="visually-hidden" for="site-search-input">Search this site</label>
+                <div class="search-shell__field">
                     <span class="search-shell__field-icon" aria-hidden="true">
                         <svg class="search-shell__field-icon-asset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="11" cy="11" r="6.5"></circle>
@@ -533,14 +539,16 @@ export const templates: Record<string, string> = {
                         spellcheck="false"
                         placeholder="Search this site"
                         enterkeyhint="search"
+                        aria-controls="site-search-results"
                         data-search-input
                     >
                     <button class="search-shell__close" type="button" aria-label="Close search" data-search-close>
                         <span class="search-shell__close-icon" aria-hidden="true"></span>
                     </button>
-                </label>
+                </div>
                 <p class="search-shell__hint">Search pages in this site. Results update while you type.</p>
-                <div class="search-shell__results search-results" data-search-results hidden></div>
+                <p class="visually-hidden" role="status" data-search-status></p>
+                <div class="search-shell__results search-results" id="site-search-results" data-search-results hidden></div>
             </form>
         </div>
     </div>
@@ -571,23 +579,44 @@ export const scripts: Record<string, string> = {
 
     if (!button || !source) return;
 
-    const originalLabel = button.textContent || "Copy";
+    // Only the label changes, so the button keeps nizel's markup.
+    const label = button.querySelector("[data-nizel-copy-label]") || button;
+    const originalLabel = label.textContent || "Copy";
+    const language = container.querySelector("code[class*='language-']")?.className.match(/language-(\\S+)/)?.[1];
+    button.setAttribute("aria-label", language ? \`Copy \${language} code\` : "Copy code");
 
     button.addEventListener("click", async () => {
       try {
         await copyText(source);
-        button.textContent = "Copied";
+        label.textContent = "Copied";
         button.dataset.copyState = "copied";
+        announce("Copied to clipboard");
 
         window.setTimeout(() => {
-          button.textContent = originalLabel;
+          label.textContent = originalLabel;
           delete button.dataset.copyState;
         }, 1800);
       } catch {
-        button.textContent = "Failed";
+        label.textContent = "Failed";
         button.dataset.copyState = "error";
+        announce("Copy failed");
       }
     });
+  });
+};
+
+const announce = (message) => {
+  let status = document.querySelector("[data-copy-status]");
+  if (!status) {
+    status = document.createElement("p");
+    status.className = "visually-hidden";
+    status.setAttribute("role", "status");
+    status.dataset.copyStatus = "";
+    document.body.appendChild(status);
+  }
+  status.textContent = "";
+  window.requestAnimationFrame(() => {
+    status.textContent = message;
   });
 };
 
@@ -614,50 +643,56 @@ const copyText = async (source) => {
 
 initCodeCopy();
 `,
-  "colorMode": `const isDarkMode = window.matchMedia("prefers-color-scheme: dark").matches;
-let localMode = isDarkMode ? "dark" : "light";
+  "colorMode": `const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+
+const currentMode = () =>
+  document.documentElement.getAttribute("color-mode") || (systemDark.matches ? "dark" : "light");
 
 const updateColorModeToggle = () => {
   const toggle = document.querySelector("[data-color-mode-toggle]");
   if (!toggle) return;
 
-  toggle.dataset.colorMode = localMode;
-  toggle.setAttribute("aria-pressed", localMode === "dark" ? "true" : "false");
-  toggle.setAttribute(
-    "aria-label",
-    localMode === "dark" ? "Switch to light mode" : "Switch to dark mode"
-  );
+  const mode = currentMode();
+  toggle.dataset.colorMode = mode;
+  toggle.setAttribute("aria-pressed", mode === "dark" ? "true" : "false");
 };
 
-const initColorMode = () => {
-  localMode = localStorage.getItem("colorMode");
-  setCurrentMode(localMode ? localMode : isDarkMode ? "dark" : "light");
+const saveMode = (mode) => {
+  try {
+    localStorage.setItem("colorMode", mode);
+  } catch {
+    // Storage can be blocked; the choice then lasts for this page only.
+  }
 };
 
-const setCurrentMode = (mode) => {
-  localMode = mode;
-  localStorage.setItem("colorMode", localMode);
-  document.documentElement.setAttribute("color-mode", mode);
-  document.body.setAttribute("color-mode", mode);
-  updateColorModeToggle();
-};
-
+// Only an explicit choice is stored, so the system preference keeps applying until then.
 const switchMode = () => {
-  if (localMode == "dark") setCurrentMode("light");
-  else setCurrentMode("dark");
+  const mode = currentMode() === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("color-mode", mode);
+  saveMode(mode);
+  updateColorModeToggle();
 };
 
 const bindColorModeToggle = () => {
   const toggle = document.querySelector("[data-color-mode-toggle]");
   if (!toggle) return;
 
-  toggle.addEventListener("click", () => {
-    switchMode();
-  });
+  toggle.addEventListener("click", switchMode);
 };
 
-initColorMode();
+systemDark.addEventListener("change", updateColorModeToggle);
+updateColorModeToggle();
 bindColorModeToggle();
+`,
+  "colorModeInit": `// Runs in <head> so a stored choice applies before first paint. Without one,
+// color-mode stays unset and the prefers-color-scheme rules decide.
+try {
+  const storedMode = localStorage.getItem("colorMode");
+  if (storedMode === "dark" || storedMode === "light")
+    document.documentElement.setAttribute("color-mode", storedMode);
+} catch {
+  // Storage can be blocked; the system preference still applies.
+}
 `,
   "findColors": `const container = document.querySelector(".container").querySelectorAll("*");
 
@@ -674,58 +709,6 @@ container.forEach((el) => {
       }
     }
 });
-`,
-  "headerNavigation": `const setHovers = () => {
-
-  const navigationLinks = document.querySelectorAll(
-    ".header .navigation__link"
-  );
-
-  let hovering = null;
-
-  navigationLinks.forEach((link) => {
-    link.addEventListener("mouseover", (e) => {
-      if (hovering == link) return;
-      const sizes = e.target.getBoundingClientRect();
-      const navigation = document.querySelector(".header .navigation__list");
-      const navigationSizes = navigation.getBoundingClientRect();
-
-      const x = \`\${Math.round(sizes.left - navigationSizes.left)}px\`;
-      const w = \`\${Math.round(sizes.width)}px\`;
-
-      navigation.style.setProperty("--h-w", w);
-      navigation.style.setProperty("--h-x", x);
-      hovering = link;
-    });
-  });
-};
-
-const setCurrent = () => {
-  const currentLink = document.querySelector(
-    ".header .navigation__item--current"
-  );
-
-  if (!currentLink) return;
-
-  const linkSize = currentLink.getBoundingClientRect();
-  const navigation = document.querySelector(".header .navigation");
-  const navigationSize = document
-    .querySelector(".header .navigation__list")
-    .getBoundingClientRect();
-
-  const x = \`\${Math.round(linkSize.left - navigationSize.left)}px\`;
-  const w = \`\${Math.round(linkSize.width)}px\`;
-  navigation.style.setProperty("--x", x);
-  navigation.style.setProperty("--w", w);
-  navigation.setAttribute("data-x", x);
-  navigation.setAttribute("data-w", w);
-};
-
-const initNavigation = () => {
-  setHovers();
-  setCurrent();
-};
-initNavigation();
 `,
   "linkify": `const urlTokens = document.querySelectorAll(".token.url");
 
@@ -826,12 +809,28 @@ const closeSiblingItems = (item) => {
   });
 };
 
+/*
+ * The open mobile panel covers the viewport, so everything around it is made
+ * inert: Tab stays inside the menu and the page behind it cannot scroll.
+ */
+const setOutsideInert = (element, isInert) => {
+  for (let node = element; node && node !== document.body; node = node.parentElement) {
+    Array.from(node.parentElement?.children || []).forEach((sibling) => {
+      if (sibling === node || sibling.tagName === "SCRIPT") return;
+      sibling.inert = isInert;
+    });
+  }
+  document.documentElement.classList.toggle("navigation-scroll-lock", isInert);
+};
+
 const setMobileNavigationOpen = (navigation, isOpen) => {
   const toggle = navigation.querySelector(".navigation__mobile-toggle");
   if (!(toggle instanceof HTMLButtonElement)) return;
 
+  const wasOpen = navigation.classList.contains("navigation--mobile-open");
   navigation.classList.toggle("navigation--mobile-open", isOpen);
   toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  if (wasOpen !== isOpen) setOutsideInert(navigation, isOpen);
 };
 
 const initHeaderNavigation = (navigation) => {
@@ -846,7 +845,6 @@ const initHeaderNavigation = (navigation) => {
 
   items.forEach((item) => {
     const toggle = item.querySelector(".navigation__toggle");
-    const link = item.querySelector(".navigation__link");
     if (!(toggle instanceof HTMLButtonElement)) return;
 
     setNavigationItemOpen(item, toggle.getAttribute("aria-expanded") === "true");
@@ -857,27 +855,11 @@ const initHeaderNavigation = (navigation) => {
       setNavigationItemOpen(item, !isOpen);
     });
 
-    if (link instanceof HTMLAnchorElement) {
-      link.addEventListener("click", (event) => {
-        if (
-          event.defaultPrevented ||
-          event.metaKey ||
-          event.ctrlKey ||
-          event.shiftKey ||
-          event.altKey ||
-          event.button !== 0
-        ) {
-          return;
-        }
-
-        const isOpen = toggle.getAttribute("aria-expanded") === "true";
-        if (isOpen) return;
-
-        event.preventDefault();
-        closeSiblingItems(item);
-        setNavigationItemOpen(item, true);
-      });
-    }
+    // The link navigates; only the toggle button opens the panel.
+    item.addEventListener("focusout", (event) => {
+      if (event.relatedTarget instanceof Node && item.contains(event.relatedTarget)) return;
+      if (toggle.getAttribute("aria-expanded") === "true") setNavigationItemOpen(item, false);
+    });
 
     item.addEventListener("keydown", (event) => {
       if (event.key !== "Escape") return;
@@ -908,10 +890,8 @@ const initMobileNavigation = (navigation) => {
     setMobileNavigationOpen(navigation, !isOpen);
   });
 
-  navigation.querySelectorAll(".navigation__link").forEach((link) => {
+  navigation.querySelectorAll(".navigation__link, .navigation__group-link").forEach((link) => {
     if (!(link instanceof HTMLAnchorElement)) return;
-    const item = link.closest(".navigation__item");
-    if (item?.classList.contains("navigation__item--has-children")) return;
 
     link.addEventListener("click", () => {
       setMobileNavigationOpen(navigation, false);
@@ -959,7 +939,11 @@ initNavigation();
     mermaid.default.initialize({
       startOnLoad: false,
       securityLevel: "strict",
-      theme: document.documentElement.getAttribute("color-mode") === "dark" ? "dark" : "default",
+      theme:
+        (document.documentElement.getAttribute("color-mode") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")) === "dark"
+          ? "dark"
+          : "default",
     });
     await mermaid.default.run({ nodes });
   } catch (error) {
@@ -1179,12 +1163,18 @@ initMath();
     };
   }
 
+  function announce(message) {
+    var status = state.shell && state.shell.querySelector("[data-search-status]");
+    if (status) status.textContent = message;
+  }
+
   function renderResults(query, results, error) {
     if (!state.results) return;
 
     if (!normalize(query)) {
       state.results.innerHTML = "";
       state.results.hidden = true;
+      announce("");
       return;
     }
 
@@ -1193,6 +1183,7 @@ initMath();
     if (error) {
       state.results.innerHTML =
         '<p class="search-results__empty">Search is unavailable right now.</p>';
+      announce("Search is unavailable right now.");
       return;
     }
 
@@ -1201,8 +1192,11 @@ initMath();
         '<p class="search-results__empty">No results for <strong>' +
         escapeHtml(query) +
         "</strong>.</p>";
+      announce("No results");
       return;
     }
+
+    announce(results.length === 1 ? "1 result" : results.length + " results");
 
     state.results.innerHTML =
       '<ul class="search-results__list">' +
@@ -1251,6 +1245,12 @@ initMath();
     if (state.shell) {
       state.shell.hidden = !isOpen;
       state.shell.classList.toggle("search-shell--open", isOpen);
+
+      // The dialog is modal: the page behind it leaves the tab order.
+      Array.prototype.forEach.call(document.body.children, function (element) {
+        if (element === state.shell || element.tagName === "SCRIPT") return;
+        element.inert = isOpen;
+      });
     }
 
     document.documentElement.classList.toggle("search-open", isOpen);
@@ -1394,76 +1394,6 @@ initMath();
     initSearch();
   }
 })();
-`,
-  "stickyNav": `const stickyNav = () => {
-  const navigation = document.querySelector(".header__container");
-  let ticking = false;
-  let lastScrollPosition = 0;
-
-  const setActiveNavigation = (scrollPosition) => {
-    if (scrollPosition < 10) {
-      navigation.classList.add("header__container--on-top");
-      navigation.classList.remove("header__container--off-top");
-    } else {
-      navigation.classList.remove("header__container--on-top");
-      navigation.classList.add("header__container--off-top");
-    }
-    if (lastScrollPosition > scrollPosition || scrollPosition < 10) {
-      navigation.classList.add("header__container--show");
-      navigation.classList.remove("header__container--hide");
-    } else {
-      navigation.classList.add("header__container--hide");
-      navigation.classList.remove("header__container--show");
-    }
-    lastScrollPosition = scrollPosition;
-  };
-
-  document.addEventListener("scroll", () => {
-    if (!ticking) {
-      window.requestAnimationFrame(() => {
-        setActiveNavigation(window.scrollY);
-        ticking = false;
-      });
-      ticking = true;
-    }
-  });
-};
-
-stickyNav();`,
-  "ui": `const setNavigationOpen = (isOpen) => {
-  document.body.classList.toggle("nav-open", isOpen);
-
-  const toggle = document.querySelector(".navigation-toggle");
-  if (toggle) {
-    toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-  }
-};
-
-const initUi = () => {
-  const toggle = document.querySelector(".navigation-toggle");
-  const overlay = document.querySelector(".navigation__background");
-  const navLinks = document.querySelectorAll(".header .navigation__link");
-
-  if (!toggle) return;
-
-  toggle.addEventListener("click", () => {
-    setNavigationOpen(!document.body.classList.contains("nav-open"));
-  });
-
-  if (overlay) {
-    overlay.addEventListener("click", () => {
-      setNavigationOpen(false);
-    });
-  }
-
-  navLinks.forEach((link) => {
-    link.addEventListener("click", () => {
-      setNavigationOpen(false);
-    });
-  });
-};
-
-initUi();
 `,
   "wrapTables": `const tables = document.querySelectorAll("table");
 let initTableWrap = false;

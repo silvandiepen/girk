@@ -7,7 +7,11 @@ const initDiagrams = async () => {
     mermaid.default.initialize({
       startOnLoad: false,
       securityLevel: "strict",
-      theme: document.documentElement.getAttribute("color-mode") === "dark" ? "dark" : "default",
+      theme:
+        (document.documentElement.getAttribute("color-mode") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")) === "dark"
+          ? "dark"
+          : "default",
     });
     await mermaid.default.run({ nodes });
   } catch (error) {

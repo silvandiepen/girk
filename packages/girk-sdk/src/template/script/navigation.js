@@ -81,12 +81,28 @@ const closeSiblingItems = (item) => {
   });
 };
 
+/*
+ * The open mobile panel covers the viewport, so everything around it is made
+ * inert: Tab stays inside the menu and the page behind it cannot scroll.
+ */
+const setOutsideInert = (element, isInert) => {
+  for (let node = element; node && node !== document.body; node = node.parentElement) {
+    Array.from(node.parentElement?.children || []).forEach((sibling) => {
+      if (sibling === node || sibling.tagName === "SCRIPT") return;
+      sibling.inert = isInert;
+    });
+  }
+  document.documentElement.classList.toggle("navigation-scroll-lock", isInert);
+};
+
 const setMobileNavigationOpen = (navigation, isOpen) => {
   const toggle = navigation.querySelector(".navigation__mobile-toggle");
   if (!(toggle instanceof HTMLButtonElement)) return;
 
+  const wasOpen = navigation.classList.contains("navigation--mobile-open");
   navigation.classList.toggle("navigation--mobile-open", isOpen);
   toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  if (wasOpen !== isOpen) setOutsideInert(navigation, isOpen);
 };
 
 const initHeaderNavigation = (navigation) => {
@@ -101,7 +117,6 @@ const initHeaderNavigation = (navigation) => {
 
   items.forEach((item) => {
     const toggle = item.querySelector(".navigation__toggle");
-    const link = item.querySelector(".navigation__link");
     if (!(toggle instanceof HTMLButtonElement)) return;
 
     setNavigationItemOpen(item, toggle.getAttribute("aria-expanded") === "true");
@@ -112,27 +127,11 @@ const initHeaderNavigation = (navigation) => {
       setNavigationItemOpen(item, !isOpen);
     });
 
-    if (link instanceof HTMLAnchorElement) {
-      link.addEventListener("click", (event) => {
-        if (
-          event.defaultPrevented ||
-          event.metaKey ||
-          event.ctrlKey ||
-          event.shiftKey ||
-          event.altKey ||
-          event.button !== 0
-        ) {
-          return;
-        }
-
-        const isOpen = toggle.getAttribute("aria-expanded") === "true";
-        if (isOpen) return;
-
-        event.preventDefault();
-        closeSiblingItems(item);
-        setNavigationItemOpen(item, true);
-      });
-    }
+    // The link navigates; only the toggle button opens the panel.
+    item.addEventListener("focusout", (event) => {
+      if (event.relatedTarget instanceof Node && item.contains(event.relatedTarget)) return;
+      if (toggle.getAttribute("aria-expanded") === "true") setNavigationItemOpen(item, false);
+    });
 
     item.addEventListener("keydown", (event) => {
       if (event.key !== "Escape") return;
@@ -163,10 +162,8 @@ const initMobileNavigation = (navigation) => {
     setMobileNavigationOpen(navigation, !isOpen);
   });
 
-  navigation.querySelectorAll(".navigation__link").forEach((link) => {
+  navigation.querySelectorAll(".navigation__link, .navigation__group-link").forEach((link) => {
     if (!(link instanceof HTMLAnchorElement)) return;
-    const item = link.closest(".navigation__item");
-    if (item?.classList.contains("navigation__item--has-children")) return;
 
     link.addEventListener("click", () => {
       setMobileNavigationOpen(navigation, false);

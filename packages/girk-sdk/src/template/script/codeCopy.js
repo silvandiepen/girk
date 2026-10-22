@@ -9,23 +9,44 @@ const initCodeCopy = () => {
 
     if (!button || !source) return;
 
-    const originalLabel = button.textContent || "Copy";
+    // Only the label changes, so the button keeps nizel's markup.
+    const label = button.querySelector("[data-nizel-copy-label]") || button;
+    const originalLabel = label.textContent || "Copy";
+    const language = container.querySelector("code[class*='language-']")?.className.match(/language-(\S+)/)?.[1];
+    button.setAttribute("aria-label", language ? `Copy ${language} code` : "Copy code");
 
     button.addEventListener("click", async () => {
       try {
         await copyText(source);
-        button.textContent = "Copied";
+        label.textContent = "Copied";
         button.dataset.copyState = "copied";
+        announce("Copied to clipboard");
 
         window.setTimeout(() => {
-          button.textContent = originalLabel;
+          label.textContent = originalLabel;
           delete button.dataset.copyState;
         }, 1800);
       } catch {
-        button.textContent = "Failed";
+        label.textContent = "Failed";
         button.dataset.copyState = "error";
+        announce("Copy failed");
       }
     });
+  });
+};
+
+const announce = (message) => {
+  let status = document.querySelector("[data-copy-status]");
+  if (!status) {
+    status = document.createElement("p");
+    status.className = "visually-hidden";
+    status.setAttribute("role", "status");
+    status.dataset.copyStatus = "";
+    document.body.appendChild(status);
+  }
+  status.textContent = "";
+  window.requestAnimationFrame(() => {
+    status.textContent = message;
   });
 };
 

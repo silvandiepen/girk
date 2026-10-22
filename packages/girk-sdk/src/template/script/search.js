@@ -176,12 +176,18 @@
     };
   }
 
+  function announce(message) {
+    var status = state.shell && state.shell.querySelector("[data-search-status]");
+    if (status) status.textContent = message;
+  }
+
   function renderResults(query, results, error) {
     if (!state.results) return;
 
     if (!normalize(query)) {
       state.results.innerHTML = "";
       state.results.hidden = true;
+      announce("");
       return;
     }
 
@@ -190,6 +196,7 @@
     if (error) {
       state.results.innerHTML =
         '<p class="search-results__empty">Search is unavailable right now.</p>';
+      announce("Search is unavailable right now.");
       return;
     }
 
@@ -198,8 +205,11 @@
         '<p class="search-results__empty">No results for <strong>' +
         escapeHtml(query) +
         "</strong>.</p>";
+      announce("No results");
       return;
     }
+
+    announce(results.length === 1 ? "1 result" : results.length + " results");
 
     state.results.innerHTML =
       '<ul class="search-results__list">' +
@@ -248,6 +258,12 @@
     if (state.shell) {
       state.shell.hidden = !isOpen;
       state.shell.classList.toggle("search-shell--open", isOpen);
+
+      // The dialog is modal: the page behind it leaves the tab order.
+      Array.prototype.forEach.call(document.body.children, function (element) {
+        if (element === state.shell || element.tagName === "SCRIPT") return;
+        element.inert = isOpen;
+      });
     }
 
     document.documentElement.classList.toggle("search-open", isOpen);

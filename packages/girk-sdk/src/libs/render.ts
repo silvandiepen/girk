@@ -119,6 +119,26 @@ function buildPartials(
 }
 
 /**
+ * Give every id inside each inline <svg> a per-instance suffix, so a logo or
+ * icon inlined more than once doesn't produce duplicate ids, and point the
+ * svg's own references (url(#id), href="#id") at the renamed ids.
+ */
+export function uniqueSvgIds(html: string): string {
+  let instance = 0;
+  return html.replace(/<svg\b[\s\S]*?<\/svg>/g, (svg) => {
+    const ids = new Set(Array.from(svg.matchAll(/\sid="([^"]+)"/g), (match) => match[1]));
+    if (!ids.size) return svg;
+
+    instance += 1;
+    const rename = (id: string) => (ids.has(id) ? `${id}-${instance}` : id);
+    return svg
+      .replace(/(\sid=")([^"]+)"/g, (_, attr, id) => `${attr}${rename(id)}"`)
+      .replace(/url\(#([^)]+)\)/g, (_, id) => `url(#${rename(id)})`)
+      .replace(/(href=")#([^"]+)"/g, (_, attr, id) => `${attr}#${rename(id)}"`);
+  });
+}
+
+/**
  * Render a full page using EJS templates.
  *
  * @param data - Template data (menu, project, content, etc.)
@@ -148,5 +168,5 @@ export function renderEjs(
     renderIcon,
   };
 
-  return getCompiled(templateName, source)(enhancedData);
+  return uniqueSvgIds(getCompiled(templateName, source)(enhancedData));
 }

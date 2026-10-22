@@ -2,6 +2,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="view-transition" content="same-origin">
+    <script><%- scripts.colorModeInit %></script>
     <% if (generator && generator.name && generator.version) { %>
         <meta name="generator" content="<%= generator.name %> <%= generator.version %>">
     <% } %>
@@ -21,6 +22,12 @@
         <meta name="description" content="<%= meta.description %>">
     <% } else if (project.description) { %>
         <meta name="description" content="<%= project.description %>">
+    <% } %>
+
+    <% if (langMenu && langMenu.length > 1) { %>
+        <% langMenu.forEach(function(language) { %>
+            <link rel="alternate" hreflang="<%= language.code %>" href="<%= language.link %>">
+        <% }) %>
     <% } %>
 
     <% if (meta.title && project.title) { %>

@@ -105,7 +105,7 @@ async function getProcessor() {
     plugins: [
       abbrPlugin(),
       alertPlugin(),
-      autolinkPlugin({ target: "_blank", rel: "noopener" }),
+      autolinkPlugin(),
       badgePlugin(),
       citationsPlugin(),
       deflistPlugin(),
@@ -122,7 +122,7 @@ async function getProcessor() {
       printPlugin({ injectCss: false }),
       shikiPlugin({ highlighter: highlightFn }),
       codeCopyPlugin({ mode: "button" }),
-      taskListPlugin({ mode: "edit" }),
+      taskListPlugin({ mode: "view" }),
       tocPlugin(),
       typographyPlugin(),
       sanitizePlugin({ allowRawHtml: true }),
