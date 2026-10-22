@@ -1,4 +1,4 @@
-import { join, extname, basename, resolve } from "path";
+import { join, extname, basename } from "path";
 import { copyFile, existsSync, lstatSync } from "fs";
 import { copy, writeFile, copySync } from "fs-extra";
 import { blockLineError, blockLineSuccess } from "cli-block";

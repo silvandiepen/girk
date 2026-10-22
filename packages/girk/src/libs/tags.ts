@@ -1,7 +1,7 @@
 import { asyncForEach } from "@/libs/utils";
 import { isHidden } from "@/libs/helpers";
 
-import { Payload, File, FileType, Tag, Language, ArchiveType } from "../types";
+import { Payload, File, FileType, Tag, ArchiveType } from "../types";
 import { createPage } from "./page";
 import { fileId } from "./files";
 

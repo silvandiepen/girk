@@ -31,6 +31,11 @@ describe("Make Link", () => {
 
     expect(result).toStrictEqual(output);
   });
+  it("only renames a readme file, not pages or folders that contain the word", () => {
+    expect(makeLink("/guides/readme-tips.md")).toBe("/guides/readme-tips/index.html");
+    expect(makeLink("/readme/intro.md")).toBe("/readme/intro/index.html");
+    expect(makeLink("/notes.md-archive/intro.md")).toBe("/notes.md-archive/intro/index.html");
+  });
 });
 
 describe("isHomePath", () => {

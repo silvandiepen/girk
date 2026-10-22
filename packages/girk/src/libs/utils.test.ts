@@ -9,7 +9,6 @@ import {
   fileExists,
   getFileData,
   getStringFromTag,
-  hello,
   nthIndex,
   parentPath,
   removeTag,
@@ -34,11 +33,6 @@ describe("Local runtime utils", () => {
       "start-3",
       "end-3",
     ]);
-  });
-
-  it("returns the provided value from hello", async () => {
-    await expect(hello({ ok: true })).resolves.toEqual({ ok: true });
-    await expect(hello()).resolves.toEqual({});
   });
 
   it("removes matching tags", () => {

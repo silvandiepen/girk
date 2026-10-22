@@ -1,10 +1,11 @@
 import { blockLine, blockLineSuccess } from "cli-block";
-import { readFile, writeFile } from "node:fs/promises";
+import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 import { getArchiveParent, isSectionsArchiveChild } from "@/libs/archives";
 import { getParentFile, makePath } from "@/libs/files";
 import { getExcerpt } from "@/libs/helpers";
+import { getRegistry } from "@/libs/render";
 import { createDir } from "@/libs/utils";
 import {
   File,
@@ -19,7 +20,6 @@ import {
 } from "@/types";
 
 const SEARCH_DIRECTORY = "assets/search";
-const SEARCH_CLIENT_SOURCE = "../../src/template/script/search.js";
 const SEARCH_BODY_LIMIT = 2000;
 const SEARCH_SECTION_MIN_DOCUMENTS = 2;
 const SEARCH_SECTION_AUTO_MIN_DOCUMENTS = 24;
@@ -347,8 +347,11 @@ const buildSearchShard = (
   };
 };
 
-const getSearchClientSource = async (): Promise<string> =>
-  readFile(join(__dirname, SEARCH_CLIENT_SOURCE), "utf8");
+const getSearchClientSource = (): string => {
+  const source = getRegistry().scripts.search;
+  if (!source) throw new Error("girk-sdk template registry has no search client script");
+  return source;
+};
 
 const getSearchDocuments = (
   payload: Payload
@@ -425,7 +428,7 @@ export const generateSearchIndex = async (payload: Payload): Promise<Payload> =>
   };
 
   await writeFile(join(outputDirectory, "manifest.json"), JSON.stringify(manifest));
-  await writeFile(join(outputDirectory, "client.js"), await getSearchClientSource());
+  await writeFile(join(outputDirectory, "client.js"), getSearchClientSource());
 
   blockLineSuccess("Search");
   blockLine(`   ${shards.length} shard${shards.length === 1 ? "" : "s"}`);

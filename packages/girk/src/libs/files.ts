@@ -1,5 +1,5 @@
 import { readdir } from "fs/promises";
-import { extname, resolve, basename, join } from "path";
+import { extname, resolve, basename } from "path";
 import { statSync } from "fs";
 import { renderEjs } from "@/libs/render";
 
@@ -27,15 +27,16 @@ export const isHomePath = (path: string): boolean => {
   return fileName === "readme" || fileName === "index";
 };
 
+// Never scanned for content: dependencies and hidden folders (.git, .github, .cache, ...).
+const isSkippedDirectory = (name: string): boolean => name === "node_modules" || name.startsWith(".");
+
 export const getFileTree = async (
   dir: string,
   filter: string[] = null
 ): Promise<File[]> => {
-  // Do not search the following folders;
-  const excludes = ["node_modules", ".git"];
-  if (excludes.some((sub) => dir.includes(sub))) return;
-
-  const direntGroup = await readdir(dir, { withFileTypes: true });
+  const direntGroup = (await readdir(dir, { withFileTypes: true })).filter(
+    (dirent: Dirent) => !(dirent.isDirectory() && isSkippedDirectory(dirent.name))
+  );
 
   const files = await Promise.all(
     direntGroup.map(async (dirent: Dirent) => {
@@ -138,17 +139,13 @@ export const buildHtml = async (
 ): Promise<string> => {
   const archives = filterArchive(file);
 
-  archives.map((archive) => {
+  // Blog archives list newest first; sort() reorders the children in place.
+  archives.forEach((archive) => {
     if (archive.type === "blog") {
-      archive.children;
-      return {
-        ...archive,
-        children: archive.children.sort((a, b) =>
-          b.created > a.created ? 1 : a.created > b.created ? -1 : 0
-        ),
-      };
+      archive.children.sort((a, b) =>
+        b.created > a.created ? 1 : a.created > b.created ? -1 : 0
+      );
     }
-    return archive;
   });
 
   const options = {
@@ -183,13 +180,13 @@ export const makeLink = (path: string): string => {
     path
       .replace(process.cwd(), "")
       .toLowerCase()
-      .replace("readme", "index")
-      .replace(".md", ".html")
+      // Only the file itself is renamed: readme.md, readme:nl.md -> index
+      .replace(/(^|\/)readme(?=(:[^/]*)?\.md$)/, "$1index")
+      .replace(/\.md$/, ".html")
   );
 
-  return uri.split("/")[uri.split("/").length - 1].replace(".html", "") !==
-    "index"
-    ? uri.replace(".html", "/index.html")
+  return uri.split("/")[uri.split("/").length - 1].replace(/\.html$/, "") !== "index"
+    ? uri.replace(/\.html$/, "/index.html")
     : uri;
 };
 

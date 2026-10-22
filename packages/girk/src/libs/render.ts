@@ -1,12 +1,8 @@
 /**
  * EJS template rendering for Girky CLI.
  *
- * Self-contained — reads templates from girk-sdk's compiled registry
- * using filesystem access (CLI only, not for Workers).
+ * Renders girk-sdk's compiled template registry (girk-sdk/templates).
  */
-
-import { existsSync } from "fs";
-import { join } from "path";
 
 /**
  * HTML-escape a string.
@@ -78,37 +74,15 @@ interface RegistryModule {
   scripts: Record<string, string>;
 }
 
-/**
- * Resolve and load girk-sdk template registry.
- */
-function loadRegistryFromDisk(): RegistryModule {
-  const candidates = [
-    join(__dirname, "../../../girk-sdk/dist/libs/templates/registry.js"),
-    join(__dirname, "../../../node_modules/girk-sdk/dist/libs/templates/registry.js"),
-    join(__dirname, "../../../../node_modules/girk-sdk/dist/libs/templates/registry.js"),
-  ];
-
-  for (const candidate of candidates) {
-    if (existsSync(candidate)) {
-      try {
-        // Node 22+ supports require() for ESM (experimental)
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const mod = require(candidate) as RegistryModule;
-        if (mod.templates) return mod;
-      } catch {
-        continue;
-      }
-    }
-  }
-
-  throw new Error("Could not resolve girk-sdk template registry. Ensure girk-sdk is installed and built.");
-}
-
 let _registry: RegistryModule | null = null;
 
-function loadRegistry() {
-  if (_registry) return;
-  _registry = loadRegistryFromDisk();
+/**
+ * Load the girk-sdk template registry through its package export.
+ * girk-sdk is ESM; require() of ESM needs Node 20.19+ / 22.12+ (checked in the CLI).
+ */
+export function getRegistry(): RegistryModule {
+  if (!_registry) _registry = require("girk-sdk/templates") as RegistryModule;
+  return _registry;
 }
 
 /**
@@ -154,14 +128,14 @@ export function renderEjs(
   templateName = "page",
   customTemplates?: Record<string, string>
 ): string {
-  loadRegistry();
+  const registry = getRegistry();
 
-  const allTemplates = { ..._registry!.templates, ...customTemplates };
+  const allTemplates = { ...registry.templates, ...customTemplates };
   const source = allTemplates[templateName];
 
   if (!source) throw new Error(`Template "${templateName}" not found`);
 
-  const scripts = _registry!.scripts;
+  const scripts = registry.scripts;
 
   // Build partials
   const partials: Record<string, (d: Record<string, unknown>) => string> = {};

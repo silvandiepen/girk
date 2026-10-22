@@ -10,10 +10,6 @@ export async function asyncForEach<T>(
   }
 }
 
-export async function hello(args: unknown = {}): Promise<unknown> {
-  return args;
-}
-
 export function removeTag(input: string, tag: string): string {
   const regex = new RegExp(`<${tag}(.*)>(.*)</${tag}>`, "gi");
   return input.replace(regex, "");

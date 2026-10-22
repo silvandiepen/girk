@@ -5,8 +5,6 @@ import {
   fixLangInPath,
 } from "./language";
 
-import { Language } from "../types";
-
 describe("Language in fileName", () => {
   it("Should return the correct language", () => {
     const input = `index.md`;
