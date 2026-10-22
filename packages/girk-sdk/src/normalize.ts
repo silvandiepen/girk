@@ -148,7 +148,7 @@ const processFiles = async (files: File[]): Promise<{ files: File[]; languages: 
 
   // Render markdown to HTML and extract metadata
   await asyncForEach(files, async (file: File, index: number) => {
-    const rendered = await toHtml(file.data || "", file.path);
+    const rendered = await toHtml(file.data || "", file.path, undefined, file.language);
     files[index] = {
       ...file,
       html: rendered.document,

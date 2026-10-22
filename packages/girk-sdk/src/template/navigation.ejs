@@ -49,7 +49,7 @@
       out += renderIcon(item.icon, 'navigation__icon', 'navigation__icon-asset');
       out += '<span class="navigation__text">' + item.name + '</span></a>';
       if (hasChildren) {
-        out += '<button class="navigation__toggle" type="button" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="' + panelId + '" aria-label="' + item.name + ' submenu"></button>';
+        out += '<button class="navigation__toggle" type="button" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="' + panelId + '" aria-label="' + ui.submenu.replace('{name}', item.name) + '"></button>';
       }
       out += '</div>';
       if (hasChildren) {
@@ -85,7 +85,7 @@
   }
 %>
 <% if (navVariant === 'footer') { %>
-  <nav class="navigation navigation--footer" aria-label="Footer">
+  <nav class="navigation navigation--footer" aria-label="<%= ui.footerNavigation %>">
     <%- renderFooterTree(menu, 0) %>
   </nav>
 <% } else { %>
@@ -94,11 +94,11 @@
     const useMobilePanel = menu.length > 2 || hasNestedChildren;
     const mobileMode = useMobilePanel ? 'panel' : 'inline';
   %>
-  <nav class="navigation navigation--header<%= useMobilePanel ? ' navigation--mobile-panel' : ' navigation--mobile-inline' %>" data-mobile-mode="<%= mobileMode %>" aria-label="Main">
+  <nav class="navigation navigation--header<%= useMobilePanel ? ' navigation--mobile-panel' : ' navigation--mobile-inline' %>" data-mobile-mode="<%= mobileMode %>" aria-label="<%= ui.mainNavigation %>">
     <% if (useMobilePanel) { %>
       <button class="navigation__mobile-toggle" type="button" aria-expanded="false" aria-controls="<%= navigationRoot %>-list" style="anchor-name: --<%= navigationRoot %>-mobile-toggle;">
         <span class="navigation__mobile-toggle-icon" aria-hidden="true"></span>
-        <span class="navigation__mobile-toggle-label">Menu</span>
+        <span class="navigation__mobile-toggle-label"><%= ui.menu %></span>
       </button>
     <% } %>
     <%- renderHeaderNavigation(menu) %>

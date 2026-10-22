@@ -93,6 +93,10 @@ test("example-multilang builds translated routes with the shared default theme",
   assert.match(dutchHome, /Meertalig Voorbeeld/);
   assert.match(dutchHome, /Dit is de Nederlandse homepage/);
   assert.match(aboutNl, /Deze pagina controleert/);
+  // Generated UI follows the page language.
+  assert.match(aboutNl, />Naar de inhoud</);
+  assert.match(aboutNl, /aria-label="Link naar deze sectie"/);
+  assert.match(home, />Skip to content</);
 });
 
 test("example-config builds a config-driven sample site", async () => {

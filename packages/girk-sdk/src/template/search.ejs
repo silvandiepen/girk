@@ -1,6 +1,6 @@
 <% if (has.search) { %>
     <div class="search-shell" hidden data-search-shell>
-        <button class="search-shell__backdrop" type="button" aria-label="Close search" data-search-close tabindex="-1"></button>
+        <button class="search-shell__backdrop" type="button" aria-label="<%= ui.closeSearch %>" data-search-close tabindex="-1"></button>
         <div class="search-shell__dialog"
             id="site-search"
             role="dialog"
@@ -12,8 +12,8 @@
             data-search-dialog
         >
             <form class="search-shell__panel" role="search" novalidate data-search-form>
-                <h2 class="search-shell__title" id="site-search-title">Search</h2>
-                <label class="visually-hidden" for="site-search-input">Search this site</label>
+                <h2 class="search-shell__title" id="site-search-title"><%= ui.search %></h2>
+                <label class="visually-hidden" for="site-search-input"><%= ui.searchLabel %></label>
                 <div class="search-shell__field">
                     <span class="search-shell__field-icon" aria-hidden="true">
                         <svg class="search-shell__field-icon-asset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -26,16 +26,16 @@
                         autocomplete="off"
                         autocapitalize="off"
                         spellcheck="false"
-                        placeholder="Search this site"
+                        placeholder="<%= ui.searchLabel %>"
                         enterkeyhint="search"
                         aria-controls="site-search-results"
                         data-search-input
                     >
-                    <button class="search-shell__close" type="button" aria-label="Close search" data-search-close>
+                    <button class="search-shell__close" type="button" aria-label="<%= ui.closeSearch %>" data-search-close>
                         <span class="search-shell__close-icon" aria-hidden="true"></span>
                     </button>
                 </div>
-                <p class="search-shell__hint">Search pages in this site. Results update while you type.</p>
+                <p class="search-shell__hint"><%= ui.searchHint %></p>
                 <p class="visually-hidden" role="status" data-search-status></p>
                 <div class="search-shell__results search-results" id="site-search-results" data-search-results hidden></div>
             </form>

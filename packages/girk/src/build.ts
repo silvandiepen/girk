@@ -114,7 +114,7 @@ const loadFiles = async (payload: Payload): Promise<Payload> => {
    */
   files = await Promise.all(
     files.map(async (file) => {
-      const rendered = await toHtml(file.data || "", file.path);
+      const rendered = await toHtml(file.data || "", file.path, file.language);
       return { ...file, html: rendered.document, meta: rendered.meta };
     }),
   );

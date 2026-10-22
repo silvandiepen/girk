@@ -72,6 +72,7 @@ function getCompiled(name: string, source: string) {
 interface RegistryModule {
   templates: Record<string, string>;
   scripts: Record<string, string>;
+  ui: Record<string, Record<string, string>>;
 }
 
 let _registry: RegistryModule | null = null;
@@ -141,6 +142,14 @@ export function uniqueSvgIds(html: string): string {
 }
 
 /**
+ * UI strings for a page language, English for anything not translated.
+ */
+export function getUiStrings(language: string): Record<string, string> {
+  const { ui } = getRegistry();
+  return { ...ui.en, ...ui[language] };
+}
+
+/**
  * Render a full page using EJS templates.
  */
 export function renderEjs(
@@ -156,6 +165,7 @@ export function renderEjs(
   if (!source) throw new Error(`Template "${templateName}" not found`);
 
   const scripts = registry.scripts;
+  const ui = getUiStrings(String(data.language));
 
   // Build partials
   const partials: Record<string, (d: Record<string, unknown>) => string> = {};
@@ -165,9 +175,9 @@ export function renderEjs(
       getCompiled(
         name,
         src as string,
-      )({ ...d, data: d, partials, scripts, formatDate, renderIcon });
+      )({ ...d, data: d, partials, scripts, ui, formatDate, renderIcon });
   }
 
-  const enhancedData = { ...data, data, partials, scripts, formatDate, renderIcon };
+  const enhancedData = { ...data, data, partials, scripts, ui, formatDate, renderIcon };
   return uniqueSvgIds(getCompiled(templateName, source)(enhancedData));
 }

@@ -2,8 +2,8 @@
 <html lang="<%= language %>">
 <%- partials.head(data) %>
 
-<body class="page--<%= name %>">
-    <a class="skip-link" href="#main">Skip to content</a>
+<body class="page--<%= name %>" data-girk-ui="<%= JSON.stringify(ui) %>">
+    <a class="skip-link" href="#main"><%= ui.skipToContent %></a>
     <div class="page-container">
         <%- partials.header({ project: project, logo: logo, menu: menu, homeLink: homeLink, has: has, renderIcon: renderIcon, partials: partials }) %>
         <%- partials.content({ content: content, title: title, name: name, meta: meta, subtitle: subtitle, showContentImage: showContentImage, removeTitle: removeTitle, relatedPages: relatedPages, parentPage: parentPage, archives: archives, tags: tags, formatDate: formatDate, renderIcon: renderIcon, partials: partials }) %>

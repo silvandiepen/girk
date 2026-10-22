@@ -6,6 +6,7 @@ import { extractMeta, removeMeta } from "@/libs/markdown-meta";
 import { MarkdownData } from "@/types";
 import { getGist } from "@/libs/download";
 import { asyncForEach } from "@/libs/utils";
+import { getUiStrings } from "@/libs/render";
 import type { NizelBlockNode, NizelRenderContext } from "nizel";
 
 /**
@@ -16,14 +17,16 @@ import type { NizelBlockNode, NizelRenderContext } from "nizel";
  */
 type NizelProcessor = (input: string) => Promise<{ html: string }>;
 
-let _processor: NizelProcessor | null = null;
+// One processor per page language, so generated labels are localised.
+const processors = new Map<string, NizelProcessor>();
 
 const importEsm = process.env.VITEST
   ? <T>(specifier: string) => import(specifier) as Promise<T>
   : (new Function("specifier", "return import(specifier)") as <T>(specifier: string) => Promise<T>);
 
-const getProcessor = async (): Promise<NizelProcessor> => {
-  if (_processor) return _processor;
+const getProcessor = async (language = "en"): Promise<NizelProcessor> => {
+  const cached = processors.get(language);
+  if (cached) return cached;
 
   const { useNizel } = await importEsm<typeof import("nizel")>("nizel");
   const { abbrPlugin } = await importEsm<typeof import("nizel-plugin-abbr")>("nizel-plugin-abbr");
@@ -71,7 +74,8 @@ const getProcessor = async (): Promise<NizelProcessor> => {
   const { typographyPlugin } =
     await importEsm<typeof import("nizel-plugin-typography")>("nizel-plugin-typography");
 
-  _processor = useNizel({
+  const ui = getUiStrings(language);
+  const processor = useNizel({
     anchors: true,
     safe: false,
     elements: {
@@ -118,7 +122,7 @@ const getProcessor = async (): Promise<NizelProcessor> => {
       emojiPlugin(),
       frontmatterUiPlugin(),
       footnotesPlugin(),
-      headingAnchorsPlugin(),
+      headingAnchorsPlugin({ ariaLabel: ui.linkToSection }),
       kbdPlugin(),
       mathPlugin(),
       mediaPlugin(),
@@ -133,7 +137,8 @@ const getProcessor = async (): Promise<NizelProcessor> => {
     ],
   });
 
-  return _processor;
+  processors.set(language, processor);
+  return processor;
 };
 
 /**
@@ -351,7 +356,11 @@ export const replaceData = async (input: string): Promise<string> => {
  * @param input    - Raw markdown source including optional frontmatter.
  * @param filePath - Absolute path of the source file; required for relative import resolution.
  */
-export const toHtml = async (input: string, filePath?: string): Promise<MarkdownData> => {
+export const toHtml = async (
+  input: string,
+  filePath?: string,
+  language?: string,
+): Promise<MarkdownData> => {
   const metaData = await extractMeta(input);
   let strippedData = await removeMeta(input);
 
@@ -376,7 +385,7 @@ export const toHtml = async (input: string, filePath?: string): Promise<Markdown
   strippedData = rewriteImportedLinks(strippedData);
 
   const replacedData = await replaceData(strippedData);
-  const processor = await getProcessor();
+  const processor = await getProcessor(language);
   const result = await processor(replacedData);
 
   return {

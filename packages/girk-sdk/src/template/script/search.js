@@ -12,6 +12,15 @@
     lastFocusedElement: null,
   };
 
+  // UI strings for the page language, rendered onto <body> by page.ejs.
+  var ui = (function () {
+    try {
+      return JSON.parse(document.body.dataset.girkUi || "{}");
+    } catch {
+      return {};
+    }
+  })();
+
   function normalize(input) {
     return String(input || "")
       .normalize("NFKD")
@@ -195,21 +204,29 @@
 
     if (error) {
       state.results.innerHTML =
-        '<p class="search-results__empty">Search is unavailable right now.</p>';
-      announce("Search is unavailable right now.");
+        '<p class="search-results__empty">' +
+        escapeHtml(ui.searchUnavailable || "Search is unavailable right now.") +
+        "</p>";
+      announce(ui.searchUnavailable || "Search is unavailable right now.");
       return;
     }
 
     if (!results.length) {
       state.results.innerHTML =
-        '<p class="search-results__empty">No results for <strong>' +
+        '<p class="search-results__empty">' +
+        escapeHtml(ui.noResultsFor || "No results for") +
+        " <strong>" +
         escapeHtml(query) +
         "</strong>.</p>";
-      announce("No results");
+      announce(ui.noResults || "No results");
       return;
     }
 
-    announce(results.length === 1 ? "1 result" : results.length + " results");
+    announce(
+      results.length === 1
+        ? ui.oneResult || "1 result"
+        : (ui.results || "{count} results").replace("{count}", String(results.length)),
+    );
 
     state.results.innerHTML =
       '<ul class="search-results__list">' +

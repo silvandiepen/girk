@@ -1,7 +1,7 @@
 <%
   function renderColorModeToggle() {
     return '<div class="footer__control">' +
-      '<button class="color-mode-toggle" type="button" data-color-mode-toggle aria-label="Dark mode" aria-pressed="false">' +
+      '<button class="color-mode-toggle" type="button" data-color-mode-toggle aria-label="' + ui.darkMode + '" aria-pressed="false">' +
         '<span class="color-mode-toggle__option" aria-hidden="true">' +
           '<span class="color-mode-toggle__icon">' +
             '<svg class="color-mode-toggle__icon-asset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
@@ -33,7 +33,7 @@
 
   function renderLanguageMenu(langMenu) {
     if (!langMenu || langMenu.length <= 1) return '';
-    let out = '<nav class="footer__control" aria-label="Language"><ul class="language">';
+    let out = '<nav class="footer__control" aria-label="' + ui.languageNavigation + '"><ul class="language">';
     langMenu.forEach(function(language) {
       out += '<li class="language__item' + (language.active ? ' language__item--active' : '') + '">' +
         '<a class="language__link" href="' + language.link + '" lang="' + language.code + '" hreflang="' + language.code + '"' + (language.active ? ' aria-current="page"' : '') + '>' +

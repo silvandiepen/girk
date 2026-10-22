@@ -8,7 +8,7 @@
  * Custom templates can be passed via the `customTemplates` config option.
  */
 
-import { templates, scripts } from "./templates/registry";
+import { templates, scripts, ui as uiStrings } from "./templates/registry";
 import { formatDate } from "./formatDate";
 import { renderIcon } from "./renderIcon";
 
@@ -107,13 +107,14 @@ function getCompiled(name: string, source: string) {
  */
 function buildPartials(
   allTemplates: Record<string, string>,
+  ui: Record<string, string>,
 ): Record<string, (data: Record<string, unknown>) => string> {
   const partials: Record<string, (data: Record<string, unknown>) => string> = {};
 
   for (const [name, source] of Object.entries(allTemplates)) {
     if (name === "page") continue; // page is the top-level template, not a partial
     partials[name] = (data) =>
-      getCompiled(name, source)({ ...data, data, partials, scripts, formatDate, renderIcon });
+      getCompiled(name, source)({ ...data, data, partials, scripts, ui, formatDate, renderIcon });
   }
 
   return partials;
@@ -158,13 +159,16 @@ export function renderEjs(
     throw new Error(`Template "${templateName}" not found`);
   }
 
-  const partials = buildPartials(allTemplates);
+  // UI strings for the page language, English for anything not translated.
+  const ui = { ...uiStrings.en, ...uiStrings[String(data.language)] };
+  const partials = buildPartials(allTemplates, ui);
 
   const enhancedData = {
     ...data,
     data,
     partials,
     scripts,
+    ui,
     formatDate,
     renderIcon,
   };

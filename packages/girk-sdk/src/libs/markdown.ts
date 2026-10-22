@@ -30,15 +30,18 @@ import type { NizelBlockNode, NizelRenderContext } from "nizel";
 import { getGist } from "@/libs/download";
 import { asyncForEach } from "@/libs/utils";
 import { getFetch } from "./fetch";
+import { ui as uiStrings } from "./templates/registry";
 import { dirname, resolve } from "@/libs/path-utils";
 
 /**
  * Lazily-initialized Nizel processor with JS-engine Shiki for Worker compatibility.
  */
-let _processor: ReturnType<typeof useNizel> | null = null;
+// One processor per page language, so generated labels are localised.
+const processors = new Map<string, ReturnType<typeof useNizel>>();
 
-async function getProcessor() {
-  if (_processor) return _processor;
+async function getProcessor(language = "en") {
+  const cached = processors.get(language);
+  if (cached) return cached;
 
   // Use Shiki's JavaScript regex engine (no WASM) for Worker compatibility.
   // This import is safe in both Node and Workers.
@@ -77,7 +80,8 @@ async function getProcessor() {
     });
   };
 
-  _processor = useNizel({
+  const ui = { ...uiStrings.en, ...uiStrings[language] };
+  const processor = useNizel({
     anchors: true,
     safe: false,
     elements: {
@@ -124,7 +128,7 @@ async function getProcessor() {
       emojiPlugin(),
       frontmatterUiPlugin(),
       footnotesPlugin(),
-      headingAnchorsPlugin(),
+      headingAnchorsPlugin({ ariaLabel: ui.linkToSection }),
       kbdPlugin(),
       mathPlugin(),
       mediaPlugin(),
@@ -139,7 +143,8 @@ async function getProcessor() {
     ],
   });
 
-  return _processor;
+  processors.set(language, processor);
+  return processor;
 }
 
 /**
@@ -315,6 +320,7 @@ export const toHtml = async (
   input: string,
   filePath?: string,
   importFileMap?: Map<string, string>,
+  language?: string,
 ): Promise<MarkdownData> => {
   const metaData = await extractMeta(input);
   let strippedData = await removeMeta(input);
@@ -336,7 +342,7 @@ export const toHtml = async (
   }
 
   const replacedData = await replaceData(strippedData);
-  const nizel = await getProcessor();
+  const nizel = await getProcessor(language);
   const result = await nizel(replacedData);
 
   return {

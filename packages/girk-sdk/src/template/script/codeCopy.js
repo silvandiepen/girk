@@ -1,4 +1,15 @@
+// UI strings for the page language, rendered onto <body> by page.ejs.
+const readUi = () => {
+  try {
+    return JSON.parse(document.body.dataset.girkUi || "{}");
+  } catch {
+    return {};
+  }
+};
+
 const initCodeCopy = () => {
+  const ui = readUi();
+
   document.querySelectorAll("[data-nizel-code-copy]").forEach((container) => {
     const button = container.querySelector("[data-nizel-copy-button]");
     const sourceElement = container.querySelector("[data-nizel-copy-source]");
@@ -11,27 +22,33 @@ const initCodeCopy = () => {
 
     // Only the label changes, so the button keeps nizel's markup.
     const label = button.querySelector("[data-nizel-copy-label]") || button;
+    if (ui.copy && label !== button) label.textContent = ui.copy;
     const originalLabel = label.textContent || "Copy";
     const language = container
       .querySelector("code[class*='language-']")
       ?.className.match(/language-(\S+)/)?.[1];
-    button.setAttribute("aria-label", language ? `Copy ${language} code` : "Copy code");
+    button.setAttribute(
+      "aria-label",
+      language
+        ? (ui.copyLanguageCode || "Copy {language} code").replace("{language}", language)
+        : ui.copyCode || "Copy code",
+    );
 
     button.addEventListener("click", async () => {
       try {
         await copyText(source);
-        label.textContent = "Copied";
+        label.textContent = ui.copied || "Copied";
         button.dataset.copyState = "copied";
-        announce("Copied to clipboard");
+        announce(ui.copiedAnnouncement || "Copied to clipboard");
 
         window.setTimeout(() => {
           label.textContent = originalLabel;
           delete button.dataset.copyState;
         }, 1800);
       } catch {
-        label.textContent = "Failed";
+        label.textContent = ui.copyFailed || "Failed";
         button.dataset.copyState = "error";
-        announce("Copy failed");
+        announce(ui.copyFailedAnnouncement || "Copy failed");
       }
     });
   });

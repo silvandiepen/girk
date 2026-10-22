@@ -115,7 +115,7 @@ export const templates: Record<string, string> = {
                     <% if (parentPage) { %>
                         <p class="eyebrow"><%= parentPage.title %></p>
                     <% } %>
-                    <h2>More Pages</h2>
+                    <h2><%= ui.morePages %></h2>
                 </div>
                 <ul class="archive-grid">
                     <% relatedPages.forEach(function(item) { %>
@@ -150,7 +150,7 @@ export const templates: Record<string, string> = {
   "footer": `<%
   function renderColorModeToggle() {
     return '<div class="footer__control">' +
-      '<button class="color-mode-toggle" type="button" data-color-mode-toggle aria-label="Dark mode" aria-pressed="false">' +
+      '<button class="color-mode-toggle" type="button" data-color-mode-toggle aria-label="' + ui.darkMode + '" aria-pressed="false">' +
         '<span class="color-mode-toggle__option" aria-hidden="true">' +
           '<span class="color-mode-toggle__icon">' +
             '<svg class="color-mode-toggle__icon-asset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
@@ -182,7 +182,7 @@ export const templates: Record<string, string> = {
 
   function renderLanguageMenu(langMenu) {
     if (!langMenu || langMenu.length <= 1) return '';
-    let out = '<nav class="footer__control" aria-label="Language"><ul class="language">';
+    let out = '<nav class="footer__control" aria-label="' + ui.languageNavigation + '"><ul class="language">';
     langMenu.forEach(function(language) {
       out += '<li class="language__item' + (language.active ? ' language__item--active' : '') + '">' +
         '<a class="language__link" href="' + language.link + '" lang="' + language.code + '" hreflang="' + language.code + '"' + (language.active ? ' aria-current="page"' : '') + '>' +
@@ -277,6 +277,8 @@ export const templates: Record<string, string> = {
 
     <% if (meta.description) { %>
         <meta name="description" content="<%= meta.description %>">
+    <% } else if (typeof excerpt !== 'undefined' && excerpt) { %>
+        <meta name="description" content="<%= excerpt %>">
     <% } else if (project.description) { %>
         <meta name="description" content="<%= project.description %>">
     <% } %>
@@ -338,7 +340,7 @@ export const templates: Record<string, string> = {
 
         <% if (has.search) { %>
             <div class="header__actions">
-                <button class="search-toggle" type="button" aria-label="Open search" aria-haspopup="dialog" aria-controls="site-search" aria-expanded="false" data-search-open>
+                <button class="search-toggle" type="button" aria-label="<%= ui.openSearch %>" aria-haspopup="dialog" aria-controls="site-search" aria-expanded="false" data-search-open>
                     <span class="search-toggle__icon" aria-hidden="true">
                         <svg class="search-toggle__icon-asset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="11" cy="11" r="6.5"></circle>
@@ -422,7 +424,7 @@ export const templates: Record<string, string> = {
       out += renderIcon(item.icon, 'navigation__icon', 'navigation__icon-asset');
       out += '<span class="navigation__text">' + item.name + '</span></a>';
       if (hasChildren) {
-        out += '<button class="navigation__toggle" type="button" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="' + panelId + '" aria-label="' + item.name + ' submenu"></button>';
+        out += '<button class="navigation__toggle" type="button" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="' + panelId + '" aria-label="' + ui.submenu.replace('{name}', item.name) + '"></button>';
       }
       out += '</div>';
       if (hasChildren) {
@@ -458,7 +460,7 @@ export const templates: Record<string, string> = {
   }
 %>
 <% if (navVariant === 'footer') { %>
-  <nav class="navigation navigation--footer" aria-label="Footer">
+  <nav class="navigation navigation--footer" aria-label="<%= ui.footerNavigation %>">
     <%- renderFooterTree(menu, 0) %>
   </nav>
 <% } else { %>
@@ -467,11 +469,11 @@ export const templates: Record<string, string> = {
     const useMobilePanel = menu.length > 2 || hasNestedChildren;
     const mobileMode = useMobilePanel ? 'panel' : 'inline';
   %>
-  <nav class="navigation navigation--header<%= useMobilePanel ? ' navigation--mobile-panel' : ' navigation--mobile-inline' %>" data-mobile-mode="<%= mobileMode %>" aria-label="Main">
+  <nav class="navigation navigation--header<%= useMobilePanel ? ' navigation--mobile-panel' : ' navigation--mobile-inline' %>" data-mobile-mode="<%= mobileMode %>" aria-label="<%= ui.mainNavigation %>">
     <% if (useMobilePanel) { %>
       <button class="navigation__mobile-toggle" type="button" aria-expanded="false" aria-controls="<%= navigationRoot %>-list" style="anchor-name: --<%= navigationRoot %>-mobile-toggle;">
         <span class="navigation__mobile-toggle-icon" aria-hidden="true"></span>
-        <span class="navigation__mobile-toggle-label">Menu</span>
+        <span class="navigation__mobile-toggle-label"><%= ui.menu %></span>
       </button>
     <% } %>
     <%- renderHeaderNavigation(menu) %>
@@ -482,8 +484,8 @@ export const templates: Record<string, string> = {
 <html lang="<%= language %>">
 <%- partials.head(data) %>
 
-<body class="page--<%= name %>">
-    <a class="skip-link" href="#main">Skip to content</a>
+<body class="page--<%= name %>" data-girk-ui="<%= JSON.stringify(ui) %>">
+    <a class="skip-link" href="#main"><%= ui.skipToContent %></a>
     <div class="page-container">
         <%- partials.header({ project: project, logo: logo, menu: menu, homeLink: homeLink, has: has, renderIcon: renderIcon, partials: partials }) %>
         <%- partials.content({ content: content, title: title, name: name, meta: meta, subtitle: subtitle, showContentImage: showContentImage, removeTitle: removeTitle, relatedPages: relatedPages, parentPage: parentPage, archives: archives, tags: tags, formatDate: formatDate, renderIcon: renderIcon, partials: partials }) %>
@@ -511,7 +513,7 @@ export const templates: Record<string, string> = {
 `,
   "search": `<% if (has.search) { %>
     <div class="search-shell" hidden data-search-shell>
-        <button class="search-shell__backdrop" type="button" aria-label="Close search" data-search-close tabindex="-1"></button>
+        <button class="search-shell__backdrop" type="button" aria-label="<%= ui.closeSearch %>" data-search-close tabindex="-1"></button>
         <div class="search-shell__dialog"
             id="site-search"
             role="dialog"
@@ -523,8 +525,8 @@ export const templates: Record<string, string> = {
             data-search-dialog
         >
             <form class="search-shell__panel" role="search" novalidate data-search-form>
-                <h2 class="search-shell__title" id="site-search-title">Search</h2>
-                <label class="visually-hidden" for="site-search-input">Search this site</label>
+                <h2 class="search-shell__title" id="site-search-title"><%= ui.search %></h2>
+                <label class="visually-hidden" for="site-search-input"><%= ui.searchLabel %></label>
                 <div class="search-shell__field">
                     <span class="search-shell__field-icon" aria-hidden="true">
                         <svg class="search-shell__field-icon-asset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -537,16 +539,16 @@ export const templates: Record<string, string> = {
                         autocomplete="off"
                         autocapitalize="off"
                         spellcheck="false"
-                        placeholder="Search this site"
+                        placeholder="<%= ui.searchLabel %>"
                         enterkeyhint="search"
                         aria-controls="site-search-results"
                         data-search-input
                     >
-                    <button class="search-shell__close" type="button" aria-label="Close search" data-search-close>
+                    <button class="search-shell__close" type="button" aria-label="<%= ui.closeSearch %>" data-search-close>
                         <span class="search-shell__close-icon" aria-hidden="true"></span>
                     </button>
                 </div>
-                <p class="search-shell__hint">Search pages in this site. Results update while you type.</p>
+                <p class="search-shell__hint"><%= ui.searchHint %></p>
                 <p class="visually-hidden" role="status" data-search-status></p>
                 <div class="search-shell__results search-results" id="site-search-results" data-search-results hidden></div>
             </form>
@@ -568,7 +570,18 @@ export const templates: Record<string, string> = {
 };
 
 export const scripts: Record<string, string> = {
-  "codeCopy": `const initCodeCopy = () => {
+  "codeCopy": `// UI strings for the page language, rendered onto <body> by page.ejs.
+const readUi = () => {
+  try {
+    return JSON.parse(document.body.dataset.girkUi || "{}");
+  } catch {
+    return {};
+  }
+};
+
+const initCodeCopy = () => {
+  const ui = readUi();
+
   document.querySelectorAll("[data-nizel-code-copy]").forEach((container) => {
     const button = container.querySelector("[data-nizel-copy-button]");
     const sourceElement = container.querySelector("[data-nizel-copy-source]");
@@ -581,27 +594,33 @@ export const scripts: Record<string, string> = {
 
     // Only the label changes, so the button keeps nizel's markup.
     const label = button.querySelector("[data-nizel-copy-label]") || button;
+    if (ui.copy && label !== button) label.textContent = ui.copy;
     const originalLabel = label.textContent || "Copy";
     const language = container
       .querySelector("code[class*='language-']")
       ?.className.match(/language-(\\S+)/)?.[1];
-    button.setAttribute("aria-label", language ? \`Copy \${language} code\` : "Copy code");
+    button.setAttribute(
+      "aria-label",
+      language
+        ? (ui.copyLanguageCode || "Copy {language} code").replace("{language}", language)
+        : ui.copyCode || "Copy code",
+    );
 
     button.addEventListener("click", async () => {
       try {
         await copyText(source);
-        label.textContent = "Copied";
+        label.textContent = ui.copied || "Copied";
         button.dataset.copyState = "copied";
-        announce("Copied to clipboard");
+        announce(ui.copiedAnnouncement || "Copied to clipboard");
 
         window.setTimeout(() => {
           label.textContent = originalLabel;
           delete button.dataset.copyState;
         }, 1800);
       } catch {
-        label.textContent = "Failed";
+        label.textContent = ui.copyFailed || "Failed";
         button.dataset.copyState = "error";
-        announce("Copy failed");
+        announce(ui.copyFailedAnnouncement || "Copy failed");
       }
     });
   });
@@ -696,21 +715,44 @@ try {
   // Storage can be blocked; the system preference still applies.
 }
 `,
-  "findColors": `const container = document.querySelector(".container").querySelectorAll("*");
+  "findColors": `// Show a swatch next to hex colours in page content. Works on text nodes only,
+// so existing markup (links, highlighted code) is left intact.
+const COLOR_PATTERN = /#(?:[0-9a-f]{6}|[0-9a-f]{3})\\b/gi;
 
-container.forEach((el) => {
-  const text = el.innerText;
-  if (el.innerHTML == el.textContent)
-    if (text) {
-      const matches = text.match(/#[a-fA-F0-9]{6}|#[a-fA-F0-9]{3}/i);
-      if (matches) {
-        el.innerHTML = el.innerHTML.replace(
-          matches[0],
-          \`<span class="color-preview" style="--color-preview:\${matches[0]}">\${matches[0]}</span>\`,
-        );
-      }
-    }
-});
+const decorateColors = (root) => {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode: (node) =>
+      node.parentElement?.closest("script, style, .color-preview")
+        ? NodeFilter.FILTER_REJECT
+        : NodeFilter.FILTER_ACCEPT,
+  });
+
+  const textNodes = [];
+  while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+  textNodes.forEach((node) => {
+    const text = node.nodeValue || "";
+    COLOR_PATTERN.lastIndex = 0;
+    if (!COLOR_PATTERN.test(text)) return;
+
+    const fragment = document.createDocumentFragment();
+    let lastIndex = 0;
+    text.replace(COLOR_PATTERN, (color, index) => {
+      fragment.append(text.slice(lastIndex, index));
+      const preview = document.createElement("span");
+      preview.className = "color-preview";
+      preview.style.setProperty("--color-preview", color);
+      preview.textContent = color;
+      fragment.append(preview);
+      lastIndex = index + color.length;
+      return color;
+    });
+    fragment.append(text.slice(lastIndex));
+    node.replaceWith(fragment);
+  });
+};
+
+document.querySelectorAll(".nizel-content").forEach(decorateColors);
 `,
   "linkify": `const urlTokens = document.querySelectorAll(".token.url");
 
@@ -1000,6 +1042,15 @@ initMath();
     lastFocusedElement: null,
   };
 
+  // UI strings for the page language, rendered onto <body> by page.ejs.
+  var ui = (function () {
+    try {
+      return JSON.parse(document.body.dataset.girkUi || "{}");
+    } catch {
+      return {};
+    }
+  })();
+
   function normalize(input) {
     return String(input || "")
       .normalize("NFKD")
@@ -1183,21 +1234,29 @@ initMath();
 
     if (error) {
       state.results.innerHTML =
-        '<p class="search-results__empty">Search is unavailable right now.</p>';
-      announce("Search is unavailable right now.");
+        '<p class="search-results__empty">' +
+        escapeHtml(ui.searchUnavailable || "Search is unavailable right now.") +
+        "</p>";
+      announce(ui.searchUnavailable || "Search is unavailable right now.");
       return;
     }
 
     if (!results.length) {
       state.results.innerHTML =
-        '<p class="search-results__empty">No results for <strong>' +
+        '<p class="search-results__empty">' +
+        escapeHtml(ui.noResultsFor || "No results for") +
+        " <strong>" +
         escapeHtml(query) +
         "</strong>.</p>";
-      announce("No results");
+      announce(ui.noResults || "No results");
       return;
     }
 
-    announce(results.length === 1 ? "1 result" : results.length + " results");
+    announce(
+      results.length === 1
+        ? ui.oneResult || "1 result"
+        : (ui.results || "{count} results").replace("{count}", String(results.length)),
+    );
 
     state.results.innerHTML =
       '<ul class="search-results__list">' +
@@ -1429,4 +1488,147 @@ window.addEventListener("resize", () => {
   if (!initTableWrap) wrapTables(tables);
 });
 `,
+};
+
+export const ui: Record<string, Record<string, string>> = {
+  "de": {
+    "skipToContent": "Zum Inhalt springen",
+    "menu": "Menü",
+    "submenu": "Untermenü {name}",
+    "mainNavigation": "Hauptmenü",
+    "footerNavigation": "Fußzeile",
+    "languageNavigation": "Sprache",
+    "openSearch": "Suche öffnen",
+    "closeSearch": "Suche schließen",
+    "search": "Suche",
+    "searchLabel": "Diese Website durchsuchen",
+    "searchHint": "Seiten dieser Website durchsuchen. Ergebnisse erscheinen beim Tippen.",
+    "darkMode": "Dunkelmodus",
+    "morePages": "Weitere Seiten",
+    "copy": "Kopieren",
+    "copyCode": "Code kopieren",
+    "copyLanguageCode": "{language}-Code kopieren",
+    "copied": "Kopiert",
+    "copiedAnnouncement": "In die Zwischenablage kopiert",
+    "copyFailed": "Fehlgeschlagen",
+    "copyFailedAnnouncement": "Kopieren fehlgeschlagen",
+    "noResults": "Keine Ergebnisse",
+    "noResultsFor": "Keine Ergebnisse für",
+    "oneResult": "1 Ergebnis",
+    "results": "{count} Ergebnisse",
+    "searchUnavailable": "Die Suche ist gerade nicht verfügbar.",
+    "linkToSection": "Link zu diesem Abschnitt"
+  },
+  "en": {
+    "skipToContent": "Skip to content",
+    "menu": "Menu",
+    "submenu": "{name} submenu",
+    "mainNavigation": "Main",
+    "footerNavigation": "Footer",
+    "languageNavigation": "Language",
+    "openSearch": "Open search",
+    "closeSearch": "Close search",
+    "search": "Search",
+    "searchLabel": "Search this site",
+    "searchHint": "Search pages in this site. Results update while you type.",
+    "darkMode": "Dark mode",
+    "morePages": "More pages",
+    "copy": "Copy",
+    "copyCode": "Copy code",
+    "copyLanguageCode": "Copy {language} code",
+    "copied": "Copied",
+    "copiedAnnouncement": "Copied to clipboard",
+    "copyFailed": "Failed",
+    "copyFailedAnnouncement": "Copy failed",
+    "noResults": "No results",
+    "noResultsFor": "No results for",
+    "oneResult": "1 result",
+    "results": "{count} results",
+    "searchUnavailable": "Search is unavailable right now.",
+    "linkToSection": "Link to section"
+  },
+  "es": {
+    "skipToContent": "Saltar al contenido",
+    "menu": "Menú",
+    "submenu": "Submenú {name}",
+    "mainNavigation": "Principal",
+    "footerNavigation": "Pie de página",
+    "languageNavigation": "Idioma",
+    "openSearch": "Abrir búsqueda",
+    "closeSearch": "Cerrar búsqueda",
+    "search": "Buscar",
+    "searchLabel": "Buscar en este sitio",
+    "searchHint": "Busca páginas en este sitio. Los resultados se actualizan mientras escribes.",
+    "darkMode": "Modo oscuro",
+    "morePages": "Más páginas",
+    "copy": "Copiar",
+    "copyCode": "Copiar código",
+    "copyLanguageCode": "Copiar código {language}",
+    "copied": "Copiado",
+    "copiedAnnouncement": "Copiado al portapapeles",
+    "copyFailed": "Error",
+    "copyFailedAnnouncement": "Error al copiar",
+    "noResults": "Sin resultados",
+    "noResultsFor": "Sin resultados para",
+    "oneResult": "1 resultado",
+    "results": "{count} resultados",
+    "searchUnavailable": "La búsqueda no está disponible ahora.",
+    "linkToSection": "Enlace a esta sección"
+  },
+  "fr": {
+    "skipToContent": "Aller au contenu",
+    "menu": "Menu",
+    "submenu": "Sous-menu {name}",
+    "mainNavigation": "Principal",
+    "footerNavigation": "Pied de page",
+    "languageNavigation": "Langue",
+    "openSearch": "Ouvrir la recherche",
+    "closeSearch": "Fermer la recherche",
+    "search": "Recherche",
+    "searchLabel": "Rechercher sur ce site",
+    "searchHint": "Recherchez des pages sur ce site. Les résultats s'affichent pendant la saisie.",
+    "darkMode": "Mode sombre",
+    "morePages": "Plus de pages",
+    "copy": "Copier",
+    "copyCode": "Copier le code",
+    "copyLanguageCode": "Copier le code {language}",
+    "copied": "Copié",
+    "copiedAnnouncement": "Copié dans le presse-papiers",
+    "copyFailed": "Échec",
+    "copyFailedAnnouncement": "Échec de la copie",
+    "noResults": "Aucun résultat",
+    "noResultsFor": "Aucun résultat pour",
+    "oneResult": "1 résultat",
+    "results": "{count} résultats",
+    "searchUnavailable": "La recherche est indisponible pour le moment.",
+    "linkToSection": "Lien vers cette section"
+  },
+  "nl": {
+    "skipToContent": "Naar de inhoud",
+    "menu": "Menu",
+    "submenu": "Submenu {name}",
+    "mainNavigation": "Hoofdmenu",
+    "footerNavigation": "Voettekst",
+    "languageNavigation": "Taal",
+    "openSearch": "Zoeken openen",
+    "closeSearch": "Zoeken sluiten",
+    "search": "Zoeken",
+    "searchLabel": "Zoek op deze site",
+    "searchHint": "Zoek pagina's op deze site. Resultaten verschijnen terwijl je typt.",
+    "darkMode": "Donkere modus",
+    "morePages": "Meer pagina's",
+    "copy": "Kopiëren",
+    "copyCode": "Code kopiëren",
+    "copyLanguageCode": "{language}-code kopiëren",
+    "copied": "Gekopieerd",
+    "copiedAnnouncement": "Gekopieerd naar klembord",
+    "copyFailed": "Mislukt",
+    "copyFailedAnnouncement": "Kopiëren mislukt",
+    "noResults": "Geen resultaten",
+    "noResultsFor": "Geen resultaten voor",
+    "oneResult": "1 resultaat",
+    "results": "{count} resultaten",
+    "searchUnavailable": "Zoeken is nu niet beschikbaar.",
+    "linkToSection": "Link naar deze sectie"
+  }
 };
