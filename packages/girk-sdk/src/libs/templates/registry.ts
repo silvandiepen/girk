@@ -11,9 +11,13 @@ export const templates: Record<string, string> = {
         <% } %>
         <ul class="archive-grid">
             <% archive.children.forEach(function(item) { %>
-                <li class="archive-card" style="<%= item.meta.sectionStyle || '' %>">
+                <li class="archive-card<%= item.thumbnail ? ' archive-card--media' : '' %>" style="<%= item.meta.sectionStyle || '' %>">
                     <a class="archive-card__link" href="<%= item.redirect || item.link %>">
-                        <% if (item.icon) { %>
+                        <% if (item.thumbnail) { %>
+                            <span class="archive-card__media archive-card__media--image">
+                                <img class="archive-card__image" src="<%= item.thumbnail %>" alt="" loading="lazy">
+                            </span>
+                        <% } else if (item.icon) { %>
                             <%- renderIcon(item.icon, 'archive-card__media archive-card__media--icon', 'archive-card__icon') %>
                         <% } %>
                         <div class="archive-card__body">
@@ -118,9 +122,13 @@ export const templates: Record<string, string> = {
                 </div>
                 <ul class="archive-grid">
                     <% relatedPages.forEach(function(item) { %>
-                        <li class="archive-card" style="<%= item.meta.sectionStyle || '' %>">
+                        <li class="archive-card<%= item.thumbnail ? ' archive-card--media' : '' %>" style="<%= item.meta.sectionStyle || '' %>">
                             <a class="archive-card__link" href="<%= item.redirect || item.link %>">
-                                <% if (item.icon) { %>
+                                <% if (item.thumbnail) { %>
+                                    <span class="archive-card__media archive-card__media--image">
+                                        <img class="archive-card__image" src="<%= item.thumbnail %>" alt="" loading="lazy">
+                                    </span>
+                                <% } else if (item.icon) { %>
                                     <%- renderIcon(item.icon, 'archive-card__media archive-card__media--icon', 'archive-card__icon') %>
                                 <% } %>
                                 <div class="archive-card__body">

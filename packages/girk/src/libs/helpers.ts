@@ -17,8 +17,14 @@ export const getTitle = (input: string): string =>
 export const fileTitle = (file: File): string =>
   getTitle(file.html) || file.name;
 
-export const getExcerpt = (file: File): string =>
-  getStringFromTag(file.html ? file.html : "", "p");
+export const getExcerpt = (file: File): string => {
+  const description = file.meta?.description;
+  if (typeof description === "string" && description.trim())
+    return description.trim();
+
+  return stripHtml(getStringFromTag(file.html ? file.html : "", "p"))
+    .replace(/\s+/g, " ");
+};
 
 export const isHidden = (meta?: Meta): boolean =>
   meta?.hide === true || meta?.hide === "true";

@@ -179,4 +179,15 @@
   &--blog &__body {
     gap: var(--space-xs);
   }
+
+  &--media &__link {
+    grid-template-columns: 1fr;
+  }
+
+  &--media &__media--image {
+    aspect-ratio: var(--card-media-aspect-ratio, 3 / 2);
+    min-height: 0;
+    margin: calc(var(--card-padding, var(--space)) * -1)
+      calc(var(--card-padding, var(--space)) * -1) 0;
+  }
 }

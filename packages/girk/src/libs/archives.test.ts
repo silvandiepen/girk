@@ -128,4 +128,100 @@ describe("archives helpers", () => {
 
     expect(result.files[0].archives?.[0]?.children?.map((item) => item.title)).toEqual(["Install"]);
   });
+
+  it("keeps partials out of generated archives", async () => {
+    const parent = createFile({
+      id: "spices",
+      name: "spices",
+      fileName: "README",
+      path: "/tmp/spices/README.md",
+      home: true,
+      meta: { archive: ArchiveType.ARTICLES },
+    });
+
+    const child = createFile({
+      id: "shoarma",
+      name: "shoarma",
+      fileName: "shoarma",
+      path: "/tmp/spices/shoarma.md",
+      parent: "spices",
+      title: "Shoarma",
+    });
+
+    const partial = createFile({
+      id: "--about",
+      name: "--about",
+      fileName: "--about",
+      path: "/tmp/spices/--about.md",
+      parent: "spices",
+      title: "--about",
+    });
+
+    const payload = { files: [parent, child, partial], tags: [] } as unknown as Payload;
+    const result = await generateArchives(payload);
+
+    expect(result.files[0].archives?.[0]?.children?.map((item) => item.title)).toEqual([
+      "Shoarma",
+    ]);
+  });
+
+  it("keeps partials as the content of sections archives", async () => {
+    const parent = createFile({
+      id: "about",
+      name: "about",
+      fileName: "README",
+      path: "/tmp/about/README.md",
+      home: true,
+      meta: { archive: ArchiveType.SECTIONS },
+    });
+
+    const partial = createFile({
+      id: "-intro",
+      name: "-intro",
+      fileName: "-intro",
+      path: "/tmp/about/-intro.md",
+      parent: "about",
+      title: "Intro",
+    });
+
+    const payload = { files: [parent, partial], tags: [] } as unknown as Payload;
+    const result = await generateArchives(payload);
+
+    expect(result.files[0].archives?.[0]?.children?.map((item) => item.title)).toEqual(["Intro"]);
+  });
+
+  it("uses the description, or the first paragraph, as excerpt", async () => {
+    const parent = createFile({
+      id: "spices",
+      name: "spices",
+      fileName: "README",
+      path: "/tmp/spices/README.md",
+      home: true,
+      meta: { archive: ArchiveType.ARTICLES },
+    });
+
+    const described = createFile({
+      id: "shoarma",
+      name: "shoarma",
+      parent: "spices",
+      meta: { order: 1, description: "Warm, smoky and earthy." },
+      html: "<h1>Shoarma</h1><p>Intro</p>",
+    });
+
+    const wrapped = createFile({
+      id: "cajun",
+      name: "cajun",
+      parent: "spices",
+      meta: { order: 2 },
+      html: '<h1>Cajun</h1><p>The spice for\n<a href="/x">everything</a>.</p><p>One line.</p>',
+    });
+
+    const payload = { files: [parent, described, wrapped], tags: [] } as unknown as Payload;
+    const result = await generateArchives(payload);
+
+    expect(result.files[0].archives?.[0]?.children?.map((item) => item.excerpt)).toEqual([
+      "Warm, smoky and earthy.",
+      "The spice for everything.",
+    ]);
+  });
 });
