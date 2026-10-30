@@ -1,3 +1,10 @@
+## [1.31.12](https://github.com/silvandiepen/girk/compare/v1.31.11...v1.31.12) (2026-10-30)
+
+
+### Bug Fixes
+
+* **girky:** keep commas in frontmatter and fix archive cards ([afc4dbf](https://github.com/silvandiepen/girk/commit/afc4dbf53539af72255a13d39f80f15af478bc62))
+
 ## [1.31.11](https://github.com/silvandiepen/girk/compare/v1.31.10...v1.31.11) (2026-07-15)
 
 
