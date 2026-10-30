@@ -25,6 +25,11 @@ export const getConfig = async (): Promise<Arguments> => {
   return {};
 };
 
+/*
+ * Project settings whose comma separated values become arrays.
+ */
+const LIST_PROJECT_KEYS = ["ignore", "script", "scriptModule", "copyFiles"];
+
 const fixProjectTypes = (input: Project): Project => {
   const fixedProject: Project = {};
 
@@ -35,6 +40,7 @@ const fixProjectTypes = (input: Project): Project => {
     if (rawValue === "false" || rawValue === false) value = false;
     else if (rawValue === "true" || rawValue === true) value = true;
     else if (
+      LIST_PROJECT_KEYS.includes(key) &&
       typeof rawValue === "string" &&
       !/\r|\n/.exec(rawValue) &&
       rawValue.split(",").length > 1

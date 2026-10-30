@@ -23,9 +23,12 @@ main.main(class=`${meta.type ? 'content--'+ meta.type : ''}`)
                     h2 More Pages
                 ul.archive-grid
                     each item in relatedPages
-                        li.archive-card(style=`${item.meta.sectionStyle ? item.meta.sectionStyle : ""}`)
+                        li.archive-card(class=item.thumbnail ? "archive-card--media" : "", style=`${item.meta.sectionStyle ? item.meta.sectionStyle : ""}`)
                             a.archive-card__link(href=`${item.redirect ? item.redirect : item.link}`)
-                                if item.icon
+                                if item.thumbnail
+                                    span.archive-card__media.archive-card__media--image
+                                        img.archive-card__image(src=item.thumbnail, alt="", loading="lazy")
+                                else if item.icon
                                     +renderIcon(item.icon, "archive-card__media archive-card__media--icon", "archive-card__icon")
                                 .archive-card__body
                                     h3.archive-card__title= item.title

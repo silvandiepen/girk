@@ -45,6 +45,27 @@ describe("Project settings", () => {
     await rm(root, { recursive: true, force: true });
   });
 
+  it("keeps commas in non-list project settings", async () => {
+    const root = await mkdtemp(join(tmpdir(), "girk-project-commas-"));
+    process.chdir(root);
+
+    const project = await getProjectData([
+      {
+        meta: {
+          projectTitle: "Cooking, with Sil",
+          projectDescription: "Spice mixes, sauces and dishes",
+          projectCopyFiles: "CNAME, _headers",
+        },
+      } as any,
+    ]);
+
+    expect(project.title).toBe("Cooking, with Sil");
+    expect(project.description).toBe("Spice mixes, sauces and dishes");
+    expect(project.copyFiles).toEqual(["CNAME", "_headers"]);
+
+    await rm(root, { recursive: true, force: true });
+  });
+
   it("normalizes classic and module project scripts", async () => {
     const root = await mkdtemp(join(tmpdir(), "girk-project-scripts-"));
     process.chdir(root);

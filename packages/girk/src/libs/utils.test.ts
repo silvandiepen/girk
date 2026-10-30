@@ -49,6 +49,16 @@ describe("Local runtime utils", () => {
     expect(getStringFromTag("<h1>Hello</h1><h1>World</h1>", "h1")).toBe("Hello");
   });
 
+  it("returns tag content that spans line breaks", () => {
+    expect(getStringFromTag('<p class="intro">Hello\nWorld</p><p>Next</p>', "p")).toBe(
+      "Hello\nWorld"
+    );
+  });
+
+  it("does not match tags that only share a prefix", () => {
+    expect(getStringFromTag("<pre>code</pre><p>Text</p>", "p")).toBe("Text");
+  });
+
   it("returns the requested nth index", () => {
     expect(nthIndex("a---b---c", "---", 0)).toBe(1);
     expect(nthIndex("a---b---c", "---", 1)).toBe(5);

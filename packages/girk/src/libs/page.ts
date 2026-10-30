@@ -92,6 +92,7 @@ const getRelatedPages = (file: File, files: File[]): File[] => {
         candidate.parent == file.parent &&
         candidate.id !== file.id &&
         !candidate.home &&
+        !candidate.name.startsWith("-") &&
         candidate.language === file.language &&
         !isHidden(candidate.meta)
     )

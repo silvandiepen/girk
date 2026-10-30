@@ -31,7 +31,8 @@ Girk frontmatter is intentionally simple. It is not full YAML.
 
 - use plain `key: value` lines
 - numbers such as `order: 10` are parsed as numbers
-- comma-separated values such as `tags: guide, basics` become arrays
+- comma-separated values for `tags` and `import` become arrays, such as `tags: guide, basics`; every
+  other value keeps its commas, so `title: Toast, grind, store` stays one string
 - keys containing `date` are parsed as dates
 - nested objects and YAML lists are not supported
 - boolean-looking values such as `true` are treated as strings, but Girk still handles string flags for keys like `hide`

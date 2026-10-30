@@ -20,7 +20,7 @@ export function removeTag(input: string, tag: string): string {
 }
 
 export function getStringFromTag(input: string, tag: string): string {
-  const regex = new RegExp(`<${tag}(.*?)>(.+?)</${tag}>`, "gi");
+  const regex = new RegExp(`<${tag}(\\s[^>]*)?>([\\s\\S]+?)</${tag}>`, "i");
   const matches = regex.exec(input);
   return matches && matches.length > 1 ? matches[2] : "";
 }

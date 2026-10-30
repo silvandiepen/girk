@@ -1,6 +1,13 @@
 import { nthIndex } from "@/libs/utils";
 import { Meta } from "@/types";
 
+/*
+ * Front matter keys whose comma separated values become arrays. Every other
+ * value is kept as a string, so titles and descriptions can contain commas.
+ * Project list keys (projectIgnore, projectScript, ...) are split in project.ts.
+ */
+export const LIST_META_KEYS = ["tags", "import"];
+
 export const fixType = (value: string): any => {
   if (!isNaN(value as any)) return parseInt(value, 10);
   else return value;
@@ -30,11 +37,11 @@ export const extractMeta = async (input: string): Promise<Meta> => {
 
           value = fixType(value);
 
-          // If the value has commas, convert it to an array
+          // If the value is a list key with commas, convert it to an array
           if (
+            LIST_META_KEYS.includes(key) &&
             typeof value === "string" &&
-            value.indexOf(",") > -1 &&
-            value.indexOf("http") < 0
+            value.indexOf(",") > -1
           )
             value = value.split(",").map((val: string) => fixType(val.trim()));
 
